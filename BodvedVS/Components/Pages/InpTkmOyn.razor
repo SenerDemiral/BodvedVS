@@ -1,0 +1,167 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@rendermode renderMode
+
+@page "/InpTkmOyn/{ctid:int}/{header}"
+
+<h1>@Header Takım Oyuncuları</h1>
+@if (to != null)
+{
+    <div style="display:flex;justify-content:space-between;">
+        <button @onclick="Insert">➕Ekle</button>
+        <div>
+            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button @onclick="Save">✅Kaydet</button>
+        </div>
+    </div>
+    <table class="table-edit">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th></th>
+                <th>MF</th>
+                <th>Sil</th>
+                <th>Ad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in to)
+            {
+                <tr>
+                    <td>
+                        <button @onclick="() => Original(r)">🔄</button>
+                    </td>
+                    <td class="text-center">@r.MF</td>
+                    <td>
+                        <button @onclick="() => Delete(r)">❌</button>
+                    </td>
+                    @if(r.MF == '+')
+                    {
+                        <td>
+                            <input list="PP"
+                                   @bind="r.PPAd"
+                                   @bind:after='() => CheckPP(r)' />
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@r.PPAd</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+<datalist id="PP">
+    @foreach (var r in pp)
+    {
+        <option value="@r.Key" />
+    }
+</datalist>
+
+
+
+@code {
+    [Parameter] public int CTId { get; set; }
+    [Parameter] public string Header { get; set; }
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+
+    private List<TO>? to;
+    private List<PP>? zz;
+    private HashSet<PP>? hh;
+    private Dictionary<string, PP>? pp;
+
+    private void Cancel()
+    {
+        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+    }
+    private void Save()
+    {
+        int mdfCount = 0;
+        foreach (var r in to)
+        {
+            if (r.MF != '=' && r.PPId != 0)
+            {
+                mdfCount++;
+                var ct = new
+                {
+                    MF = r.MF,
+                    CTId = CTId,
+                    PPId = r.PPId,
+                };
+
+                var rs = db.SaveRec("ITO_MDF", ct);
+            }
+        }
+        if (mdfCount > 0)
+            LoadData();
+
+    }
+    private void CheckPP(TO r)
+    {
+        if (pp.TryGetValue(r.PPAd, out var xx))
+            r.PPId = xx.PPId;
+        else
+        {
+            r.PPId = 0;
+            r.PPAd = "";
+        }
+    }
+
+    private void Original(TO r)
+    {
+    }
+    private void Delete(TO r)
+    {
+        if (r.MF == '+')
+        {
+            to.Remove(r);
+        }
+        else
+        {
+            r.MF = '-';
+        }
+    }
+
+    private void Insert()
+    {
+        TO ctn = new();
+        ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
+        ctn.oMF = '+';
+
+        to.Add(ctn);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+
+    private void LoadData()
+    {
+        to = db.LoadData<TO, dynamic>("select * from ITO_SEL(@CTId)", new { CTId = CTId }).ToList();
+        pp = db.LoadData<PP, dynamic>("select * from LU_OYN order by Ad", new { }).ToDictionary((k) => k.Ad);
+    }
+
+    private sealed class TO
+    {
+        public char MF = '=';
+        public int PPId { get; set; }
+        public string? PPAd { get; set; }
+
+        public char oMF = '=';
+    }
+
+    private sealed class PP
+    {
+        public int PPId { get; set; }
+        public string Ad { get; set; }
+    }
+
+
+}

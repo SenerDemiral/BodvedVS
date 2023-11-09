@@ -1,0 +1,172 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@rendermode renderMode
+
+@page "/InpTkm/{ccid:int}/{header}"
+
+<h1>@Header Takımları</h1>
+@if (ct != null)
+{
+    <div style="display:flex;justify-content:space-between;">
+        <button @onclick="Insert">➕Ekle</button>
+        <div>
+            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button @onclick="Save">✅Kaydet</button>
+        </div>
+    </div>
+    <table class="table-edit">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th></th>
+                <th>MF</th>
+                <th>Sil</th>
+                <th>Ad</th>
+                <th>Adres</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in ct)
+            {
+                <tr>
+                    <td>
+                        <button @onclick="() => Original(r)">🔄</button>
+                    </td>
+                    <td class="text-center">@r.MF</td>
+                    <td>
+                        <button @onclick="() => Delete(r)">❌</button>
+                    </td>
+                    <td>
+                        <input type="text"
+                               maxlength="30"
+                               size="30"
+                               @bind="r.Ad"
+                               @bind:after='(() => CheckUpd(r))'>
+                    </td>
+                    <td>
+                        <input type="text"
+                               size="50"
+                               maxlength="80"
+                               @bind="r.Adres"
+                               @bind:after='(() => CheckUpd(r))'>
+                    </td>
+
+                    <td>
+                        <a href="InpTkmOyn/@r.CTId/@r.Ad">Oyuncuları</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+
+@code {
+    [Parameter] public int CCId { get; set; }
+    [Parameter] public string Header { get; set; }
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+
+    private List<CT>? ct;
+
+    private void Cancel()
+    {
+        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+    }
+    private void Save()
+    {
+        int mdfCount = 0;
+        foreach (var r in ct)
+        {
+            if (r.MF != '=' )
+            {
+                mdfCount++;
+                var ct = new
+                {
+                    MF = r.MF,
+                    CCId = CCId,
+                    CTId = r.CTId,
+                    Ad = r.Ad,
+                    Adres = r.Adres,
+                };
+
+                var rs = db.SaveRec("IT_MDF", ct);
+            }
+        }
+        if (mdfCount > 0)
+            LoadData();
+
+    }
+    private void CheckUpd(CT r)
+    {
+        if (r.MF == '=' || r.MF == '~')
+        {
+            r.Ad = r.Ad.TrimEnd();
+            r.Adres = r.Adres.TrimEnd();
+            r.MF = '=';
+            if (r.oAd != r.Ad ||
+                r.oAdres != r.Adres)
+                r.MF = '~';
+        }
+    }
+    private void Original(CT r)
+    {
+        r.MF = r.oMF;
+        r.Ad = r.oAd;
+        r.Adres = r.oAdres;
+    }
+    private void Delete(CT r)
+    {
+        if (r.MF == '+')
+        {
+            ct.Remove(r);
+        }
+        else
+        {
+            r.Ad = r.oAd;
+            r.Adres = r.oAdres;
+            r.MF = '-';
+        }
+    }
+
+    private void Insert()
+    {
+        CT ctn = new();
+        ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
+        ctn.oMF = '+';
+
+        ct.Add(ctn);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        ct = db.LoadData<CT, dynamic>("select * from IT_SEL(@CCId)", new { CCId = CCId }).ToList();
+
+        foreach (var r in ct)
+        {
+            r.oAd = r.Ad;
+            r.oAdres = r.Adres;
+        }
+    }
+
+    private sealed class CT
+    {
+        public char MF = '=';
+        public int CTId { get; set; }
+        public string? Ad { get; set; }
+        public string? Adres { get; set; }
+
+        public char oMF = '=';
+        public string? oAd { get; set; }
+        public string? oAdres { get; set; }
+    }
+
+
+}

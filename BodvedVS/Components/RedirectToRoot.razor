@@ -1,0 +1,49 @@
+﻿@inject NavigationManager Navigation
+@implements IDisposable
+
+@* Istedigin Page'e koy, cikmayi kontrol etmek icin 
+    <NavigationLock ConfirmExternalNavigation="true"
+                OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+*@
+@code {
+    private IDisposable? registration;
+
+    protected override void OnInitialized()
+    {
+        var rP = Navigation.ToBaseRelativePath(Navigation.Uri);        // relative path (BaseUrinin /den sonrakileri)
+
+        // Browser AdresBar'dan giris yapildiginda mevcut varsa sonlandirilir ve yeni giris yapilir
+        // @page olan her componente disardan uri yazarak girisini engeller, Sadece Home page ile baslayabilir
+        // Adres bara manuel girilirse bu yeni sayilir, mevcuttan cikilip buna girilir
+        // Ilk giriste calisir
+        //if(Navigation.BaseUri != Navigation.Uri)
+        //    Navigation.NavigateTo("/", true);
+
+        if(rP.StartsWith("Inp"))  // Ornek: Buraya login olmadan giremez
+        {
+            Navigation.NavigateTo("/", true);   // Logini ana sayfadan yapabilir Login oldugunu <CascadingLogin> ile dagit
+        }
+        registration = Navigation.RegisterLocationChangingHandler(OnLocationChanging);
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        // NavigationLock kullaniyor
+        //context.PreventNavigation();
+    }
+
+    private ValueTask OnLocationChanging(LocationChangingContext context)
+    {
+        // Butun Page degisimlerinde buraya gelir, 
+        // Istedigini engelle
+        var rp = Navigation.ToBaseRelativePath(context.TargetLocation);
+        if (rp == "weather")
+        {
+            context.PreventNavigation();
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+    public void Dispose() => registration?.Dispose();
+}

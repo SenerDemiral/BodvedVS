@@ -1,0 +1,54 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/InpLig"
+
+
+<h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
+
+@if (ls != null)
+{
+
+    <table class="table-edit">
+        <tr>
+            <td colspan="2"></td>
+            <td colspan="2">
+                <a href="InpOyn">Oyuncular</a>
+            </td>
+        </tr>
+        @foreach (var r in ls)
+        {
+            <tr>
+                <td class="text-center">@r.CCId</td>
+                <td>>@r.Ad</td>
+                <td>
+                    <a href="InpTkm/@r.CCId/@r.Ad">Takımlar</a>
+                </td>
+                <td>
+                    <a href="InpFks/@r.CCId/@r.Ad">Fikstür</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<LS>? ls;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //dnm = 0 ise son donem
+        ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
+    }
+
+    private sealed class LS
+    {
+        public int CCId { get; set; }
+        public string Ad { get; set; }
+    }
+
+}

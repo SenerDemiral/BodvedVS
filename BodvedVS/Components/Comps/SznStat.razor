@@ -1,0 +1,113 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+
+<style>
+
+    #dnmStat > tbody > tr:last-child {
+        background-color: steelblue;
+        color: white;
+    }
+
+
+</style>
+
+<div></div>
+
+@if (ss != null)
+{
+    <table id="dnmStat" class="table-min">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th class="tooltip">
+                    D
+                    <span class="tooltip-text">Sezon</span>
+                </th>
+                <th class="tooltip">
+                    OY
+                    <span class="tooltip-text">Yeni Oyuncu</span>
+                </th>
+                <th class="tooltip">
+                    OT
+                    <span class="tooltip-text">Takıma katılmış Oyuncu</span>
+                </th>
+                <th class="tooltip">
+                    OM
+                    <span class="tooltip-text">Maç yapmış Oyuncu</span>
+                </th>
+                <th class="tooltip">
+                    L
+                    <span class="tooltip-text">Lig adedi</span>
+                </th>
+                <th class="tooltip">
+                    T
+                    <span class="tooltip-text">Takım adedi</span>
+                </th>
+                <th class="tooltip">
+                    G
+                    <span class="tooltip-text">Game (Takım Maçı)</span>
+                </th>
+                <th class="tooltip">
+                    M
+                    <span class="tooltip-text">Maç</span>
+                </th>
+                <th class="tooltip">
+                    S
+                    <span class="tooltip-text">Set</span>
+                </th>
+                <th class="tooltip">
+                    #
+                    <span class="tooltip-text">Sayı</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var r in ss)
+        {
+            <tr>
+                <td class="w-bint">@r.Dnm</td>
+                <td class="w-bint">@r.PP_Yeni.ToString("#,#")</td>
+                <td class="w-bint">@r.PP_CTP.ToString("#,#")</td>
+                <td class="w-bint">@r.PP_MAC.ToString("#,#")</td>
+                <td class="w-bint">@r.CC_.ToString("#,#")</td>
+                <td class="w-bint">@r.CT_.ToString("#,#")</td>
+                <td class="w-bint">@r.CET_.ToString("#,#")</td>
+                <td class="w-bint">@r.Mac_.ToString("#,#")</td>
+                <td class="w-bint">@r.Set_.ToString("#,#")</td>
+                <td class="w-bint">@r.Sayi_.ToString("#,#")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    private IEnumerable<SS>? ss;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ss = db.LoadData<SS, dynamic>("select * from UI_SZN_STAT", new { });
+    }
+
+    private sealed class SS
+    {
+        public int Dnm { get; set; }
+        public string Ad { get; set; }
+
+        public int PP_Yeni { get; set; }
+        public int PP_CTP { get; set; }
+        public int PP_MAC { get; set; }
+        public int CC_ { get; set; }
+        public int CT_ { get; set; }
+        public int CET_ { get; set; }
+        public int Mac_ { get; set; }
+        public int Set_ { get; set; }
+        public int Sayi_ { get; set; }
+
+    }
+
+
+}

@@ -1,0 +1,52 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/LigSzn/{dnm:int}/{Ad}"
+
+
+<h3 style="background-color:gold">@dnm&bull; Sezon Turnuvaları</h3>
+
+@if (ls != null)
+{
+
+    <table class="table-min">
+        @foreach (var r in ls)
+        {
+            <tr>
+                <td class="text-center">@r.CCId</td>
+                <td>
+                    <a href="TkmLig/@r.CCId/@r.Ad">@r.Ad</a>
+                </td>
+                <td>
+                    <a href="FksLig/@r.CCId/@r.Ad">Fikstür</a>
+                </td>
+                <td>
+                    <a href="InpTkm/@r.CCId/@r.Ad">Takimlar</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    [Parameter] public int dnm { get; set; }
+    [Parameter] public string? Ad { get; set; }
+
+    IEnumerable<LS>? ls;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(@Dnm)", new { Dnm = dnm });
+    }
+
+    private sealed class LS
+    {
+        public int CCId { get; set; }
+        public string Ad { get; set; }
+    }
+
+}

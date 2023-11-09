@@ -1,0 +1,66 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+
+<h3 style="background-color: teal;color:white">@Header</h3>
+
+@if (fh != null)
+{
+
+    <table class="table-min">
+        @foreach (var r in fh)
+        {
+            <tr>
+                @* <td><button @onclick="() => GameClicked(rec)">@rec.Trh.ToString("dd-ddd")</button></td> *@
+                <td>@r.Trh.ToString("dd-ddd")</td>
+                <td>@r.Stu</td>
+                <td class="@r.hClass">
+                    <a href="OynTkm/@r.HCTId">@r.HCTAd</a>
+                </td>
+                <td>
+                    <a href="GameFks/@r.CETId">@((MarkupString)r.Snc)</a>
+                </td>
+                <td class="@r.gClass">
+                    <a href="OynTkm/@r.GCTId">@r.GCTAd</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<FH>? fh;
+    [Parameter] public string Typ { get; set; } // Bu/Gelecek Hafta
+    [Parameter] public string Header { get; set; }
+
+    void GameClicked(FH rec)
+    {
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //fh = db.LoadData<FH, dynamic>("select * from UI_Fks_Hafta(@Typ)", new { Typ = Typ });
+        fh = db.LoadData<FH, dynamic>("select * from UI_FKS(@Typ)", new { Typ = Typ });
+    }
+
+    private sealed class FH
+    {
+        public int CETId { get; set; }
+        public int HCTId { get; set; }
+        public int GCTId { get; set; }
+        public DateTime Trh { get; set; }
+        public string Stu { get; set; }
+        public string Snc { get; set; }
+        public string HCTAd { get; set; }
+        public string GCTAd { get; set; }
+
+        public string hClass { get; set; }
+        public string gClass { get; set; }
+    }
+
+
+}

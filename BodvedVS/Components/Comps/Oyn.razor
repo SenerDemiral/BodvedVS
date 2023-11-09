@@ -1,0 +1,51 @@
+﻿@inject IDataAccess db
+
+<h3>Player</h3>
+<div class="grid" tabindex="-1">
+    <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid>
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.PPId)" Sortable="true" />
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Ad)" Sortable="true">
+            <ColumnOptions>
+                <div class="search-box">
+                    <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
+                </div>
+            </ColumnOptions>
+        </Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn>
+    </QuickGrid>
+</div>
+
+@code {
+    IQueryable<PP> PPs;
+    QuickGrid<PP> ppGrid;
+    private string nameFilter;
+
+    IQueryable<PP> FilteredPlayers
+    {
+        get
+        {
+            var result = PPs;
+
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                result = result.Where(c => c.Ad.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            return result;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
+        PPs = (await db.LoadDataAsync<PP, dynamic>($"select * from PP", new { })).AsQueryable();
+        //PPs = cc.AsQueryable();
+    }
+
+    private sealed class PP
+    {
+        public int PPId { get; set; }
+
+        public string? Ad { get; set; }
+    }
+
+}

@@ -1,0 +1,111 @@
+﻿@inject IDataAccess db
+@attribute [StreamRendering(true)]
+@page "/GameFks/{cetid:int}"
+
+<style>
+    .sonuc {
+        /*font-size:16px;*/
+        font-family: monospace;
+        white-space: pre !important;
+        text-align: center;
+    }
+
+    .sonuc-grid {
+        display: grid;
+        grid-template-columns: 44px;
+        grid-auto-columns: 42px;
+        grid-auto-flow: column;
+        align-items: center;
+        gap: 4px;
+        text-align: center;
+    }
+</style>
+
+
+@if (TBL != null)
+{
+    <div>@cet.CCAd @cet.Trh.ToString("dd.MM.yyyy")</div>
+
+    <table class="table-min">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th>Idx</th>
+                <th>Stu</th>
+                <th>Home</th>
+                <th></th>
+                <th>Sonuc</th>
+                <th></th>
+                <th>Guest</th>
+            </tr>
+        </thead>
+        @foreach (var r in TBL)
+        {
+            <tr>
+                <td class="w-bint text-center">@r.Idx</td>
+                <td class="w-bint text-center">@r.Stu</td>
+                @if (r.SoD == "T")
+                {
+                    <td colspan="2" class="@r.HClass">@((MarkupString)r.HInfo)</td>
+                    <td class="sonuc">@((MarkupString)r.Sonuc)</td>
+                    <td colspan="2" class="@r.GClass">@((MarkupString)r.GInfo)</td>
+                }
+                else
+                {
+                    <td style="white-space:pre">@((MarkupString)r.HInfo)</td>
+                    <td>@((MarkupString)r.HRnk)</td>
+                    <td class="sonuc">
+                        <div class="sonuc-grid">
+                            @((MarkupString)r.Sonuc)
+                        </div>
+                    </td>
+                    <td>@((MarkupString)r.GRnk)</td>
+                    <td style="white-space:pre">@((MarkupString)r.GInfo)</td>
+                }
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<GAME>? TBL;
+    CET cet;
+    [Parameter] public int CETId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        cet = await db.LoadRecAsync<CET, dynamic>("select Dnm, Stu, Trh, CCAd from CET where CETId = @CETId", new { CETId = CETId });
+        TBL = await db.LoadDataAsync<GAME, dynamic>($"select * from UI_GAME_FKS(@CETId)", new { CETId = CETId });
+    }
+
+    private sealed class CET
+    {
+        public int? Dnm { get; set; }
+        public string? Stu { get; set; }
+        public DateTime Trh { get; set; }
+        public string? CCAd { get; set; }
+    }
+
+    private sealed class GAME
+    {
+        public string? SoD { get; set; }
+        public int? Idx { get; set; }
+        public string? Stu { get; set; }
+        public int? HId { get; set; }
+        public int? GId { get; set; }
+
+        public string? HInfo { get; set; }
+        public string? HRnk { get; set; }
+        public string? Sonuc { get; set; }
+        public string? GInfo { get; set; }
+        public string? GRnk { get; set; }
+
+        public string HClass { get; set; }
+        public string GClass { get; set; }
+    }
+
+
+}

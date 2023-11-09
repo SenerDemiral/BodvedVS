@@ -1,0 +1,81 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@* @rendermode renderMode *@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+<input type="button" @onclick="DenemeClicked" value="Click me" />
+
+<div class="wrapper-sub">
+    <div class="wrapper-sub_header">Duyurular</div>
+    <main class="cards">
+        <article class="card">
+            <img src="/images/sener.jpg" alt=".....">
+            <div class="text">
+                <h3>Seamlessly visualize quality</h3>
+                <p>Collaboratively administrate empowered markets via plug-and-play networks.</p>
+            </div>
+        </article>
+    </main>
+</div>
+
+
+<div class="wrapper-sub">
+    <div class="wrapper-sub_header">Sezon Toplamları</div>
+    <main class="cards">
+        <article class="card">
+            <SznStat />
+        </article>
+    </main>
+</div>
+
+<div class="wrapper-sub">
+    <div class="wrapper-sub_header">Sezon Fikstürü</div>
+    <main class="cards">
+        <article class="card">
+            <FksHafta Typ="B" Header="Bu Hafta"/>
+        </article>
+        <article class="card">
+            <FksHafta Typ="G" Header="Gelecek Hafta" />
+        </article>
+    </main>
+</div>
+
+<div class="wrapper-sub">
+    <div class="wrapper-sub_header">Lig Puan durumu</div>
+    <main class="cards">
+        @foreach (var rec in CCs)
+        {
+            <article class="card">
+                <TkmLig CCId="@rec.CCId" CCAd="@rec.Ad" />
+            </article>
+        }
+    </main>
+</div>
+
+@code {
+    IEnumerable<CC>? CCs;
+
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(false);
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Son Donem/DD Ligleri/CC
+        CCs = db.LoadData<CC, dynamic>("select * from UI_Lig_SonSzn", new { });
+
+        sc.AuthLigList.Add(11);
+        sc.AuthLigList.Add(12);
+    }
+
+    void DenemeClicked()
+    {
+        
+    }
+    private sealed class CC
+    {
+        public int CCId { get; set; }
+        public string Ad { get; set; }
+
+    }
+
+}

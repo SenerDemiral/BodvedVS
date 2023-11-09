@@ -1,0 +1,46 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/Szn"
+
+
+<h3 style="background-color:gold">Sezonlar</h3>
+
+@if (ls != null)
+{
+
+    <table class="table-min">
+        @foreach (var r in ls)
+        {
+            <tr>
+                <td class="text-center">@r.Dnm</td>
+                <td>@r.Ad</td>
+                <td>
+                    <a href="LigSzn/@r.Dnm/@r.Ad">Turnuvalar</a>
+                </td>
+                <td>
+                    <a href="OynSzn/@r.Dnm">Oyuncular</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<LS>? ls;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });
+    }
+
+    private sealed class LS
+    {
+        public int Dnm { get; set; }
+        public string Ad { get; set; }
+    }
+
+}

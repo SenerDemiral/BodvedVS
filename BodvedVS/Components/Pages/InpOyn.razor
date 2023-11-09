@@ -1,0 +1,230 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@rendermode renderMode
+
+@page "/InpOyn"
+<style>
+    .w-ad{
+        width: 120px;
+    }
+</style>
+
+<h1>@Header Takım Oyuncuları</h1>
+@if (pp != null)
+{
+    <QuickGrid Items="@FilteredPlayers" @ref="ppGrid" Virtualize="true" Class="table-fixed">
+        <PropertyColumn Property="@(p => p.Ad)" Class="w-ad">
+            <ColumnOptions>
+                <div class="search-box">
+                    <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
+                </div>
+            </ColumnOptions>
+        </PropertyColumn>
+        <PropertyColumn Property="@(p => p.Sex)" />
+        <PropertyColumn Property="@(p => p.DgmYil)" Sortable="true"/>
+        <PropertyColumn Property="@(p => p.Tel)" />
+        <PropertyColumn Property="@(p => p.Mail)" />
+        <PropertyColumn Property="@(p => p.GirDnm)" />
+    </QuickGrid>
+    @*
+    <div style="display:flex;justify-content:space-between;">
+        <button @onclick="Insert">➕Ekle</button>
+        <div>
+            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button @onclick="Save">✅Kaydet</button>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th></th>
+                <th>MF</th>
+                <th>Sil</th>
+                <th>Ad</th>
+                <th>Sex</th>
+                <th>DgmYil</th>
+                <th>Tel</th>
+                <th>Mail</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in pp)
+            {
+                <tr>
+                    <td>
+                        <button @onclick="() => Original(r)">🔄</button>
+                    </td>
+                    <td class="text-center">@r.MF</td>
+                    <td>
+                        <button @onclick="() => Delete(r)">❌</button>
+                    </td>
+                    <td>
+                        <input @bind="r.Ad"
+                               @bind:after='() => Check(r)' />
+                    </td>
+                    <td>
+                        <input @bind="r.Sex"
+                               @bind:after='() => Check(r)' />
+                    </td>
+                    <td>
+                        <input type="number" list="YY"  @bind="r.DgmYil"
+                               @bind:after='() => Check(r)' />
+                    </td>
+                    <td>
+                        <input type="tel" @bind="r.Tel"
+                               @bind:after='() => Check(r)' />
+                    </td>
+                    <td>
+                        <input type="email" @bind="r.Mail"
+                               @bind:after='() => Check(r)' />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+ *@}
+else
+{
+    <div>...</div>
+}
+
+<datalist id="YY">
+    @for (int i = 1940; i < 2020; i++)
+    {
+        <option value="@i" />
+    }
+</datalist>
+
+
+@code {
+    [Parameter] public int CTId { get; set; }
+    [Parameter] public string Header { get; set; }
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+    private string nameFilter;
+    IQueryable<PP> ppQ;
+    List<PP> pp;
+    QuickGrid<PP> ppGrid;
+
+    IQueryable<PP> FilteredPlayers
+    {
+        get
+        {
+            var result = ppQ;
+
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                result = result.Where(c => c.Ad.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            return result;
+        }
+    }
+
+    private void Check(PP r)
+    {
+        if (r.DgmYil > 2010 || (r.DgmYil > 0 && r.DgmYil < 1900))
+        {
+            r.DgmYil = r.oDgmYil;
+        }
+    }
+
+    private void Cancel()
+    {
+        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+    }
+    private void Save()
+    {
+        int mdfCount = 0;
+        foreach (var r in pp)
+        {
+            if (r.MF != '=' && r.PPId != 0)
+            {
+                mdfCount++;
+                var ct = new
+                {
+                    MF = r.MF,
+                    CTId = CTId,
+                    PPId = r.PPId,
+                    Ad = r.Ad,
+                    DgmYil = r.DgmYil,
+                    Tel = r.Tel,
+                    Mail = r.Mail
+                };
+
+                var rs = db.SaveRec("ITO_MDF", ct);
+            }
+        }
+        if (mdfCount > 0)
+            LoadData();
+
+    }
+
+    private void Original(PP r)
+    {
+    }
+    private void Delete(PP r)
+    {
+        if (r.MF == '+')
+        {
+            pp.Remove(r);
+        }
+        else
+        {
+            r.MF = '-';
+        }
+    }
+
+    private void Insert()
+    {
+        PP npp = new();
+        npp.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
+        npp.oMF = '+';
+
+        pp.Add(npp);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+
+    private void LoadData()
+    {
+        pp = db.LoadData<PP, dynamic>("select * from IO_SEL", new { }).ToList();
+        ppQ = pp.AsQueryable();
+
+        foreach (var r in pp)
+        {
+            r.oAd = r.Ad;
+            r.oSex = r.Sex;
+            r.oDgmYil = r.DgmYil;
+            r.oTel = r.Tel;
+            r.oMail = r.Mail;
+        }
+    }
+
+    private sealed class PP
+    {
+        public char MF = '=';
+        public int PPId { get; set; }
+        public string Ad { get; set; }
+        public string Sex { get; set; }
+        public int DgmYil { get; set; }
+        public string Tel { get; set; }
+        public string Mail { get; set; }
+        public string GirDnm { get; set; }
+
+        public char oMF = '=';
+        public int oPPId { get; set; }
+        public string oAd { get; set; }
+        public string oSex { get; set; }
+        public int oDgmYil { get; set; }
+        public string oTel { get; set; }
+        public string oMail { get; set; }
+        public string oGirDnm { get; set; }
+    }
+
+
+}

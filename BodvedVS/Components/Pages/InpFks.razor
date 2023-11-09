@@ -1,0 +1,286 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@rendermode renderMode
+
+@page "/InpFks/{ccid:int}/{header}"
+
+<h1>@Header </h1>
+@if (cet != null)
+{
+    <div style="display:flex;justify-content:space-between;">
+        <button @onclick="Insert">➕Ekle</button>
+        <div>
+            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button @onclick="Save">✅Kaydet</button>
+        </div>
+    </div>
+    <table class="table-edit">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Tarih</th>
+                <th style="width:50px">Stu</th>
+                <th>Home</th>
+                <th>Snc</th>
+                <th>Guest</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in cet)
+            {
+                <tr>
+                    <td>
+                        <button disabled="@r.RO"
+                                @onclick="() => Original(r)">
+                            🔄
+                        </button>
+                    </td>
+                    <td class="text-center">@r.MF</td>
+                    <td>
+                        <button disabled=@r.RO
+                                @onclick="() => Delete(r)">
+                            ❌
+                        </button>
+                    </td>
+                    <td>
+                        <input type="date" readonly="@r.RO"
+                               @bind="r!.Trh"
+                               @bind:after='(() => CheckUpd(r, "T"))' />
+                    </td>
+                    <td>
+                        <input type="text" readonly="@r.RO"
+                               maxlength="30"
+                               size="5"
+                               list="STU"
+                               @bind="r.Stu"
+                               @bind:after='(() => CheckUpd(r, "S"))'>
+                    </td>
+                    <td>
+                        <input type="text" readonly="@r.RO"
+                               maxlength="30"
+                               size="30"
+                               list="CTL"
+                               @bind="r.HCTAd"
+                               @bind:after='(() => CheckUpd(r, "H"))'>
+                    </td>
+                    <td>@((MarkupString)r.Snc)</td>
+                    <td>
+                        <input type="text" readonly="@r.RO"
+                               size="30"
+                               maxlength="80"
+                               list="CTL"
+                               @bind="r.GCTAd"
+                               @bind:after='(() => CheckUpd(r, "G"))'>
+                    </td>
+                    <td>
+                        <a href="InpGame/@r.CETId">Game</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+<datalist id="CTL">
+    @foreach (var r in ct)
+    {
+        <option value="@r.Key" />
+    }
+</datalist>
+<datalist id="STU">
+    @foreach (var r in stu)
+    {
+        <option value="@r.Key" />
+    }
+</datalist>
+
+
+@code {
+    [Parameter] public int CCId { get; set; }
+    [Parameter] public string Header { get; set; }
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+
+    private Dictionary<string, CT>? ct;
+    private Dictionary<string, string>? stu = new()
+    {
+        {"", "Acik" },
+        {"OK", "OK"},
+        {"hX", "Home gelmedi"},
+        {"gX", "Guest gelmedi"},
+        {"XX", "Takimlar gelmedi"},
+    };
+
+
+    private List<CET>? cet;
+
+    private void Cancel()
+    {
+        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+    }
+    private void Save()
+    {
+        int mdfCount = 0;
+        foreach (var r in cet)
+        {
+            if (r.MF != '=')
+            {
+                mdfCount++;
+                var ct = new
+                {
+                    MF = r.MF,
+                    CCId = CCId,
+                    CETId = r.CETId,
+                    Trh = r.Trh,
+                    Stu = r.Stu,
+                    HCTId = r.HCTId,
+                    GCTId = r.GCTId,
+                };
+
+                //var rs = db.SaveRec("IF_MDF", ct);
+            }
+        }
+        if (mdfCount > 0)
+            LoadData();
+
+    }
+    private void CheckUpd(CET r, string fld)
+    {
+        if (fld == "S")
+        {
+            if (!stu!.TryGetValue(r.Stu, out var ss))
+                r.Stu = r.oStu;
+        }
+        if (fld == "H")
+        {
+            if (ct.TryGetValue(r.HCTAd, out var xx))
+            {
+                r.HCTId = xx.CTId;
+            }
+            else
+            {
+                r.HCTId = r.oHCTId;
+                r.HCTAd = r.oHCTAd;
+            }
+        }
+
+        if (fld == "G")
+        {
+            if (ct.TryGetValue(r.GCTAd, out var yy))
+            {
+                r.GCTId = yy.CTId;
+            }
+            else
+            {
+                r.GCTId = r.oGCTId;
+                r.GCTAd = r.oGCTAd;
+            }
+        }
+
+        if (r.MF == '=' || r.MF == '~')
+        {
+            r.MF = '=';
+            if (r.Trh != r.oTrh ||
+                r.Stu != r.oStu ||
+                r.HCTId != r.oHCTId ||
+                r.GCTId != r.oGCTId)
+            {
+                r.MF = '~';
+            }
+        }
+    }
+    private void Original(CET r)
+    {
+        r.MF = r.oMF;
+        r.Trh = r.oTrh;
+        r.Stu = r.oStu;
+        r.HCTId = r.oHCTId;
+        r.GCTId = r.oGCTId;
+        r.HCTAd = r.oHCTAd;
+        r.GCTAd = r.oGCTAd;
+    }
+    private void Delete(CET r)
+    {
+        if (r.MF == '+')
+        {
+            cet.Remove(r);
+        }
+        else
+        {
+            r.MF = '-';
+        }
+    }
+
+    private void Insert()
+    {
+        CET ctn = new();
+        ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
+        ctn.oMF = '+';
+        ctn.Trh = DateTime.Today;
+
+        cet.Add(ctn);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        cet = db.LoadData<CET, dynamic>("select * from IF_SEL(@CCId)", new { CCId = CCId }).ToList();
+        ct = db.LoadData<CT, dynamic>("select * from LU_TKM_LIG(@CCID) order by Ad", new { CCId = CCId }).ToDictionary((k) => k.Ad);
+
+        foreach (var r in cet)
+        {
+            r.oTrh = r.Trh;
+            r.oStu = r.Stu;
+            r.oHCTId = r.HCTId;
+            r.oHCTId = r.GCTId;
+            r.oHCTAd = r.HCTAd;
+            r.oGCTAd = r.GCTAd;
+
+            if (String.IsNullOrWhiteSpace(r.Stu))
+            {
+                r.RO = false;
+            }
+        }
+    }
+
+    private sealed class CET
+    {
+        public bool RO = true;
+
+        public char MF = '=';
+        public int CETId { get; set; }
+        public int HCTId { get; set; }
+        public int GCTId { get; set; }
+        public DateTime Trh { get; set; }
+        public string Stu { get; set; }
+        public string Snc { get; set; }
+        public string HCTAd { get; set; }
+        public string GCTAd { get; set; }
+        public string POF { get; set; }
+
+        public char oMF = '=';
+        public DateTime oTrh { get; set; }
+        public string oStu { get; set; }
+        public int oHCTId { get; set; }
+        public int oGCTId { get; set; }
+        public string oHCTAd { get; set; }
+        public string oGCTAd { get; set; }
+    }
+
+    private sealed class CT
+    {
+        public int CTId { get; set; }
+        public string Ad { get; set; }
+    }
+
+}

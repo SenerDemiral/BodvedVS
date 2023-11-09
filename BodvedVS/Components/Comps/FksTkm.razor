@@ -1,0 +1,64 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/FksTkm/{CTId:int}/{Header}"
+
+<h3 style="background-color: teal;color:white">@Header Fikstürü</h3>
+
+@if (ft != null)
+{
+
+    <table class="table-min">
+        @foreach (var r in ft)
+        {
+            <tr>
+                <td>@r.Trh.ToString("dd.MM.yy")</td>
+                <td>@r.Stu</td>
+                <td class="@r.hClass">
+                    <a href="OynTkm/@r.HCTId">@r.HCTAd</a>
+                </td>
+                <td>
+                    <a href="GameFks/@r.CETId">@((MarkupString)r.Snc)</a>
+                </td>
+                <td class="@r.gClass">
+                    <a href="OynTkm/@r.GCTId">@r.GCTAd</a>
+                </td>
+                <td>@r.POF</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<FT>? ft;
+    [Parameter] public int CTId { get; set; } 
+    [Parameter] public string Header { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //ft = db.LoadData<FT, dynamic>("select * from UI_Fks_Tkm(@CTId)", new { CTId = CTId });
+        ft = db.LoadData<FT, dynamic>("select * from UI_FKS('T',@CTId)", new { CTId = CTId });
+    }
+
+    private sealed class FT
+    {
+        public int CETId { get; set; }
+        public int HCTId { get; set; }
+        public int GCTId { get; set; }
+        public DateTime Trh { get; set; }
+        public string Stu { get; set; }
+        public string Snc { get; set; }
+        public string HCTAd { get; set; }
+        public string GCTAd { get; set; }
+        public string POF { get; set; }
+
+        public string hClass { get; set; }
+        public string gClass { get; set; }
+    }
+
+
+}

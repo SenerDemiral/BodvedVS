@@ -1,0 +1,61 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/TkmLig/{CCId:int}/{CCAd}"
+
+
+<h3 style="background-color:gold">@CCAd Takımları</h3>
+
+@if (tl != null)
+{
+
+    <table class="table-min">
+        @foreach (var r in tl)
+        {
+            <tr>
+                <td>
+                    <a href="OynTkm/@r.CTId">@r.Ad</a>
+                </td>
+                <td class="w-int text-center">@r.Idx</td>
+                <td class="w-int text-center">@r.P</td>
+                <td class="w-int text-center">@r.EW/@r.EL</td>
+                <td class="w-int text-center">@r.K</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    [Parameter] public int CCId { get; set; }
+    [Parameter] public string? CCAd { get; set; }
+
+    IEnumerable<TL>? tl;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        tl = db.LoadData<TL, dynamic>("select CTId,Ad,Idx,P,EW,EL,K from UI_TKM_LIG(@CCId)", new { CCId = CCId });
+    }
+
+    private sealed class TL
+    {
+        public int CTId { get; set; }
+        public string Ad { get; set; }
+        public int Idx { get; set; }
+        public int P { get; set; }
+        public int EW { get; set; }
+        public int EL { get; set; }
+        public int K { get; set; }
+    
+        // public int KW { get; set; }
+        // public int KL { get; set; }
+        // public int SMW { get; set; }
+        // public int SML { get; set; }
+        // public int DMW { get; set; }
+        // public int DML { get; set; }
+    }
+    
+}

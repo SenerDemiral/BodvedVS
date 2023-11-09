@@ -1,0 +1,143 @@
+﻿@inject IDataAccess db
+@rendermode renderMode
+@page "/OynSzn/{dnm:int}"
+
+
+<div class="table-container">
+    <div class="tc--header">@Dnm . Sezon Oyuncuları</div>
+
+    <div class="tc--content" tabindex="-1">
+        <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid >
+            <TemplateColumn Title="→">
+                <a href="MacOyn/@context.PPId">→</a>
+            </TemplateColumn>
+
+            <PropertyColumn Property="@(p => p.PPAd)" Title="Oyuncu" Sortable="true">
+                <ColumnOptions>
+                    <div class="search-box">
+                        <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Adı..." />
+                    </div>
+                </ColumnOptions>
+            </PropertyColumn>
+            @* <TemplateColumn Title="Δ">
+                <span style="padding-right:4px">@((MarkupString)context.Belge)</span>
+            </TemplateColumn> *@
+            <PropertyColumn Property="@(p => p.Idx)" IsDefaultSortColumn="true" Sortable="true" Align="Align.Center"  />
+            <PropertyColumn Property="@(p => p.R)" Sortable="true" Class="w-int" />
+            <TemplateColumn Title="Δ" SortBy="@pxdSort">
+                <span class="@context.PXDclass">@(Math.Abs(context.PXD))</span>
+            </TemplateColumn>
+            <PropertyColumn Property="@(p => p.R0)" Sortable="true" Class="w-int" />
+            <TemplateColumn Title="δ" SortBy="@pxSort">
+                <span class="@context.PXclass">@(Math.Abs(context.PX))</span>
+            </TemplateColumn>
+            <PropertyColumn Property="@(p => p.MW)" Sortable="true" Class="w-int" Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.ML)" Sortable="true" Class="w-int" Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.CTAds)" Title="Oynadığı Takım(lar)" />
+            <PropertyColumn Property="@(p => p.PPId)" Sortable="true" Class="w-int" />
+
+
+        </QuickGrid>
+    </div>
+</div>
+
+
+@code {
+    [Parameter] public int Dnm { get; set; }
+    IQueryable<PDR> PDRs;
+    QuickGrid<PDR> ppGrid;
+    private string nameFilter = String.Empty;
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender:false); //InteractiveServerRenderMode(prerender: false);
+
+    // https://aspnet.github.io/quickgridsamples/sample > Typical usage
+    // <TemplateColumn Title="Rank" SortBy="@rankSort" Align="Align.Center" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true">
+    //     <img class="flag" src="flags/@(context.Code).svg" />
+    // </TemplateColumn>
+    //
+    // GridSort<Country> rankSort = GridSort<Country>
+    //    .ByDescending(x => x.Medals.Gold)
+    //    .ThenDescending(x => x.Medals.Silver)
+    //    .ThenDescending(x => x.Medals.Bronze);
+
+    //IQueryable<Country>? FilteredItems => items?.Where(x => x.Name.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
+
+    GridSort<PDR> pxdSort = GridSort<PDR>
+        .ByDescending(x => x.PXD);
+    GridSort<PDR> pxSort = GridSort<PDR>
+        .ByDescending(x => x.PX);
+
+    IQueryable<PDR> FilteredPlayers
+    {
+        get
+        {
+            var result = PDRs;
+
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                result = result.Where(c => c.PPAd.Contains(nameFilter, StringComparison.InvariantCultureIgnoreCase));
+                result = result.Where(c => c.Idx != 9999);
+            }
+
+            return result;
+        }
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        //PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from PDR where Dnm = @iDnm", new { iDnm = Dnm })).AsQueryable();
+        PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from UI_OYN_SZN(@iDnm)", new { iDnm = Dnm })).AsQueryable();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //if (PDRs == null)
+        //PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from PDR_SEL(@iDnm)", new { iDnm = Dnm })).AsQueryable();
+
+        //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
+        //PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from PDR where Dnm = @iDnm", new { iDnm = Dnm })).AsQueryable();
+        //PPs = cc.AsQueryable();
+
+    }
+
+    private sealed class PDR
+    {
+        public int PPId { get; set; }
+        public int Idx { get; set; }
+        public int R0 { get; set; }
+        public int PXD { get; set; }
+        public int R { get; set; }
+        public int PX { get; set; }
+        public int MW { get; set; }
+        public int ML { get; set; }
+
+        public string? PPAd { get; set; }
+        public string? CTAds { get; set; }
+
+        public string? PXDclass { get; set; }
+        public string? PXclass { get; set; }
+/*
+        public int B1 { get; set; }
+        public int B2 { get; set; }
+        public int B3 { get; set; }
+        public int B4 { get; set; }
+        public int B5 { get; set; }
+        public int B6 { get; set; }
+        public int B7 { get; set; }
+        public int B8 { get; set; }
+
+        public string? B1s => B1 == 0 ? "" : $"⚜{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";     // ⚜kulüp üyeliği
+        public string? B2s => B2 == 0 ? "" : $"🎗{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";     // 🎗lisanslı oyuncu
+        public string? B3s => B3 == 0 ? "" : $"⚔{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";     // ⚔bodved lig katılım sayısı
+        public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";     // 🏆takım lig birinciliği
+        public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";     // 👑ferdi turnuva birinciliği
+        public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";     // 🏓antrenör belgesi
+        public string? B7s => B7 == 0 ? "" : $"⚖{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";     // ⚖hakem belgesi
+        public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";     // 🧢takım kaptan
+
+        public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s).TrimEnd('│');
+*/
+
+
+    }
+
+
+}

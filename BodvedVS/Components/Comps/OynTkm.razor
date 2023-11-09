@@ -1,0 +1,83 @@
+﻿@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/OynTkm/{ctid:int}"
+
+
+@if (ot != null)
+{
+    <div class="table-container">
+        <div class="tc--header">@((MarkupString)ti.Info)</div>
+        <div class="tc--content" tabindex="-1">
+
+            <table class="table-min">
+                <thead>
+                    <tr style="background-color:skyblue !important">
+                        <th>#</th>
+                        <th>Rnk</th>
+                        <th>Oyuncu</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in ot)
+                    {
+                        <tr>
+                            <td>@r.Sra</td>
+                            <td>@r.R</td>
+                            <td>
+                                <a href="MacOyn/@r.PPId">@r.PPAd</a>
+                            </td>
+                            <td>@((MarkupString)r.Stat)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>...</div>
+}
+
+<a href="InpTkmOyn/@ctid/deneme">TakimEdit</a>
+
+@code {
+    IEnumerable<OT>? ot;
+    TI ti;
+    [Parameter] public int ctid { get; set; }
+    [Parameter] public string Header { get; set; }
+
+    void GameClicked(OT rec)
+    {
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ti = await db.LoadRecAsync<TI, dynamic>("select * from UI_TKM_INF(@CTId)", new { CTId = ctid });
+
+        ot = db.LoadData<OT, dynamic>("select * from UI_Oyn_Tkm(@CTId) order by R desc", new { CTId = ctid });
+        int i = 1;
+        foreach (var r in ot)
+        {
+            r.Sra = i++;
+        }
+    }
+
+    private sealed class TI
+    {
+        public string? Info { get; set; }
+    }
+
+    private sealed class OT
+    {
+        public int Sra { get; set; }
+        public int PPId { get; set; }
+        public string PPAd { get; set; }
+        public int R { get; set; }
+        public string Stat { get; set; }
+    }
+
+
+}

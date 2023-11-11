@@ -23,19 +23,19 @@ else
 
         <div class="tc--content" tabindex="-1">
             <QuickGrid Items="@DDs" @ref="ddGrid" Class="table-fixed">
-                <PropertyColumn Property="@(p => p.Dnm)"
-                                InitialSortDirection="SortDirection.Descending"
+                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Dnm)"
+                                                                          InitialSortDirection="Microsoft.AspNetCore.Components.QuickGrid.SortDirection.Descending"
                                 IsDefaultSortColumn="true"
                                 Class="text-xl border" />
-                <PropertyColumn Property="@(p => p.Ad)" Class="border" />
-                <TemplateColumn Title="Actions" Class="border" >
+                <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Ad)" Class="border" />
+                <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="Actions" Class="border">
                     @* <button @onclick="@(() => Rank(context, "D"))">Oyuncular</button> *@
                     @* <button @onclick="@(() => Rank(context, "C"))">Ligler</button> *@
 
                     <a href="SznOynRnk/@context.Dnm" class="underline text-blue-600">Oyuncular</a>
                     @* <NavLink href=@GetLink(context) class="underline text-red-600">bbbbb</NavLink> *@
                     @* <NavLink href=@($"dd/{context.Dnm}") class="underline text-green-600">ccccc 💩</NavLink> *@
-                </TemplateColumn>
+                </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
             </QuickGrid>
         </div>
 

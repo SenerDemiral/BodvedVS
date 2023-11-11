@@ -47,7 +47,7 @@
 @if (ls != null)
 {
     <div style="display:flex;justify-content:space-between;">
-        <button @onclick="Save">✅Kaydet</button>
+        <button disabled="@RO"  @onclick="Save">✅Kaydet</button>
         <div style="color:red">@msj</div>
     </div>
 

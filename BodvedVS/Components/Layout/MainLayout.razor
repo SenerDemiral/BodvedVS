@@ -1,6 +1,7 @@
-﻿@inject NavigationManager Navigation
-@implements IDisposable
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudSnackbarProvider />
 
 <div class="sener">
     <div class="wrapper">
@@ -8,6 +9,7 @@
             <div class="navbar">
                 <div>MasatenisiOnline</div>
                 <div class="nav-links">
+                    <div>@CST.Msg</div>
                     <NavMenu />
                 </div>
             </div>
@@ -42,30 +44,6 @@
 
 @code {
     private IDisposable? registration;
+    [CascadingParameter] CascadingScopeState CST { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
-    
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            registration =
-                Navigation.RegisterLocationChangingHandler(OnLocationChanging);
-        }
-    }
-
-    private ValueTask OnLocationChanging(LocationChangingContext context)
-    {
-        if (context.TargetLocation == "/counter")
-        {
-            context.PreventNavigation();
-        }
-
-        return ValueTask.CompletedTask;
-    }
-
-    public void Dispose() => registration?.Dispose();
 }

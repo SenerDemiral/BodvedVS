@@ -1,11 +1,12 @@
-﻿@inject IDataAccess db
+﻿@inject ISnackbar Snackbar
+@inject IDataAccess db
 @inject IScopedContainer sc
 @* @rendermode renderMode *@
 @page "/"
 
 <PageTitle>Home</PageTitle>
 <input type="button" @onclick="DenemeClicked" value="Click me" />
-
+ 
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Duyurular</div>
     <main class="cards">
@@ -52,7 +53,7 @@
         }
     </main>
 </div>
-
+ 
 @code {
     IEnumerable<CC>? CCs;
 
@@ -69,7 +70,8 @@
 
     void DenemeClicked()
     {
-        
+
+        Snackbar.Add("deneme dfafafasd", Severity.Error);
     }
     private sealed class CC
     {

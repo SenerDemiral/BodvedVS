@@ -97,14 +97,6 @@ else
                 }
 
             </table>
-            @* </div> *@
-            @* </div> *@
-
-
-            @* <div class="table-container"> *@
-            @* <div class="tc--header">☺ @pp.Ad</div> *@
-
-            @* <div class="tc--content" tabindex="-1"> *@
 
             <table class="table-min">
                 <thead>
@@ -155,11 +147,15 @@ else
 
     [Parameter] public int ppid { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         pp = await db.LoadRecAsync<PP, dynamic>("select Ad from PP where PPId = @PPId", new { PPId = ppid });
         so = await db.LoadDataAsync<SO, dynamic>("select * from UI_STAT_OYN(@PPId)", new { PPId = ppid });
         mo = await db.LoadDataAsync<MO, dynamic>("select * from UI_MAC_OYN(@PPId)", new { PPId = ppid });
+        await base.OnParametersSetAsync();
+    }
+    protected override async Task OnInitializedAsync()
+    {
     }
 
     private sealed class PP

@@ -1,11 +1,10 @@
 using BodvedVS.Components;
 using BodvedVS.DataLibrary;
-using Microsoft.AspNetCore.SignalR;
 using MudBlazor;
 using MudBlazor.Services;
-using Blazored.Modal;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,
@@ -33,8 +32,7 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
 
 builder.Services.AddMudServices(config =>
 {
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
     config.SnackbarConfiguration.PreventDuplicates = false;
     config.SnackbarConfiguration.NewestOnTop = true;
     config.SnackbarConfiguration.ShowCloseIcon = true;
@@ -42,12 +40,16 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 500;
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+   
 
 });
 
-builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
-builder.Services.AddBlazoredModal();
 builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
+builder.Services.AddSingleton<ISingletonContainer, SingletonContainer>();
+builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
+
+builder.Services.AddMudBlazorSnackbar();
+
 
 var app = builder.Build();
 

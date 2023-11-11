@@ -1,43 +1,58 @@
-﻿@inject NavigationManager Navigation
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage PLS
+@inject NavigationManager Navigation
+@inject IScopedContainer SC
 @implements IDisposable
 
-@* Istedigin Page'e koy, cikmayi kontrol etmek icin 
-    <NavigationLock ConfirmExternalNavigation="true"
-                OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
-*@
+
 @code {
     private IDisposable? registration;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            LoginModel lm = new();
+            var toto = await PLS.GetAsync<LoginModel>("pwd", "bodved");
+            if (toto.Success)
+            {
+                lm = toto.Value;
+            }
+            SC.CheckLogin(lm.UsrId, lm.UsrPwd);
+        }
+
+        base.OnAfterRenderAsync(firstRender);
+    }
 
     protected override void OnInitialized()
     {
         var rP = Navigation.ToBaseRelativePath(Navigation.Uri);        // relative path (BaseUrinin /den sonrakileri)
 
-        // Browser AdresBar'dan giris yapildiginda mevcut varsa sonlandirilir ve yeni giris yapilir
-        // @page olan her componente disardan uri yazarak girisini engeller, Sadece Home page ile baslayabilir
-        // Adres bara manuel girilirse bu yeni sayilir, mevcuttan cikilip buna girilir
-        // Ilk giriste calisir
-        //if(Navigation.BaseUri != Navigation.Uri)
-        //    Navigation.NavigateTo("/", true);
+        // Server Side Render olursa her bi page de buraya giriyor
+        // Bu yuzden InteractiveServerRenderMode olmali
 
-        if(rP.StartsWith("Inp"))  // Ornek: Buraya login olmadan giremez
+        //Disardan geldiginde ilk burayi goruyor, Login gerekli page lere gitmesin
+        if(rP.StartsWith("Inp"))
         {
             Navigation.NavigateTo("/", true);   // Logini ana sayfadan yapabilir Login oldugunu <CascadingLogin> ile dagit
         }
         registration = Navigation.RegisterLocationChangingHandler(OnLocationChanging);
     }
 
-    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
-    {
-        // NavigationLock kullaniyor
-        //context.PreventNavigation();
-    }
-
     private ValueTask OnLocationChanging(LocationChangingContext context)
     {
         // Butun Page degisimlerinde buraya gelir, 
         // Istedigini engelle
-        var rp = Navigation.ToBaseRelativePath(context.TargetLocation);
-        if (rp == "weather")
+        var aaa = Navigation;
+
+        string target = context.TargetLocation;
+        if (context.IsNavigationIntercepted)
+        {
+            target = Navigation.ToBaseRelativePath(context.TargetLocation);
+
+        }
+
+        if (target.StartsWith("Inp") && !SC.IsOk)   // Inp* sayfalarina Login degilse giremez
         {
             context.PreventNavigation();
         }
@@ -46,4 +61,17 @@
     }
 
     public void Dispose() => registration?.Dispose();
+
+    // Istedigin Page'e koy, cikmayi kontrol etmek icin
+    // <NavigationLock ConfirmExternalNavigation="true"
+    //             OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+    // private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    // {
+    //     // NavigationLock kullaniyor
+    //     // Eger Login gerekiyorsa engelle
+    //     //context.PreventNavigation();
+    // }
+
+
 }

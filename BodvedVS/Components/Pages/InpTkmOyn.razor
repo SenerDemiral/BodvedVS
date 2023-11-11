@@ -8,10 +8,10 @@
 @if (to != null)
 {
     <div style="display:flex;justify-content:space-between;">
-        <button @onclick="Insert">➕Ekle</button>
+        <button readonly="@RO" @onclick="Insert">➕Ekle</button>
         <div>
-            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
-            <button @onclick="Save">✅Kaydet</button>
+            <button readonly="@RO" @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button readonly="@RO" @onclick="Save">✅Kaydet</button>
         </div>
     </div>
     <table class="table-edit">
@@ -28,16 +28,17 @@
             {
                 <tr>
                     <td>
-                        <button @onclick="() => Original(r)">🔄</button>
+                        <button readonly="@RO" @onclick="() => Original(r)">🔄</button>
                     </td>
                     <td class="text-center">@r.MF</td>
                     <td>
-                        <button @onclick="() => Delete(r)">❌</button>
+                        <button readonly="@RO" @onclick="() => Delete(r)">❌</button>
                     </td>
-                    @if(r.MF == '+')
+                    @if (r.MF == '+')
                     {
                         <td>
-                            <input list="PP"
+                            <input readonly="@RO"
+                                   list="PP"
                                    @bind="r.PPAd"
                                    @bind:after='() => CheckPP(r)' />
                         </td>
@@ -74,6 +75,7 @@ else
     private List<PP>? zz;
     private HashSet<PP>? hh;
     private Dictionary<string, PP>? pp;
+    private bool RO = true;
 
     private void Cancel()
     {

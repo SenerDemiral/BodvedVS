@@ -1,0 +1,40 @@
+﻿@inject ISnackbar Snackbar
+@inject ISingletonContainer SngC
+@implements IDisposable
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string msg;
+    public string Msg
+    {
+        get => msg;
+        set { 
+            msg = value;
+            Snackbar.Add(msg, Severity.Error);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        SngC.OnChange += MyStateChanged;
+
+        base.OnInitialized();
+    }
+
+    public void MyStateChanged()
+    {
+        Msg = SngC.Name;
+        //StateHasChanged();    Hata geliyor    
+    }
+
+    public void Dispose()
+    {
+        SngC.OnChange -= MyStateChanged;
+    }
+}

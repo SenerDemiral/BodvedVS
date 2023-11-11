@@ -8,10 +8,19 @@
 @if (ct != null)
 {
     <div style="display:flex;justify-content:space-between;">
-        <button @onclick="Insert">➕Ekle</button>
+        <button disabled="@RO"
+                @onclick="Insert">
+            ➕Ekle
+        </button>
         <div>
-            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
-            <button @onclick="Save">✅Kaydet</button>
+            <button disabled="@RO"
+                    @onclick="Cancel" style="margin-right: 10px;">
+                🚫İptal
+            </button>
+            <button disabled="@RO"
+                    @onclick="Save">
+                ✅Kaydet
+            </button>
         </div>
     </div>
     <table class="table-edit">
@@ -30,21 +39,29 @@
             {
                 <tr>
                     <td>
-                        <button @onclick="() => Original(r)">🔄</button>
+                        <button disabled="@RO"
+                                @onclick="() => Original(r)">
+                            🔄
+                        </button>
                     </td>
                     <td class="text-center">@r.MF</td>
                     <td>
-                        <button @onclick="() => Delete(r)">❌</button>
+                        <button disabled="@RO"
+                                @onclick="() => Delete(r)">
+                            ❌
+                        </button>
                     </td>
                     <td>
-                        <input type="text"
+                        <input readonly="@RO"
+                               type="text"
                                maxlength="30"
                                size="30"
                                @bind="r.Ad"
                                @bind:after='(() => CheckUpd(r))'>
                     </td>
                     <td>
-                        <input type="text"
+                        <input readonly="@RO"
+                               type="text"
                                size="50"
                                maxlength="80"
                                @bind="r.Adres"
@@ -71,6 +88,7 @@ else
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     private List<CT>? ct;
+    private bool RO = false;
 
     private void Cancel()
     {
@@ -81,7 +99,7 @@ else
         int mdfCount = 0;
         foreach (var r in ct)
         {
-            if (r.MF != '=' )
+            if (r.MF != '=')
             {
                 mdfCount++;
                 var ct = new

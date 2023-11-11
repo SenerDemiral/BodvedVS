@@ -34,10 +34,13 @@ else
 
     IEnumerable<TL>? tl;
 
+    protected override async Task OnParametersSetAsync()
+    {
+        tl = db.LoadData<TL, dynamic>("select CTId,Ad,Idx,P,EW,EL,K from UI_TKM_LIG(@CCId)", new { CCId = CCId });
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        tl = db.LoadData<TL, dynamic>("select CTId,Ad,Idx,P,EW,EL,K from UI_TKM_LIG(@CCId)", new { CCId = CCId });
     }
 
     private sealed class TL

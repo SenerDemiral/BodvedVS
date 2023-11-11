@@ -4,6 +4,7 @@
 
 a {
     text-decoration: underline;
+    color: inherit;
 }
 
 .table-container {
@@ -363,3 +364,24 @@ x-3 {
     align-items: center;
     white-space: pre !important;
 }
+
+
+sgn-p:after {
+    content: "▲";
+    color: green;
+}
+
+sgn-n:after {
+    content: "▼";
+    color: red;
+}
+
+sgn-z:after {
+    content: "=";
+}
+/*
+usage
+<rnk-p></rnk-p>
+<rnk-z></rnk-z>
+<rnk-n></rnk-n>
+*/

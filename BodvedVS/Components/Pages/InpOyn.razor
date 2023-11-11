@@ -1,7 +1,8 @@
-﻿@inject IDataAccess db
+﻿@inject NavigationManager Navigation
+@inject IDataAccess db
 @inject IScopedContainer sc
 @rendermode renderMode
-
+ 
 @page "/InpOyn"
 <style>
     .w-ad{
@@ -12,19 +13,19 @@
 <h1>@Header Takım Oyuncuları</h1>
 @if (pp != null)
 {
-    <QuickGrid Items="@FilteredPlayers" @ref="ppGrid" Virtualize="true" Class="table-fixed">
-        <PropertyColumn Property="@(p => p.Ad)" Class="w-ad">
+    <QuickGrid Items="@FilteredPlayers" @ref="ppGrid" Class="table-fixed">
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Ad)" Class="w-ad" Sortable="true">
             <ColumnOptions>
                 <div class="search-box">
                     <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
                 </div>
             </ColumnOptions>
-        </PropertyColumn>
-        <PropertyColumn Property="@(p => p.Sex)" />
-        <PropertyColumn Property="@(p => p.DgmYil)" Sortable="true"/>
-        <PropertyColumn Property="@(p => p.Tel)" />
-        <PropertyColumn Property="@(p => p.Mail)" />
-        <PropertyColumn Property="@(p => p.GirDnm)" />
+        </Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn>
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Sex)" />
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.DgmYil)" Sortable="true" />
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Tel)" />
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Mail)" />
+        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.GirDnm)" />
     </QuickGrid>
     @*
     <div style="display:flex;justify-content:space-between;">
@@ -114,7 +115,8 @@ else
 
             if (!string.IsNullOrEmpty(nameFilter))
             {
-                result = result.Where(c => c.Ad.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
+                result = result.Where(c => c.Ad.Contains(nameFilter, StringComparison.Ordinal));
+                // CurrentCultureIgnoreCase
             }
 
             return result;
@@ -186,6 +188,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        //Navigation.NavigateTo("/login", true);
         LoadData();
     }
 

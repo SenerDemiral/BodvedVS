@@ -78,7 +78,7 @@
                                @bind:after='(() => CheckUpd(r, "G"))'>
                     </td>
                     <td>
-                        <a href="InpGame/@r.CETId">Game</a>
+                        <a hidden="@opsPending" href="InpGame/@r.CETId">Game</a>
                     </td>
 
                 </tr>
@@ -109,6 +109,7 @@ else
     [Parameter] public int CCId { get; set; }
     [Parameter] public string Header { get; set; }
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+    private bool opsPending = false;
 
     private Dictionary<string, CT>? ct;
     private Dictionary<string, string>? stu = new()
@@ -125,14 +126,22 @@ else
 
     private void Cancel()
     {
-        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+        // Dikkat varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+        foreach(var r in cet)
+        {
+            if (r.MF != '+')
+                Original(r);
+        }
+        cet.RemoveAll(r => r.MF == '+');
+        opsPending = false;
     }
+
     private void Save()
     {
         int mdfCount = 0;
         foreach (var r in cet)
         {
-            if (r.MF != '=')
+            if (r.MF != '=' && r.HCTId > 0 && r.GCTId > 0)
             {
                 mdfCount++;
                 var ct = new
@@ -152,7 +161,9 @@ else
         if (mdfCount > 0)
             LoadData();
 
+        opsPending = false;
     }
+
     private void CheckUpd(CET r, string fld)
     {
         if (fld == "S")
@@ -197,6 +208,7 @@ else
                 r.MF = '~';
             }
         }
+        opsPending = true;
     }
     private void Original(CET r)
     {
@@ -207,7 +219,10 @@ else
         r.GCTId = r.oGCTId;
         r.HCTAd = r.oHCTAd;
         r.GCTAd = r.oGCTAd;
+        if (r.MF == '+')
+            cet.Remove(r);
     }
+
     private void Delete(CET r)
     {
         if (r.MF == '+')
@@ -217,12 +232,15 @@ else
         else
         {
             r.MF = '-';
+            opsPending = true;
         }
     }
 
     private void Insert()
     {
         CET ctn = new();
+
+        ctn.RO = false;
         ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
         ctn.oMF = '+';
         ctn.Trh = DateTime.Today;

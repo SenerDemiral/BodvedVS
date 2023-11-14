@@ -34,7 +34,7 @@
                     <td>
                         <button readonly="@RO" @onclick="() => Delete(r)">❌</button>
                     </td>
-                    @if (r.MF == '+')
+                    @if (r.MF == "+")
                     {
                         <td>
                             <input readonly="@RO"
@@ -75,7 +75,7 @@ else
     private List<PP>? zz;
     private HashSet<PP>? hh;
     private Dictionary<string, PP>? pp;
-    private bool RO = true;
+    private bool RO = false;
 
     private void Cancel()
     {
@@ -86,7 +86,7 @@ else
         int mdfCount = 0;
         foreach (var r in to)
         {
-            if (r.MF != '=' && r.PPId != 0)
+            if (r.MF != "=")
             {
                 mdfCount++;
                 var ct = new
@@ -119,21 +119,21 @@ else
     }
     private void Delete(TO r)
     {
-        if (r.MF == '+')
+        if (r.MF == "+")
         {
             to.Remove(r);
         }
         else
         {
-            r.MF = '-';
+            r.MF = "-";
         }
     }
 
     private void Insert()
     {
         TO ctn = new();
-        ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
-        ctn.oMF = '+';
+        ctn.MF = "+";   // Update '~' Delete '-' Insert '+' Select '='
+        ctn.oMF = "+";
 
         to.Add(ctn);
     }
@@ -152,11 +152,11 @@ else
 
     private sealed class TO
     {
-        public char MF = '=';
+        public string MF = "=";
         public int PPId { get; set; }
         public string? PPAd { get; set; }
 
-        public char oMF = '=';
+        public string oMF = "=";
     }
 
     private sealed class PP

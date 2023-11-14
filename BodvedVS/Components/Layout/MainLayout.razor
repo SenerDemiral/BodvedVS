@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@inject ISingletonContainer SngC
+@implements IDisposable
+@inherits LayoutComponentBase
 
 <MudThemeProvider />
 <MudSnackbarProvider />
@@ -9,7 +11,7 @@
             <div class="navbar">
                 <div>MasatenisiOnline</div>
                 <div class="nav-links">
-                    <div>@CST.Msg</div>
+                    <div>@SngC.Name</div>
                     <NavMenu />
                 </div>
             </div>
@@ -19,21 +21,6 @@
         </div>
     </div>
 
-@*
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
- *@
 </div>
 
 <div id="blazor-error-ui">
@@ -43,7 +30,26 @@
 </div>
 
 @code {
-    private IDisposable? registration;
-    [CascadingParameter] CascadingScopeState CST { get; set; }
+    //private IDisposable? registration;
+    // [CascadingParameter] CascadingScopeState CST { get; set; }
+    string Msg = "";
+
+    protected override void OnInitialized()
+    {
+        SngC.OnChange += MyStateChanged;
+
+        base.OnInitialized();
+    }
+
+    public void MyStateChanged()
+    {
+        //Msg = SngC.Name;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        SngC.OnChange -= MyStateChanged;
+    }
 
 }

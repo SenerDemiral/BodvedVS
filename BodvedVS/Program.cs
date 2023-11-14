@@ -40,12 +40,10 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 500;
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-   
-
 });
 
-builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<ISingletonContainer, SingletonContainer>();
+builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 
 builder.Services.AddMudBlazorSnackbar();

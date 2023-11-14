@@ -1,6 +1,4 @@
-﻿using MudBlazor;
-
-namespace BodvedVS.DataLibrary;
+﻿namespace BodvedVS.DataLibrary;
 
 public interface ISingletonContainer
 {
@@ -14,7 +12,7 @@ public class SingletonContainer : ISingletonContainer
     private string name;
     public event Action? OnChange;
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void NotifyStateChanged() => OnChange?.Invoke();  //DynamicInvoke();
     public string Name
     {
         get => name;

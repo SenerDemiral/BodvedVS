@@ -123,7 +123,7 @@ else
         if (r.MF == '=' || r.MF == '~')
         {
             r.Ad = r.Ad.TrimEnd();
-            r.Adres = r.Adres.TrimEnd();
+            r.Adres = r.Adres?.TrimEnd();
             r.MF = '=';
             if (r.oAd != r.Ad ||
                 r.oAdres != r.Adres)

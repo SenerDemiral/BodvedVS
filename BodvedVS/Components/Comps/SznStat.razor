@@ -89,7 +89,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ss = db.LoadData<SS, dynamic>("select * from UI_SZN_STAT", new { });
+        ss = db.LoadData<SS, dynamic>("select * from UI_SZN_STAT order by dnm desc", new { });
     }
 
     private sealed class SS

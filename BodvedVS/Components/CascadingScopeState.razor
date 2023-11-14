@@ -2,6 +2,7 @@
 @inject ISingletonContainer SngC
 @implements IDisposable
 
+@Msg
 <CascadingValue Value="this">
     @ChildContent
 </CascadingValue>
@@ -16,20 +17,21 @@
         get => msg;
         set { 
             msg = value;
-            Snackbar.Add(msg, Severity.Error);
+            //Snackbar.Add(msg, Severity.Error);
+            //StateHasChanged();
         }
     }
 
     protected override void OnInitialized()
     {
-        SngC.OnChange += MyStateChanged;
+        //SngC.OnChange += MyStateChanged;
 
         base.OnInitialized();
     }
 
     public void MyStateChanged()
     {
-        Msg = SngC.Name;
+        //Msg = SngC.Name;
         //StateHasChanged();    Hata geliyor    
     }
 

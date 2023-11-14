@@ -3,6 +3,7 @@
 @inject IScopedContainer ScpC
 @inject ISingletonContainer SngC
 @inject NavigationManager Navigation
+@implements IDisposable
 @page "/login"
 
 <style>
@@ -25,6 +26,7 @@
 </style>
 
 <h3>Login</h3>
+<div>@Msg</div>
 <div class="lgn">
     <div class="itm">User#</div>
     <input type="text" @bind=usrid class="itm" />
@@ -37,24 +39,50 @@
     [CascadingParameter] CascadingScopeState CST { get; set; }
     int usrid = 0;
     int pwd = 0;
+    string Msg { get; set; }
 
     private async Task LoginClck()
     {
-        //SngC.Name = "Heyooooooo******";
-        if (ScpC.CheckLogin(usrid, pwd))
-        {
-            LoginModel lm = new LoginModel { UsrId = usrid, UsrPwd = pwd };
+        SngC.Name = "Heyooooooo******";
 
-            await PLS.SetAsync("pwd", "bodved", lm);
+        // if (ScpC.CheckLogin(usrid, pwd))
+        // {
+        //     LoginModel lm = new LoginModel { UsrId = usrid, UsrPwd = pwd };
 
-            //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
-            //if (vtg.Success)
-            //{
-                //li = vtg.Value;
-            //}
-         
-            CST.Msg = "Login başarılı";
-            Navigation.NavigateTo("");  // default force=false
-        }
+        //     await PLS.SetAsync("pwd", "bodved", lm);
+
+        //     //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
+        //     //if (vtg.Success)
+        //     //{
+        //         //li = vtg.Value;
+        //     //}
+
+        //     CST.Msg = "Login başarılı";
+        //     Navigation.NavigateTo("");  // default force=false
+        // }
     }
+
+    protected override void OnInitialized()
+    {
+        SngC.OnChange += MyStateChanged;
+
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+
+    public void MyStateChanged()
+    {
+        Msg = SngC.Name;
+        InvokeAsync(StateHasChanged);   //StateHasChanged(); //Hata geliyor
+    }
+
+    public void Dispose()
+    {
+        SngC.OnChange -= MyStateChanged;
+    }
+
 }

@@ -1,0 +1,160 @@
+﻿@inject IDataAccess db
+@inject IScopedContainer sc
+@rendermode renderMode
+
+@page "/InpRnkSzn"
+@page "/InpRnkSzn/{dnm:int}/{header}"
+
+<h1>@Header</h1>
+@if (pdr != null)
+{
+    <div style="display:flex;justify-content:space-between;">
+        <div>
+            <button disabled="@RO"
+                    @onclick="Save">
+                ✅Kaydet
+            </button>
+        </div>
+    </div>
+    <table class="table-edit">
+        <thead>
+            <tr style="background-color:skyblue !important">
+                <th></th>
+                <th>MF</th>
+                <th>Id</th>
+                <th>Ad</th>
+                <th>R0</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in pdr)
+            {
+                <tr>
+                    <td>
+                        <button disabled="@RO"
+                                @onclick="() => Original(r)">
+                            🔄
+                        </button>
+                    </td>
+                    <td class="text-center">@r.MF</td>
+                    <td>@r.PPId</td>
+                    <td>@r.PPAd</td>
+                    <td>
+                        <input readonly="@RO"
+                               type="text"
+                               size="50"
+                               maxlength="80"
+                               @bind="r.R0"
+                               @bind:after='(() => CheckUpd(r))'>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+
+@code {
+    [Parameter] public int Dnm { get; set; } = 0;
+    [Parameter] public string Header { get; set; } = "Son Sezon Oyuncu Başlangıç Rank";
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+
+    private List<PDR>? pdr;
+    private bool RO = false;
+
+    private void Cancel()
+    {
+        // Dikkar varsa yaptiginiz tum degisiklikler yok sayilacaktir.
+    }
+    private void Save()
+    {
+        int mdfCount = 0;
+        foreach (var r in pdr)
+        {
+            if (r.MF != '=')
+            {
+                mdfCount++;
+                var ct = new
+                {
+                    MF = r.MF,
+                    Dnm = r.Dnm,
+                    PPId = r.PPId,
+                    R0 = r.R0,
+                };
+
+                var rs = db.SaveRec("IR_MDF", ct);
+            }
+        }
+        if (mdfCount > 0)
+            LoadData();
+
+    }
+    private void CheckUpd(PDR r)
+    {
+        if (r.MF == '=' || r.MF == '~')
+        {
+            r.MF = '=';
+            if (r.oR0 != r.R0)
+                r.MF = '~';
+        }
+    }
+    private void Original(PDR r)
+    {
+        r.MF = r.oMF;
+        r.R0 = r.oR0;
+    }
+    private void Delete(PDR r)
+    {
+        if (r.MF == '+')
+        {
+            pdr.Remove(r);
+        }
+        else
+        {
+            r.R0 = r.oR0;
+            r.MF = '-';
+        }
+    }
+
+    private void Insert()
+    {
+        PDR ctn = new();
+        ctn.MF = '+';   // Update '~' Delete '-' Insert '+' Select '='
+        ctn.oMF = '+';
+
+        pdr.Add(ctn);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        pdr = db.LoadData<PDR, dynamic>("select * from IR_SEL(@Dnm) order by PPAd", new { Dnm = Dnm }).ToList();
+
+        foreach (var r in pdr)
+        {
+            r.oR0 = r.R0;
+        }
+    }
+
+    private sealed class PDR
+    {
+        public char MF = '=';
+        public int Dnm { get; set; }
+
+        public int PPId { get; set; }
+        public string PPAd { get; set; }
+        public int R0 { get; set; }
+
+        public char oMF = '=';
+        public int oR0 { get; set; }
+    }
+
+
+}

@@ -36,7 +36,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        tl = db.LoadData<TL, dynamic>("select CTId,Ad,Idx,P,EW,EL,K from UI_TKM_LIG(@CCId)", new { CCId = CCId });
+        tl = db.LoadData<TL, dynamic>("select * from UI_TKM_LIG(@CCId)", new { CCId = CCId });
     }
 
     protected override async Task OnInitializedAsync()
@@ -52,7 +52,13 @@ else
         public int EW { get; set; }
         public int EL { get; set; }
         public int K { get; set; }
-    
+        public int KW { get; set; }
+        public int KL { get; set; }
+        public int SMW { get; set; }
+        public int SML { get; set; }
+        public int DMW { get; set; }
+        public int DML { get; set; }
+
         // public int KW { get; set; }
         // public int KL { get; set; }
         // public int SMW { get; set; }

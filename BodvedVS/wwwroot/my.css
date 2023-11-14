@@ -118,7 +118,7 @@ a {
 .content {
     grid-area: content;
     overflow: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none;
     /*padding: 0 10px;*/
     /*justify-self: center;   mobilde sol taraf gozukmuyor*/
     margin: 0 auto;

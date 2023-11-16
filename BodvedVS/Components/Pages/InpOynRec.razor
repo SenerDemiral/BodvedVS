@@ -1,0 +1,214 @@
+﻿@inject IDataAccess db
+@page "/InpOynRec/{ppid:int}"
+
+<h1>InpOynRec</h1>
+
+<table class="table-edit">
+    <tr>
+        <td>Id</td>
+        <td>@pp.PPId</td>
+    </tr>
+    <tr>
+        <td>Ad</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="30"
+                   @bind="pp.Ad" />
+        </td>
+    </tr>
+    <tr>
+        <td>Sex</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.Sex" />
+        </td>
+    </tr>
+    <tr>
+        <td>Doğum Yılı</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.DgmYil" />
+        </td>
+    </tr>
+    <tr>
+        <td>Kayıt Dönemi</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.GrsDnm" />
+        </td>
+    </tr>
+    <tr>
+        <td>Tel</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="20"
+                   @bind="pp.Tel" />
+        </td>
+    </tr>
+    <tr>
+        <td>eMail</td>
+        <td>
+            <input readonly="@RO"
+                   type="text" 
+                   size="30"
+                   @bind="pp.Mail" />
+        </td>
+    </tr>
+    <tr>
+        <td>Giriş Rank</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.R0" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B1n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B1" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B2n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B2" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B3n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B3" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B4n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B4" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B5n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B5" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B6n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B6" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B7n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B7" />
+        </td>
+    </tr>
+    <tr>
+        <td>@pp.B8n</td>
+        <td>
+            <input readonly="@RO"
+                   type="text"
+                   size="5"
+                   @bind="pp.B8" />
+        </td>
+    </tr>
+    <tr>
+        <td>Info</td>
+        <td>
+            <textarea readonly="@RO"
+                   rows="4" cols="30"
+                   @bind="pp.Info" />
+        </td>
+    </tr>
+    <tr>
+        <td>B</td>
+        <td>@((MarkupString)pp.Belge)</td>
+    </tr>
+</table>
+
+@code {
+    [Parameter] public int PPId { get; set; }
+    private PP pp;
+    private bool RO = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //pp = db.LoadRec<PP, dynamic>("select * from IOR_SEL(@PPId)", new { PPId = PPId });
+        pp = db.LoadRec<PP, dynamic>("select * from PP where PPId = @PPId", new { PPId = PPId });
+    }
+
+    private sealed class PP
+    {
+        public int PPId { get; set; }
+        public int GrsDnm { get; set; }
+        public int DgmYil { get; set; }
+        public string Ad { get; set; }
+        public string Sex { get; set; }
+        public string Tel { get; set; }
+        public string Mail { get; set; }
+        public string Info { get; set; }
+        public int R0 { get; set; }
+
+        public int B1 { get; set; } // ⚜kulüp üyeliği
+        public int B2 { get; set; } // 🎗lisanslı oyuncu
+        public int B3 { get; set; } // ⚔bodved lig katılım sayısı
+        public int B4 { get; set; } // 🏆takım lig birinciliği
+        public int B5 { get; set; } // 👑ferdi turnuva birinciliği
+        public int B6 { get; set; } // 🏓antrenör belgesi
+        public int B7 { get; set; } // ⚖hakem belgesi
+        public int B8 { get; set; } // 🧢takım kaptan
+
+        public string B1n = "⚜️ &#x269C;&#xFE0F;kulüp üyeliği";
+        public string B2n = "🎗️ &#x1F397;&#xFE0F;lisanslı oyuncu";
+        public string B3n = "⚔️ &#x2694;&#xFE0F;bodved lig katılım sayısı";
+        public string B4n = "🏆 &#x1F3C6;takım lig birinciliği";
+        public string B5n = "👑 &#x1F451;ferdi turnuva birinciliği";
+        public string B6n = "🏓 &#x1F3D3;antrenör belgesi";
+        public string B7n = "⚖️ &#x2696;&#xFE0F;hakem belgesi";
+        public string B8n = "🧢 &#x1F9E2;takım kaptanı";
+
+        public string? B1s => B1 == 0 ? "" : $"⚜️{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";
+        public string? B2s => B2 == 0 ? "" : $"🎗️{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";
+        public string? B3s => B3 == 0 ? "" : $"⚔️{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";
+        public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";
+        public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";
+        public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";
+        public string? B7s => B7 == 0 ? "" : $"⚖️{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";
+        public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";
+
+        public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
+
+    }
+
+}

@@ -26,6 +26,7 @@ input, button {
     grid-area: tc--header;
     /*text-align: center;*/
     /*align-self: center;*/
+    justify-self: center;
 }
 
 .tc--content {

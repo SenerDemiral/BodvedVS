@@ -18,7 +18,8 @@
 else
 {
     <div class="table-container">
-        <div class="tc--header text-center">☺ @pp.Ad</div>
+        @* <div class="tc--header text-center">☺ @pp.Ad @((MarkupString)pp.Belge)</div> *@
+        <div class="tc--header">@((MarkupString)pp.Info)</div>
 
         <div class="tc--content" tabindex="-1">
 
@@ -149,11 +150,13 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        pp = await db.LoadRecAsync<PP, dynamic>("select Ad from PP where PPId = @PPId", new { PPId = ppid });
+        //pp = await db.LoadRecAsync<PP, dynamic>("select Ad, Belge from PP where PPId = @PPId", new { PPId = ppid });
+        pp = db.LoadRec<PP, dynamic>("select Info from PP_INFO(@PPId)", new { PPId = ppid });
         so = await db.LoadDataAsync<SO, dynamic>("select * from UI_STAT_OYN(@PPId)", new { PPId = ppid });
         mo = await db.LoadDataAsync<MO, dynamic>("select * from UI_MAC_OYN(@PPId)", new { PPId = ppid });
         await base.OnParametersSetAsync();
     }
+
     protected override async Task OnInitializedAsync()
     {
     }
@@ -161,6 +164,8 @@ else
     private sealed class PP
     {
         public string? Ad { get; set; }
+        public string Belge { get; set; }
+        public string Info { get; set; }
     }
 
     private sealed class SO

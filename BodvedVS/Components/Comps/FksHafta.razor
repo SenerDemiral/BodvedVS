@@ -44,7 +44,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         //fh = db.LoadData<FH, dynamic>("select * from UI_Fks_Hafta(@Typ)", new { Typ = Typ });
-        fh = db.LoadData<FH, dynamic>("select * from UI_FKS(@Typ)", new { Typ = Typ });
+        fh = db.LoadData<FH, dynamic>("select * from UI_FKS(@Typ) order by Trh", new { Typ = Typ });
     }
 
     private sealed class FH

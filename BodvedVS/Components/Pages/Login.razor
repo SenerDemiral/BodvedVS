@@ -9,7 +9,7 @@
 <style>
     .lgn {
         display: grid;
-        grid-template-columns: auto auto;
+        grid-template-columns: auto 100px;
         gap: 5px;
         margin: 1px;
     }
@@ -45,21 +45,31 @@
     {
         SngC.Name = "Heyooooooo******";
 
-        // if (ScpC.CheckLogin(usrid, pwd))
-        // {
-        //     LoginModel lm = new LoginModel { UsrId = usrid, UsrPwd = pwd };
+        if (ScpC.CheckLogin(usrid, pwd))
+        {
+            LoginModel lm = new LoginModel { UsrId = usrid, UsrPwd = pwd };
 
-        //     await PLS.SetAsync("pwd", "bodved", lm);
+            lm.UsrUserName = null;
+            IDictionary<string, object> objDic = lm.AsDictionary();
+            foreach(var d in objDic)
+            {
+                var aa = d.Key;
+                var bb = d.Value;
+                var cc = d.Value?.GetType();
+            }
+            var someObject = objDic.ToObject<LoginModel>();
+            
+            await PLS.SetAsync("pwd", "bodved", lm);
 
-        //     //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
-        //     //if (vtg.Success)
-        //     //{
-        //         //li = vtg.Value;
-        //     //}
+            //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
+            //if (vtg.Success)
+            //{
+                //li = vtg.Value;
+            //}
 
-        //     CST.Msg = "Login başarılı";
-        //     Navigation.NavigateTo("");  // default force=false
-        // }
+            CST.Msg = "Login başarılı";
+            Navigation.NavigateTo("");  // default force=false
+        }
     }
 
     protected override void OnInitialized()

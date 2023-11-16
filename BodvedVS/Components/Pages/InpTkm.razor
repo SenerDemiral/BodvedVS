@@ -30,8 +30,10 @@
                 <th>MF</th>
                 <th>Sil</th>
                 <th>Ad</th>
-                <th>Adres</th>
                 <th></th>
+                <th>Adres</th>
+                <th>Konum</th>
+                <th>Mail</th>
             </tr>
         </thead>
         <tbody>
@@ -54,23 +56,35 @@
                     <td>
                         <input readonly="@RO"
                                type="text"
-                               maxlength="30"
-                               size="30"
+                               style="width:100px"
                                @bind="r.Ad"
+                               @bind:after='(() => CheckUpd(r))'>
+                    </td>
+                    <td>
+                        <a href="InpTkmOyn/@r.CTId/@r.Ad">👥</a>
+                    </td>
+                    <td>
+                        <input readonly="@RO"
+                               type="text"
+                               style="width:100px"
+                               @bind="r.Adres"
                                @bind:after='(() => CheckUpd(r))'>
                     </td>
                     <td>
                         <input readonly="@RO"
                                type="text"
-                               size="50"
-                               maxlength="80"
-                               @bind="r.Adres"
+                               style="width:100px"
+                               @bind="r.Konum"
+                               @bind:after='(() => CheckUpd(r))'>
+                    </td>
+                    <td>
+                        <input readonly="@RO"
+                               type="text"
+                               style="width:60px"
+                               @bind="r.Mail"
                                @bind:after='(() => CheckUpd(r))'>
                     </td>
 
-                    <td>
-                        <a href="InpTkmOyn/@r.CTId/@r.Ad">Oyuncuları</a>
-                    </td>
                 </tr>
             }
         </tbody>
@@ -109,6 +123,8 @@ else
                     CTId = r.CTId,
                     Ad = r.Ad,
                     Adres = r.Adres,
+                    Mail = r.Mail,
+                    Konum = r.Konum,
                 };
 
                 var rs = db.SaveRec("IT_MDF", ct);
@@ -126,7 +142,9 @@ else
             r.Adres = r.Adres?.TrimEnd();
             r.MF = '=';
             if (r.oAd != r.Ad ||
-                r.oAdres != r.Adres)
+                r.oAdres != r.Adres ||
+                r.oMail != r.Mail ||
+                r.oKonum != r.Konum )
                 r.MF = '~';
         }
     }
@@ -135,6 +153,8 @@ else
         r.MF = r.oMF;
         r.Ad = r.oAd;
         r.Adres = r.oAdres;
+        r.Mail = r.oMail;
+        r.Konum = r.oKonum;
     }
     private void Delete(CT r)
     {
@@ -146,6 +166,8 @@ else
         {
             r.Ad = r.oAd;
             r.Adres = r.oAdres;
+            r.Mail = r.oMail;
+            r.Konum = r.oKonum;
             r.MF = '-';
         }
     }
@@ -171,6 +193,8 @@ else
         {
             r.oAd = r.Ad;
             r.oAdres = r.Adres;
+            r.oMail = r.Mail;
+            r.oKonum = r.Konum;
         }
     }
 
@@ -178,12 +202,16 @@ else
     {
         public char MF = '=';
         public int CTId { get; set; }
-        public string? Ad { get; set; }
-        public string? Adres { get; set; }
+        public string Ad { get; set; }
+        public string Adres { get; set; }
+        public string Mail { get; set; }
+        public string Konum { get; set; }
 
         public char oMF = '=';
-        public string? oAd { get; set; }
-        public string? oAdres { get; set; }
+        public string oAd { get; set; }
+        public string oAdres { get; set; }
+        public string oMail { get; set; }
+        public string oKonum { get; set; }
     }
 
 

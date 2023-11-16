@@ -41,7 +41,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         //ft = db.LoadData<FT, dynamic>("select * from UI_Fks_Tkm(@CTId)", new { CTId = CTId });
-        ft = db.LoadData<FT, dynamic>("select * from UI_FKS('L',@CCId)", new { CCId = CCId });
+        ft = db.LoadData<FT, dynamic>("select * from UI_FKS('L',@CCId) order by Trh", new { CCId = CCId });
     }
 
     private sealed class FT

@@ -7,6 +7,10 @@ a {
     color: inherit;
 }
 
+input, button {
+    width: inherit;
+}
+
 .table-container {
     display: grid;
     height: 100%;
@@ -161,7 +165,7 @@ a {
     flex-wrap: nowrap;
     align-items: stretch;
     overflow: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none;
 }
 
 .card {

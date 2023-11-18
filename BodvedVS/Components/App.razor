@@ -12,11 +12,11 @@
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="my.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <HeadOutlet @rendermode="renderMode" />
+    <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="renderMode" />
+    <Routes />
     <script src="_framework/blazor.web.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 </body>
@@ -25,4 +25,5 @@
 
 @code {
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+    //@rendermode="renderMode"
 }

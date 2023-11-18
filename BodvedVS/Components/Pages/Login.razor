@@ -4,6 +4,7 @@
 @inject ISingletonContainer SngC
 @inject NavigationManager Navigation
 @implements IDisposable
+@rendermode InteractiveServer
 @page "/login"
 
 <style>
@@ -29,46 +30,44 @@
 <div>@Msg</div>
 <div class="lgn">
     <div class="itm">User#</div>
-    <input type="text" @bind=usrid class="itm" />
+    <input type="text" @bind=usr.usrid class="itm" />
     <div class="itm">Pwd</div>
-    <input type="password" @bind=pwd class="itm" />
+    <input type="password" @bind=usr.usrpwd class="itm" />
     <button class="btn" @onclick=LoginClck>LogIn</button>
 </div>
 
 @code {
     [CascadingParameter] CascadingScopeState CST { get; set; }
-    int usrid = 0;
-    int pwd = 0;
+    UsrPLS usr = new();
     string Msg { get; set; }
 
     private async Task LoginClck()
     {
-        SngC.Name = "Heyooooooo******";
+        //SngC.Name = "Heyooooooo******";
 
-        if (ScpC.CheckLogin(usrid, pwd))
+        if (ScpC.CheckLogin(usr.usrid, usr.usrpwd))
         {
-            LoginModel lm = new LoginModel { UsrId = usrid, UsrPwd = pwd };
+            await PLS.SetAsync("pwd", "bodved", usr);
+            //CST.Msg = "Login başarılı";
+            Navigation.NavigateTo("");
+            // default force=false
+            // lm.UsrUserName = null;
+            // IDictionary<string, object> objDic = lm.AsDictionary();
+            // foreach(var d in objDic)
+            // {
+            //     var aa = d.Key;
+            //     var bb = d.Value;
+            //     var cc = d.Value?.GetType();
+            // }
+            // var someObject = objDic.ToObject<LoginModel>();
 
-            lm.UsrUserName = null;
-            IDictionary<string, object> objDic = lm.AsDictionary();
-            foreach(var d in objDic)
-            {
-                var aa = d.Key;
-                var bb = d.Value;
-                var cc = d.Value?.GetType();
-            }
-            var someObject = objDic.ToObject<LoginModel>();
-            
-            await PLS.SetAsync("pwd", "bodved", lm);
 
             //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
             //if (vtg.Success)
             //{
-                //li = vtg.Value;
+            //li = vtg.Value;
             //}
 
-            CST.Msg = "Login başarılı";
-            Navigation.NavigateTo("");  // default force=false
         }
     }
 

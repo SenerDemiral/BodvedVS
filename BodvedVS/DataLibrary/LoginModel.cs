@@ -2,8 +2,14 @@
 
 public sealed class LoginModel
 {
-    public int UsrId { get; set; } = 0;
-    public int UsrPwd { get; set; } = 0;
+    public int isOk { get; set; } = 0;
+    public int RoleAdm { get; set; } = 0;
+    public int RoleTnm { get; set; } = 0;
+    public int RoleSnc { get; set; } = 0;
+}
 
-    public string? UsrUserName { get; set; }
+public sealed class UsrPLS
+{
+    public int usrid { get; set; }
+    public string usrpwd { get; set; }
 }

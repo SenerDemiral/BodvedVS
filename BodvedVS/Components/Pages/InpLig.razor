@@ -1,4 +1,8 @@
-﻿@inject IDataAccess db
+﻿@inject IScopedContainer SC
+@inject ProtectedLocalStorage PLS
+@inject IDataAccess db
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
 @* @attribute [StreamRendering(true)] *@
 @page "/InpLig"
 
@@ -43,6 +47,26 @@ else
     {
         //dnm = 0 ise son donem
         ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!SC.IsOk)
+            {
+                UsrPLS lm = new();
+                var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+                if (toto.Success)
+                {
+                    lm = toto.Value;
+                }
+                if(!SC.CheckLogin(lm.usrid, lm.usrpwd))
+                    Navigation.NavigateTo("login");
+            }
+        }
+
+        base.OnAfterRenderAsync(firstRender);
     }
 
     private sealed class LS

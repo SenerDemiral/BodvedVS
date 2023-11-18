@@ -50,32 +50,7 @@
                     {
                         <td>@r.PPAd</td>
                     }
-                    @if (r.MF != "+")
-                    {
-                        <td>
-                            <input readonly="@RO"
-                                   @bind="r.Tel"
-                                   @bind:after='() => CheckPP(r)' />
-                        </td>
-                        <td>
-                            <input readonly="@RO"
-                                   @bind="r.Mail"
-                                   @bind:after='() => CheckPP(r)' />
-                        </td>
-                        <td>
-                            <input readonly="@RO"
-                                   @bind="r.DgmYil"
-                                   style="width:50px"
-                                   @bind:after='() => CheckPP(r)' />
-                        </td>
-                    }
-                    else
-                    {
-                        <td>@r.Tel</td>
-                        <td>@r.Mail</td>
-                        <td>@r.DgmYil</td>
-                    }
-                    <td>👤✏️</td>
+                    <td><a href="InpOynRec/@r.PPId"> 👤✏️</a></td>
                 </tr>
             }
         </tbody>
@@ -123,9 +98,6 @@ else
                     MF = r.MF,
                     CTId = CTId,
                     PPId = r.PPId,
-                    DgmYil = r.DgmYil,
-                    Tel = r.Tel,
-                    Mail = r.Mail,
                 };
 
                 var rs = db.SaveRec("ITO_MDF", ct);
@@ -144,9 +116,6 @@ else
             r.PPId = 0;
             r.PPAd = "";
         }
-
-        if (r.oMail != r.Mail || r.oTel != r.Tel || r.oDgmYil != r.DgmYil)
-            r.MF = "~";
     }
 
     private void Original(TO r)
@@ -184,13 +153,6 @@ else
         to = db.LoadData<TO, dynamic>("select * from ITO_SEL(@CTId) order by PPAd", new { CTId = CTId }).ToList();
         pp = db.LoadData<PP, dynamic>("select * from LU_OYN order by Ad", new { }).ToDictionary((k) => k.Ad);
     
-        foreach (var r in to)
-        {
-            r.oDgmYil = r.DgmYil;
-            r.oTel = r.Tel;
-            r.oMail = r.Mail;
-        }
-
     }
 
     private sealed class TO
@@ -199,15 +161,8 @@ else
         public int PPId { get; set; }
         public string PPAd { get; set; }
 
-        public int DgmYil { get; set; }
-        public string Tel { get; set; }
-        public string Mail { get; set; }
-
         public string oMF = "=";
-        public int oDgmYil { get; set; }
-        public string oTel { get; set; }
-        public string oMail { get; set; }
-    }
+ }
 
     private sealed class PP
     {

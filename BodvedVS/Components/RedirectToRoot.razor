@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage PLS
 @inject NavigationManager Navigation
-@inject IScopedContainer SC
+@inject IScopedContainer ScpC
 @implements IDisposable
 
 
@@ -12,13 +12,13 @@
     {
         if (firstRender)
         {
-            LoginModel lm = new();
-            var toto = await PLS.GetAsync<LoginModel>("pwd", "bodved");
+            UsrPLS lm = new();
+            var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
             if (toto.Success)
             {
                 lm = toto.Value;
             }
-            SC.CheckLogin(lm.UsrId, lm.UsrPwd);
+            ScpC.CheckLogin(lm.usrid, lm.usrpwd);
         }
 
         base.OnAfterRenderAsync(firstRender);
@@ -34,14 +34,14 @@
         //Disardan geldiginde ilk burayi goruyor, Login gerekli page lere gitmesin
         if(rP.StartsWith("Inp"))
         {
-            Navigation.NavigateTo("/", true);   // Logini ana sayfadan yapabilir Login oldugunu <CascadingLogin> ile dagit
+            //Navigation.NavigateTo("/", true);   // Logini ana sayfadan yapabilir Login oldugunu <CascadingLogin> ile dagit
         }
         registration = Navigation.RegisterLocationChangingHandler(OnLocationChanging);
     }
 
     private ValueTask OnLocationChanging(LocationChangingContext context)
     {
-        // Butun Page degisimlerinde buraya gelir, 
+        // Butun Page degisimlerinde buraya gelir, Interractive ise StaticSSR
         // Istedigini engelle
         var aaa = Navigation;
 
@@ -52,9 +52,9 @@
 
         }
 
-        if (target.StartsWith("Inp") && !SC.IsOk)   // Inp* sayfalarina Login degilse giremez
+        if (target.StartsWith("Inp") && !ScpC.IsOk)   // Inp* sayfalarina Login degilse giremez
         {
-            context.PreventNavigation();
+           // context.PreventNavigation();
         }
 
         return ValueTask.CompletedTask;

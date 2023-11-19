@@ -1,4 +1,4 @@
-﻿@inject IScopedContainer SC
+﻿@inject IScopedContainer ScpC
 @inject ProtectedLocalStorage PLS
 @inject IDataAccess db
 @rendermode InteractiveServer
@@ -46,14 +46,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         //dnm = 0 ise son donem
-        ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
+        //if (ScpC.IsOk)
+        // ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            if (!SC.IsOk)
+            if (!ScpC.IsOk)
             {
                 UsrPLS lm = new();
                 var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
@@ -61,12 +62,24 @@ else
                 {
                     lm = toto.Value;
                 }
-                if(!SC.CheckLogin(lm.usrid, lm.usrpwd))
+                if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
                     Navigation.NavigateTo("login");
+                else
+                {
+                    LoadData();
+                }
             }
+            else
+                LoadData();
         }
 
         base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void LoadData()
+    {
+        ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
+        StateHasChanged();
     }
 
     private sealed class LS

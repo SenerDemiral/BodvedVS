@@ -1,5 +1,6 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer sc
+@inject NavigationManager Navigation
+@inject IScopedContainer ScpC
 @rendermode renderMode
 
 @page "/InpRnkSzn"
@@ -42,7 +43,7 @@
                     <td>
                         <input readonly="@RO"
                                type="text"
-                               size="50"
+                               size="10"
                                maxlength="80"
                                @bind="r.R0"
                                @bind:after='(() => CheckUpd(r))'>
@@ -130,7 +131,10 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        LoadData();
+        if (ScpC.IsAdm || ScpC.IsTnm)
+            LoadData();
+        else
+            Navigation.NavigateTo("login");
     }
 
     private void LoadData()

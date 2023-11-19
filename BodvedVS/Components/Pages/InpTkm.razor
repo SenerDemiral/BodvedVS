@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer sc
+@inject IScopedContainer ScpC
 @rendermode renderMode
 
 @page "/InpTkm/{ccid:int}/{header}"
@@ -60,9 +60,16 @@
                                @bind="r.Ad"
                                @bind:after='(() => CheckUpd(r))'>
                     </td>
-                    <td>
-                        <a href="InpTkmOyn/@r.CTId/@r.Ad">👥</a>
-                    </td>
+                    @if (RO)
+                    {
+                        <td></td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a href="InpTkmOyn/@r.CTId/@r.Ad">👥</a>
+                        </td>
+                    }
                     <td>
                         <input readonly="@RO"
                                type="text"
@@ -144,7 +151,7 @@ else
             if (r.oAd != r.Ad ||
                 r.oAdres != r.Adres ||
                 r.oMail != r.Mail ||
-                r.oKonum != r.Konum )
+                r.oKonum != r.Konum)
                 r.MF = '~';
         }
     }
@@ -182,6 +189,7 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
+        RO = ScpC.IsAdm || ScpC.IsTnm ? false : true;
         LoadData();
     }
 

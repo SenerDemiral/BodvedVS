@@ -1,5 +1,6 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer sc
+@inject NavigationManager Navigation
+@inject IScopedContainer ScpC
 @rendermode renderMode
 
 @page "/InpTkmOyn/{ctid:int}/{header}"
@@ -21,9 +22,7 @@
                 <th>MF</th>
                 <th>Sil</th>
                 <th>Ad</th>
-                <th>Tel</th>
-                <th>eMail</th>
-                <th>DğmYıl</th>
+                <th>Oync</th>
             </tr>
         </thead>
         <tbody>
@@ -55,20 +54,18 @@
             }
         </tbody>
     </table>
+
+    <datalist id="PP">
+        @foreach (var r in pp)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
 }
 else
 {
     <div>...</div>
 }
-
-<datalist id="PP">
-    @foreach (var r in pp)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-
-
 
 @code {
     [Parameter] public int CTId { get; set; }
@@ -144,7 +141,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        LoadData();
+        if (ScpC.IsAdm || ScpC.IsTnm)
+            LoadData();
+        else
+            Navigation.NavigateTo("login");
     }
 
 
@@ -152,7 +152,6 @@ else
     {
         to = db.LoadData<TO, dynamic>("select * from ITO_SEL(@CTId) order by PPAd", new { CTId = CTId }).ToList();
         pp = db.LoadData<PP, dynamic>("select * from LU_OYN order by Ad", new { }).ToDictionary((k) => k.Ad);
-    
     }
 
     private sealed class TO

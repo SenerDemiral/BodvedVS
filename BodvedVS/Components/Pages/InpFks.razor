@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer sc
+@inject IScopedContainer ScpC
 @rendermode renderMode
 
 @page "/InpFks/{ccid:int}/{header}"
@@ -19,7 +19,7 @@
             <tr style="background-color:skyblue !important">
                 <th></th>
                 <th></th>
-                <th></th>
+                <th>Sil</th>
                 <th>Tarih</th>
                 <th style="width:50px">Stu</th>
                 <th>Home</th>
@@ -52,7 +52,7 @@
                                @bind:after='(() => CheckUpd(r, "T"))' />
                     </td>
                     <td>
-                        <input readonly="@r.RO"
+                        <input readonly="@r.ROS"
                                type="text"
                                maxlength="30"
                                size="5"
@@ -110,6 +110,7 @@ else
     [Parameter] public string Header { get; set; }
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     private bool opsPending = false;
+    private bool RO = true;
 
     private Dictionary<string, CT>? ct;
     private Dictionary<string, string>? stu = new()
@@ -266,9 +267,17 @@ else
             r.oHCTAd = r.HCTAd;
             r.oGCTAd = r.GCTAd;
 
-            if (String.IsNullOrWhiteSpace(r.Stu))
+            r.RO = true;
+            r.ROS = true;
+            if (ScpC.IsAdm || ScpC.IsTnm)
             {
                 r.RO = false;
+                r.ROS = false;
+
+            }
+            else if (String.IsNullOrWhiteSpace(r.Stu))
+            {
+                r.ROS = false;
             }
         }
     }
@@ -276,6 +285,7 @@ else
     private sealed class CET
     {
         public bool RO = true;
+        public bool ROS = true;
 
         public char MF = '=';
         public int CETId { get; set; }

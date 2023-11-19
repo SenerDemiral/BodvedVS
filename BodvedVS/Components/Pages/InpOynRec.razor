@@ -1,9 +1,10 @@
-﻿@inject IScopedContainer SC
+﻿@inject NavigationManager Navigation
+@inject IScopedContainer ScpC
 @inject IDataAccess db
 @rendermode renderMode
 @page "/InpOynRec/{ppid:int}"
 
-<h1>InpOynRec @SC.UsrId</h1>
+<h1>InpOynRec @ScpC.UsrId</h1>
 
 <div>
     <button disabled="@RO"
@@ -12,6 +13,7 @@
     </button>
 </div>
 
+@if(pp != null){
 <table class="table-edit">
     <tr>
         <td>Id</td>
@@ -161,10 +163,11 @@
         </td>
     </tr>
     <tr>
-        <td>B</td>
+        <td>Belgeler</td>
         <td>@((MarkupString)pp.Belge)</td>
     </tr>
 </table>
+}
 
 @code {
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
@@ -175,31 +178,34 @@
     private void Save()
     {
         var ppm = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
-            {
-                PPId = pp.PPId,
-                GirDnm = pp.GirDnm,
-                R0 = pp.R0,
-                Ad = pp.Ad,
-                Sex = pp.Sex,
-                DgmYil = pp.DgmYil,
-                Tel = pp.Tel,
-                Mail = pp.Mail,
-                Info = pp.Info,
-                B1 = pp.B1,
-                B2 = pp.B2,
-                B3 = pp.B3,
-                B4 = pp.B4,
-                B5 = pp.B5,
-                B6 = pp.B6,
-                B7 = pp.B7,
-                B8 = pp.B8
-            };
+        {
+            PPId = pp.PPId,
+            GirDnm = pp.GirDnm,
+            R0 = pp.R0,
+            Ad = pp.Ad,
+            Sex = pp.Sex,
+            DgmYil = pp.DgmYil,
+            Tel = pp.Tel,
+            Mail = pp.Mail,
+            Info = pp.Info,
+            B1 = pp.B1,
+            B2 = pp.B2,
+            B3 = pp.B3,
+            B4 = pp.B4,
+            B5 = pp.B5,
+            B6 = pp.B6,
+            B7 = pp.B7,
+            B8 = pp.B8
+        };
         db.SaveRec("IOR_MDF", ppm);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        pp = db.LoadRec<PP, dynamic>("select * from IOR_SEL(@iPPId)", new { iPPId = PPId });
+        if (ScpC.IsAdm || ScpC.IsTnm)
+            pp = db.LoadRec<PP, dynamic>("select * from IOR_SEL(@iPPId)", new { iPPId = PPId });
+        else
+            Navigation.NavigateTo("login");
         //pp = db.LoadRec<PP, dynamic>("select * from PP where PPId = @PPId", new { PPId = PPId });
     }
 

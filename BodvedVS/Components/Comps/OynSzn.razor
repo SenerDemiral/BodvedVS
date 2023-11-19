@@ -19,7 +19,7 @@
                     </div>
                 </ColumnOptions>
             </Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn>
-            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="Δ">
+            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="Belge">
                 <span style="padding-right:4px">@((MarkupString)context.Belge)</span>
             </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn> 
             <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Idx)" IsDefaultSortColumn="true" Sortable="true" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
@@ -115,8 +115,8 @@
         public string? PXDclass { get; set; }
         public string? PXclass { get; set; }
 
-        public int B1 { get; set; } = 1;
-        public int B2 { get; set; } = 2;
+        public int B1 { get; set; }
+        public int B2 { get; set; }
         public int B3 { get; set; }
         public int B4 { get; set; }
         public int B5 { get; set; }
@@ -133,9 +133,9 @@
         public string? B7s => B7 == 0 ? "" : $"⚖{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";     // ⚖hakem belgesi
         public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";     // 🧢takım kaptan
 
-        //public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s).TrimEnd('│');
+        public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
 
-        public string? Belge => "\U0001F600\U0001F601";
+        //public string? Belge => "\U0001F600\U0001F601";
 
     }
 

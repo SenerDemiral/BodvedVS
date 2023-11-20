@@ -2,6 +2,7 @@ using BodvedVS.Components;
 using BodvedVS.DataLibrary;
 using MudBlazor;
 using MudBlazor.Services;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,4 +72,21 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 
+app.MapGet("/apict", async (IDataAccess db) => {
+
+    var ct = (await db.LoadDataAsync<APIct, dynamic>("select * from API_CT", new { })).ToList();
+    foreach (var r in ct)
+    {
+        r.Oyuncular = (await db.LoadDataAsync<APIctp, dynamic>("select * from API_CTP(@CTId)", new { CTId = r.Id })).ToList();
+    }
+    return ct;
+});
+
+app.MapGet("/apipp", async (IDataAccess db) =>
+
+    (await db.LoadDataAsync<APIpp, dynamic>("select * from API_PP", new { })).ToList()
+);
+
+
 app.Run();
+

@@ -8,10 +8,10 @@
 @if (cet != null)
 {
     <div style="display:flex;justify-content:space-between;">
-        <button @onclick="Insert">➕Ekle</button>
+        <button disabled="@RO" @onclick="Insert">➕Ekle</button>
         <div>
-            <button @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
-            <button @onclick="Save">✅Kaydet</button>
+            <button disabled="@RO" @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            <button disabled="@RO" @onclick="Save">✅Kaydet</button>
         </div>
     </div>
     <table class="table-edit">

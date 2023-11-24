@@ -1,30 +1,86 @@
-﻿@inject IDataAccess db
+﻿@inject IScopedContainer ScpC
+@inject IDataAccess db
+@rendermode renderMode
+
 @page "/Oyn"
 
-<h3>Player</h3>
-<div class="grid" tabindex="-1">
-    <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid>
-        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.PPId)" Sortable="true" />
-        <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Ad)" Sortable="true">
-            <ColumnOptions>
-                <div class="search-box">
-                    <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
-                </div>
-            </ColumnOptions>
-        </Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn>
-    </QuickGrid>
-</div>
+<h3>Oyuncular</h3>
+@if (pp != null)
+{
+    <div class="grid" tabindex="-1">
+        <QuickGrid Items=@FilteredPlayers Virtualize="true" @ref=ppGrid Class="fs-12">
+            <PropertyColumn Property="@(p => p.PPId)"
+                            Sortable="true"
+                            Align="Align.Center"
+                            Title="Id" />
+            <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"
+                            Sortable="true">
+                <ColumnOptions>
+                    <div class="search-box">
+                        <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
+                    </div>
+                </ColumnOptions>
+            </PropertyColumn>
+            <TemplateColumn Title="Belge">
+                <span style="padding-right:4px; width:160px;display: inline-block;">@((MarkupString)context.Belge)</span>
+            </TemplateColumn>
+            <PropertyColumn Property="@(p => p.R)"
+                            Sortable="true"
+                            Format="#" Align="Align.Center"
+                            Title="Rank" />
+            <PropertyColumn Property="@(p => p.PX)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.SMW)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.SML)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.DMW)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.DML)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center" />
+            <PropertyColumn Property="@(p => p.TC)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center"
+                            Title="#Tkm" />
+            <PropertyColumn Property="@(p => p.DC)"
+                            Sortable="true"
+                            Format="#"
+                            Align="Align.Center"
+                            Title="#Szn" />
+            <PropertyColumn Property="@(p => p.DnmS)"
+                            Title="Sezon" />
+            <TemplateColumn Title="Detay">
+                <span style="padding-right:4px">@((MarkupString)context.Link)</span>
+            </TemplateColumn>
+            <TemplateColumn Title="Edit">
+                <span style="padding-right:4px">@((MarkupString)context.Edt)</span>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+}
 
 @code {
-    IQueryable<PP> PPs;
+    IQueryable<PP> pp;
     QuickGrid<PP> ppGrid;
     private string nameFilter;
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     IQueryable<PP> FilteredPlayers
     {
         get
         {
-            var result = PPs;
+            var result = pp;
 
             if (!string.IsNullOrEmpty(nameFilter))
             {
@@ -38,15 +94,28 @@
     protected override async Task OnInitializedAsync()
     {
         //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
-        PPs = (await db.LoadDataAsync<PP, dynamic>($"select * from PP", new { })).AsQueryable();
+        pp = (await db.LoadDataAsync<PP, dynamic>($"select * from UI_OYN", new { })).AsQueryable();
         //PPs = cc.AsQueryable();
+        var aaa = ScpC;
     }
 
     private sealed class PP
     {
         public int PPId { get; set; }
 
-        public string? Ad { get; set; }
+        public string Ad { get; set; }
+        public int R { get; set; }
+        public int PX { get; set; }
+        public int SMW { get; set; }
+        public int SML { get; set; }
+        public int DMW { get; set; }
+        public int DML { get; set; }
+        public int TC { get; set; } // Takim Count
+        public int DC { get; set; } // Dnm/Szn Count
+        public string DnmS { get; set; }    // Donemler 17,18,..
+        public string Belge { get; set; }
+        public string Link { get; set; }
+        public string Edt { get; set; }
     }
 
 }

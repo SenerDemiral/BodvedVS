@@ -8,33 +8,33 @@
 
     <div class="tc--content" tabindex="-1">
         <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid >
-            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="→">
+            <TemplateColumn Title="→">
                 <a href="MacOyn/@context.PPId">→</a>
-            </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
+            </TemplateColumn>
 
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.PPAd)" Title="Oyuncu" Sortable="true">
+            <PropertyColumn Property="@(p => p.PPAd)" Title="Oyuncu" Sortable="true">
                 <ColumnOptions>
                     <div class="search-box">
                         <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Adı..." />
                     </div>
                 </ColumnOptions>
-            </Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn>
-            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="Belge">
+            </PropertyColumn>
+            <TemplateColumn Title="Belge">
                 <span style="padding-right:4px">@((MarkupString)context.Belge)</span>
-            </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn> 
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.Idx)" IsDefaultSortColumn="true" Sortable="true" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.R)" Sortable="true" Class="w-int" />
-            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="Δ" SortBy="@pxdSort">
+            </TemplateColumn> 
+            <PropertyColumn Property="@(p => p.Idx)" IsDefaultSortColumn="true" Sortable="true" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
+            <PropertyColumn Property="@(p => p.R)" Sortable="true" Class="w-int" />
+            <TemplateColumn Title="Δ" SortBy="@pxdSort">
                 <span class="@context.PXDclass">@(Math.Abs(context.PXD))</span>
-            </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.R0)" Sortable="true" Class="w-int" />
-            <Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn Title="δ" SortBy="@pxSort">
+            </TemplateColumn>
+            <PropertyColumn Property="@(p => p.R0)" Sortable="true" Class="w-int" />
+            <TemplateColumn Title="δ" SortBy="@pxSort">
                 <span class="@context.PXclass">@(Math.Abs(context.PX))</span>
-            </Microsoft.AspNetCore.Components.QuickGrid.TemplateColumn>
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.MW)" Sortable="true" Class="w-int" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.ML)" Sortable="true" Class="w-int" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.CTAds)" Title="Oynadığı Takım(lar)" />
-            <Microsoft.AspNetCore.Components.QuickGrid.PropertyColumn Property="@(p => p.PPId)" Sortable="true" Class="w-int" />
+            </TemplateColumn>
+            <PropertyColumn Property="@(p => p.MW)" Sortable="true" Class="w-int" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
+            <PropertyColumn Property="@(p => p.ML)" Sortable="true" Class="w-int" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
+            <PropertyColumn Property="@(p => p.CTAds)" Title="Oynadığı Takım(lar)" />
+            <PropertyColumn Property="@(p => p.PPId)" Sortable="true" Class="w-int" />
 
 
         </QuickGrid>
@@ -114,26 +114,27 @@
 
         public string? PXDclass { get; set; }
         public string? PXclass { get; set; }
+        public string? Belge { get; set; }
 
-        public int B1 { get; set; }
-        public int B2 { get; set; }
-        public int B3 { get; set; }
-        public int B4 { get; set; }
-        public int B5 { get; set; }
-        public int B6 { get; set; }
-        public int B7 { get; set; }
-        public int B8 { get; set; }
+        // public int B1 { get; set; }
+        // public int B2 { get; set; }
+        // public int B3 { get; set; }
+        // public int B4 { get; set; }
+        // public int B5 { get; set; }
+        // public int B6 { get; set; }
+        // public int B7 { get; set; }
+        // public int B8 { get; set; }
 
-        public string? B1s => B1 == 0 ? "" : $"⚜{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";     // ⚜kulüp üyeliği
-        public string? B2s => B2 == 0 ? "" : $"🎗{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";     // 🎗lisanslı oyuncu
-        public string? B3s => B3 == 0 ? "" : $"⚔{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";     // ⚔bodved lig katılım sayısı
-        public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";     // 🏆takım lig birinciliği
-        public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";     // 👑ferdi turnuva birinciliği
-        public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";     // 🏓antrenör belgesi
-        public string? B7s => B7 == 0 ? "" : $"⚖{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";     // ⚖hakem belgesi
-        public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";     // 🧢takım kaptan
+        // public string? B1s => B1 == 0 ? "" : $"⚜{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";     // ⚜kulüp üyeliği
+        // public string? B2s => B2 == 0 ? "" : $"🎗{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";     // 🎗lisanslı oyuncu
+        // public string? B3s => B3 == 0 ? "" : $"⚔{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";     // ⚔bodved lig katılım sayısı
+        // public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";     // 🏆takım lig birinciliği
+        // public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";     // 👑ferdi turnuva birinciliği
+        // public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";     // 🏓antrenör belgesi
+        // public string? B7s => B7 == 0 ? "" : $"⚖{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";     // ⚖hakem belgesi
+        // public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";     // 🧢takım kaptan
 
-        public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
+        //public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
 
         //public string? Belge => "\U0001F600\U0001F601";
 

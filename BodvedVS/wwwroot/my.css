@@ -2,9 +2,24 @@
     height: calc(100vh - 80px);
 }*/
 
+.fs-12{
+    font-size: 12px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+.wdth-100 {
+    width:160px;
+    max-width:160px;
+}
 a {
     text-decoration: underline;
     color: inherit;
+}
+
+.nav-link {
+    text-decoration: none;
 }
 
 input, button {

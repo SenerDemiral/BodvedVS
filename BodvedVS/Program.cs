@@ -71,6 +71,10 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+//app.Use((context, next) =>
+//{
+//    return next(context);
+//});
 
 app.MapGet("/apict", async (IDataAccess db) => {
 

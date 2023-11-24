@@ -1,4 +1,4 @@
-﻿@inject ISnackbar Snackbar
+﻿@* @inject ISnackbar Snackbar *@
 @inject IDataAccess db
 @inject IScopedContainer sc
 @* @rendermode renderMode *@
@@ -68,7 +68,7 @@
     void DenemeClicked()
     {
 
-        Snackbar.Add("deneme dfafafasd", Severity.Error);
+        // Snackbar.Add("deneme dfafafasd", Severity.Error);
     }
     private sealed class CC
     {

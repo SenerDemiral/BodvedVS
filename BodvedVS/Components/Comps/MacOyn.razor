@@ -102,6 +102,7 @@ else
             <table class="table-min">
                 <thead>
                     <tr style="background-color:skyblue !important">
+                        <th>#</th>
                         <th>Trh</th>
                         <th>Szn</th>
                         <th>☺</th>
@@ -116,12 +117,13 @@ else
                     @if (r.isLF)  // Seperator
                     {
                         <tr>
-                            <td colspan="7" style="background: linear-gradient(skyblue, whitesmoke, skyblue);">&nbsp;</td>
+                            <td colspan="8" style="background: linear-gradient(skyblue, whitesmoke, skyblue);">&nbsp;</td>
                         </tr>
                     }
                     else
                     {
                         <tr>
+                            <td>@r.MACId</td>
                             <td class="tooltip">@r.Trh.ToString("dd.MM.yy")</td>
                             <td>@r.CCAd</td>
                             <td>@((MarkupString)r.ppRnk)</td>

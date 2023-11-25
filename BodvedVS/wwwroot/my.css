@@ -61,7 +61,7 @@ input, button {
     }
 
 .quickgrid {
-    table-layout: auto;
+    table-layout: fixed;
 }
 
     .quickgrid thead {

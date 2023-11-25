@@ -1,0 +1,32 @@
+﻿@inject IDataAccess db
+
+@page "/about"
+
+<div style="margin:0 6px">@((MarkupString)about.Info)</div>
+
+@code {
+    ABOUT about;
+
+    protected override void OnInitialized()
+    {
+        about = db.LoadRec<ABOUT, dynamic>("select * from UI_About", new { });
+    }
+
+    private sealed class ABOUT
+    {
+        public string Info { get; set; }
+    }
+
+}
+
+<style>
+    ul {
+        display: block;
+        list-style-type: disc;
+        /*margin-top: 1em;*/
+        margin-bottom: 1em;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 40px;
+    }
+</style>

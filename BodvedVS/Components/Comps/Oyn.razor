@@ -4,77 +4,127 @@
 
 @page "/Oyn"
 
-<h3>Oyuncular</h3>
 @if (pp != null)
 {
-    <div class="grid" tabindex="-1">
-        <QuickGrid Items=@FilteredPlayers Virtualize="true" @ref=ppGrid Class="fs-12">
-            <PropertyColumn Property="@(p => p.PPId)"
-                            Sortable="true"
-                            Align="Align.Center"
-                            Title="Id" />
-            <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"
-                            Sortable="true">
-                <ColumnOptions>
-                    <div class="search-box">
-                        <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
-                    </div>
-                </ColumnOptions>
-            </PropertyColumn>
-            <TemplateColumn Title="Belge">
-                <span style="padding-right:4px; width:160px;display: inline-block;">@((MarkupString)context.Belge)</span>
-            </TemplateColumn>
-            <PropertyColumn Property="@(p => p.R)"
-                            Sortable="true"
-                            Format="#" Align="Align.Center"
-                            Title="Rank" />
-            <PropertyColumn Property="@(p => p.PX)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center" />
-            <PropertyColumn Property="@(p => p.SMW)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center" />
-            <PropertyColumn Property="@(p => p.SML)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center" />
-            <PropertyColumn Property="@(p => p.DMW)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center" />
-            <PropertyColumn Property="@(p => p.DML)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center" />
-            <PropertyColumn Property="@(p => p.TC)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center"
-                            Title="#Tkm" />
-            <PropertyColumn Property="@(p => p.DC)"
-                            Sortable="true"
-                            Format="#"
-                            Align="Align.Center"
-                            Title="#Szn" />
-            <PropertyColumn Property="@(p => p.DnmS)"
-                            Title="Sezon" />
-            <TemplateColumn Title="Detay">
-                <span style="padding-right:4px">@((MarkupString)context.Link)</span>
-            </TemplateColumn>
-            <TemplateColumn Title="Edit">
-                <span style="padding-right:4px">@((MarkupString)context.Edt)</span>
-            </TemplateColumn>
-        </QuickGrid>
+    <div class="table-container" tabindex="-1">
+        <div class="tc--header fs-12">
+            @* <div style="position:sticky;top:0;background-color:white;font-size:14px;line-height:24px;">@((MarkupString)bi.BelgeInfo)</div> *@
+            <div>@((MarkupString)bi.BelgeInfo)</div>
+        </div>
+        <div class="tc--content">
+            <QuickGrid Items=@FilteredPlayers Pagination="@pagination" @ref=ppGrid Class="fs-12">
+                <PropertyColumn Property="@(p => p.PPId)"
+                                Sortable="true"
+                                Align="Align.Center"
+                                Title="Id" />
+                <TemplateColumn Title="Detay">
+                    <span style="padding-right:4px">@((MarkupString)context.Link)</span>
+                </TemplateColumn>
+                <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"
+                                Sortable="true">
+                    <ColumnOptions>
+                        <div class="search-box">
+                            <input type="search" autofocus @bind="nameFilter" @bind:event="oninput" placeholder="Player name..." />
+                        </div>
+                    </ColumnOptions>
+                </PropertyColumn>
+                <TemplateColumn Title="Belge">
+                    <span style="padding-right:4px; width:160px;display: inline-block;">@((MarkupString)context.Belge)</span>
+                </TemplateColumn>
+                <PropertyColumn Property="@(p => p.R)"
+                                Sortable="true"
+                                Format="#" Align="Align.Center"
+                                Title="Rank" />
+                <PropertyColumn Property="@(p => p.PX)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center" />
+                <PropertyColumn Property="@(p => p.SMW)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center" />
+                <PropertyColumn Property="@(p => p.SML)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center" />
+                <PropertyColumn Property="@(p => p.DMW)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center" />
+                <PropertyColumn Property="@(p => p.DML)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center" />
+                <PropertyColumn Property="@(p => p.TC)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center"
+                                Title="#Tkm" />
+                <PropertyColumn Property="@(p => p.DC)"
+                                Sortable="true"
+                                Format="#"
+                                Align="Align.Center"
+                                Title="#Szn" />
+                <PropertyColumn Property="@(p => p.DnmS)"
+                                Title="Sezon" />
+                <TemplateColumn Title="Edit">
+                    <span style="padding-right:4px">@((MarkupString)context.Edt)</span>
+                </TemplateColumn>
+                <TemplateColumn Title="Edit2">
+                    <button @onclick="() => ShowModal(context.PPId)">View Movies</button>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+        <Paginator State="@pagination" />
+    </div>
+}
+
+@if (showModal)
+{
+    <div style="z-index:100;display:block;position:fixed;top:50px;left:50px;background-color:lightgoldenrodyellow;padding:10px">
+        <InpOynRec PPId=@ppId OnSaved="Saved" OnCancelled="Cancelled"/>
     </div>
 }
 
 @code {
+    BELGEINFO bi;
     IQueryable<PP> pp;
     QuickGrid<PP> ppGrid;
     private string nameFilter;
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+    PaginationState pagination = new PaginationState { ItemsPerPage = 20 };
+    private bool showModal { get; set; } = false;
+    private int ppId { get; set; }
+
+    private void ShowModal(int ppId)
+    {
+        if(showModal)
+            showModal = false;
+        else
+        {
+            this.ppId = ppId;
+            showModal = true;
+        }
+    }
+
+    public void Cancelled()
+    {
+        showModal = false;
+    }
+    public void Saved()
+    {
+        showModal = false;
+
+        var r = pp.SingleOrDefault((r) => r.PPId == ppId);
+
+        if (r != null)
+        {
+            var rr = db.LoadRec<PPS, dynamic>("select PPId, AdS, Belge from PP where PPId = @PPId", new { ppId });
+
+            r.Ad = rr.AdS;
+            r.Belge = rr.Belge;
+        }
+    }
 
     IQueryable<PP> FilteredPlayers
     {
@@ -93,10 +143,24 @@
 
     protected override async Task OnInitializedAsync()
     {
+        bi = db.LoadRec<BELGEINFO, dynamic>("select * from BELGE_INFO", new { });
         //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
         pp = (await db.LoadDataAsync<PP, dynamic>($"select * from UI_OYN", new { })).AsQueryable();
         //PPs = cc.AsQueryable();
         var aaa = ScpC;
+    }
+
+    private sealed class BELGEINFO
+    {
+        public string BelgeInfo { get; set; }
+    }
+
+    private sealed class PPS
+    {
+        public int PPId { get; set; }
+        public string AdS { get; set; }
+        public string Sex { get; set; }
+        public string Belge { get; set; }
     }
 
     private sealed class PP

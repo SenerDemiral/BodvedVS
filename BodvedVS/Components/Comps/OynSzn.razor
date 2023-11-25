@@ -4,7 +4,10 @@
 
 
 <div class="table-container">
-    <div class="tc--header">@Dnm  Sezon Oyuncuları</div>
+    <div class="tc--header fs-12">
+        <div class="text-center">@Dnm  Sezon Oyuncuları </div>
+        <div>@((MarkupString)bi.BelgeInfo)</div>
+    </div>
 
     <div class="tc--content" tabindex="-1">
         <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid >
@@ -44,6 +47,7 @@
 
 @code {
     [Parameter] public int Dnm { get; set; }
+    BELGEINFO bi;
     IQueryable<PDR> PDRs;
     QuickGrid<PDR> ppGrid;
     private string nameFilter = String.Empty;
@@ -62,9 +66,9 @@
     //IQueryable<Country>? FilteredItems => items?.Where(x => x.Name.Contains(nameFilter, StringComparison.CurrentCultureIgnoreCase));
 
     GridSort<PDR> pxdSort = GridSort<PDR>
-        .ByDescending(x => x.PXD);
+        .ByAscending(x => x.PXD);
     GridSort<PDR> pxSort = GridSort<PDR>
-        .ByDescending(x => x.PX);
+        .ByAscending(x => x.PX);
 
     IQueryable<PDR> FilteredPlayers
     {
@@ -83,6 +87,7 @@
     }
     protected override async Task OnParametersSetAsync()
     {
+        bi = db.LoadRec<BELGEINFO, dynamic>("select * from BELGE_INFO", new { });
         //PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from PDR where Dnm = @iDnm", new { iDnm = Dnm })).AsQueryable();
         PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from UI_OYN_SZN(@iDnm)", new { iDnm = Dnm })).AsQueryable();
     }
@@ -96,6 +101,10 @@
         //PDRs = (await db.LoadDataAsync<PDR, dynamic>($"select * from PDR where Dnm = @iDnm", new { iDnm = Dnm })).AsQueryable();
         //PPs = cc.AsQueryable();
 
+    }
+    private sealed class BELGEINFO
+    {
+        public string BelgeInfo { get; set; }
     }
 
     private sealed class PDR

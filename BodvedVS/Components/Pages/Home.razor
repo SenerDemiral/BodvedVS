@@ -5,7 +5,8 @@
 @page "/"
 
 <PageTitle>Home</PageTitle>
-<input type="button" @onclick="DenemeClicked" value="Click me" />
+
+@* <input type="button" @onclick="DenemeClicked" value="Click me" />
  
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Duyurular</div>
@@ -19,16 +20,7 @@
         </article>
     </main>
 </div>
-
-
-<div class="wrapper-sub">
-    <div class="wrapper-sub_header">Sezon Toplamları</div>
-    <main class="cards">
-        <article class="card">
-            <SznStat />
-        </article>
-    </main>
-</div>
+ *@
 
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Son Sezon Fikstürü</div>
@@ -53,7 +45,17 @@
         }
     </main>
 </div>
- 
+
+<div class="wrapper-sub">
+    <div class="wrapper-sub_header">Sezon Toplamları</div>
+    <main class="cards">
+        <article class="card">
+            <SznStat />
+        </article>
+    </main>
+</div>
+
+
 @code {
     IEnumerable<CC>? CCs;
 

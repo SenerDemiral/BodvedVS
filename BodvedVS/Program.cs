@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using BodvedVS.Components;
 using BodvedVS.DataLibrary;
 using MudBlazor;
@@ -31,24 +32,24 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
     }
 });
 
-builder.Services.AddMudServices(config =>
-{
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
-    config.SnackbarConfiguration.PreventDuplicates = false;
-    config.SnackbarConfiguration.NewestOnTop = true;
-    config.SnackbarConfiguration.ShowCloseIcon = true;
-    config.SnackbarConfiguration.VisibleStateDuration = 10000;
-    config.SnackbarConfiguration.HideTransitionDuration = 500;
-    config.SnackbarConfiguration.ShowTransitionDuration = 500;
-    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-});
+//builder.Services.AddMudServices(config =>
+//{
+//    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+//    config.SnackbarConfiguration.PreventDuplicates = false;
+//    config.SnackbarConfiguration.NewestOnTop = true;
+//    config.SnackbarConfiguration.ShowCloseIcon = true;
+//    config.SnackbarConfiguration.VisibleStateDuration = 10000;
+//    config.SnackbarConfiguration.HideTransitionDuration = 500;
+//    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+//    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+//});
 
 builder.Services.AddSingleton<ISingletonContainer, SingletonContainer>();
 builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 
-builder.Services.AddMudBlazorSnackbar();
-
+//builder.Services.AddMudBlazorSnackbar();
+builder.Services.AddBlazoredModal();
 
 var app = builder.Build();
 

@@ -2,171 +2,176 @@
 @inject IScopedContainer ScpC
 @inject IDataAccess db
 @rendermode renderMode
-@page "/InpOynRec/{ppid:int}"
-
+@* @page "/InpOynRec/{ppid:int}"
+ *@
 <h1>InpOynRec @ScpC.UsrId</h1>
 
-<div>
+<div style="display:flex;justify-content:space-between;">
     <button disabled="@RO"
             @onclick="Save">
         ✅Kaydet
     </button>
+    <button disabled="@RO"
+            @onclick="Cancel" style="margin-right: 10px;">
+        🚫Vazgeç
+    </button>
 </div>
 
-@if(pp != null){
-<table class="table-edit">
-    <tr>
-        <td>Id</td>
-        <td>@pp.PPId</td>
-    </tr>
-    <tr>
-        <td>Kayıt Dönemi</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.GirDnm" />
-        </td>
-    </tr>
-    <tr>
-        <td>Giriş Rank</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.R0" />
-        </td>
-    </tr>
-    <tr>
-        <td>Ad</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="30"
-                   @bind="pp.Ad" />
-        </td>
-    </tr>
-    <tr>
-        <td>Sex</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.Sex" />
-        </td>
-    </tr>
-    <tr>
-        <td>Doğum Yılı</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.DgmYil" />
-        </td>
-    </tr>
-    <tr>
-        <td>Tel</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="20"
-                   @bind="pp.Tel" />
-        </td>
-    </tr>
-    <tr>
-        <td>eMail</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="30"
-                   @bind="pp.Mail" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B1n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B1" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B2n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B2" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B3n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B3" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B4n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B4" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B5n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B5" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B6n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B6" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B7n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B7" />
-        </td>
-    </tr>
-    <tr>
-        <td>@pp.B8n</td>
-        <td>
-            <input readonly="@RO"
-                   type="text"
-                   size="5"
-                   @bind="pp.B8" />
-        </td>
-    </tr>
-    <tr>
-        <td>Info</td>
-        <td>
-            <textarea readonly="@RO"
-                      rows="4" cols="30"
-                      @bind="pp.Info" />
-        </td>
-    </tr>
-    <tr>
-        <td>Belgeler</td>
-        <td>@((MarkupString)pp.Belge)</td>
-    </tr>
-</table>
+@if (pp != null)
+{
+    <table class="table-edit">
+        <tr>
+            <td>Id</td>
+            <td>@pp.PPId</td>
+        </tr>
+        <tr>
+            <td>Kayıt Dönemi</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.GirDnm" />
+            </td>
+        </tr>
+        <tr>
+            <td>Giriş Rank</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.R0" />
+            </td>
+        </tr>
+        <tr>
+            <td>Ad</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="30"
+                       @bind="pp.Ad" />
+            </td>
+        </tr>
+        <tr>
+            <td>Sex</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.Sex" />
+            </td>
+        </tr>
+        <tr>
+            <td>Doğum Yılı</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.DgmYil" />
+            </td>
+        </tr>
+        <tr>
+            <td>Tel</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="20"
+                       @bind="pp.Tel" />
+            </td>
+        </tr>
+        <tr>
+            <td>eMail</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="30"
+                       @bind="pp.Mail" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B1n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B1" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B2n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B2" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B3n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B3" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B4n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B4" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B5n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B5" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B6n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B6" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B7n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B7" />
+            </td>
+        </tr>
+        <tr>
+            <td>@pp.B8n</td>
+            <td>
+                <input readonly="@RO"
+                       type="text"
+                       size="5"
+                       @bind="pp.B8" />
+            </td>
+        </tr>
+        <tr>
+            <td>Info</td>
+            <td>
+                <textarea readonly="@RO"
+                          rows="4" cols="30"
+                          @bind="pp.Info" />
+            </td>
+        </tr>
+        <tr>
+            <td>Belgeler</td>
+            <td>@((MarkupString)pp.Belge)</td>
+        </tr>
+    </table>
 }
 
 @code {
@@ -174,7 +179,15 @@
     [Parameter] public int PPId { get; set; }
     private PP pp;
     private bool RO = false;
+    [Parameter]
+    public EventCallback OnSaved { get; set; }
+    [Parameter]
+    public EventCallback OnCancelled { get; set; }
 
+    private void Cancel()
+    {
+        OnCancelled.InvokeAsync();
+    }
     private void Save()
     {
         var ppm = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
@@ -198,6 +211,7 @@
             B8 = pp.B8
         };
         db.SaveRec("IOR_MDF", ppm);
+        OnSaved.InvokeAsync();
     }
 
     protected override async Task OnInitializedAsync()

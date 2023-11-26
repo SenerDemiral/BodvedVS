@@ -4,7 +4,7 @@
 @rendermode renderMode
 @* @page "/InpOynRec/{ppid:int}"
  *@
-<h1>InpOynRec @ScpC.UsrId</h1>
+<h1 class="text-center">Oyuncu Edit @ScpC.UsrId</h1>
 
 <div style="display:flex;justify-content:space-between;">
     <button disabled="@RO"
@@ -179,10 +179,8 @@
     [Parameter] public int PPId { get; set; }
     private PP pp;
     private bool RO = false;
-    [Parameter]
-    public EventCallback OnSaved { get; set; }
-    [Parameter]
-    public EventCallback OnCancelled { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public EventCallback OnCancelled { get; set; }
 
     private void Cancel()
     {

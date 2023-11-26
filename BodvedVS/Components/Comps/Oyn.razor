@@ -6,13 +6,18 @@
 
 @if (pp != null)
 {
-    <div class="table-container" tabindex="-1">
+    <div class="table-container @pointerEvent" tabindex="-1">
         <div class="tc--header fs-12">
-            @* <div style="position:sticky;top:0;background-color:white;font-size:14px;line-height:24px;">@((MarkupString)bi.BelgeInfo)</div> *@
             <div>@((MarkupString)bi.BelgeInfo)</div>
         </div>
         <div class="tc--content">
             <QuickGrid Items=@FilteredPlayers Pagination="@pagination" @ref=ppGrid Class="fs-12">
+                @if (ScpC.IsAdm || ScpC.IsTnm)
+                {
+                    <TemplateColumn Title="Edt">
+                        <button @onclick="() => ShowModal(context.PPId)">✏️</button>
+                    </TemplateColumn>
+                }
                 <PropertyColumn Property="@(p => p.PPId)"
                                 Sortable="true"
                                 Align="Align.Center"
@@ -67,42 +72,47 @@
                                 Title="#Szn" />
                 <PropertyColumn Property="@(p => p.DnmS)"
                                 Title="Sezon" />
-                <TemplateColumn Title="Edit">
-                    <span style="padding-right:4px">@((MarkupString)context.Edt)</span>
-                </TemplateColumn>
-                <TemplateColumn Title="Edit2">
-                    <button @onclick="() => ShowModal(context.PPId)">View Movies</button>
-                </TemplateColumn>
             </QuickGrid>
+            <Paginator State="@pagination" />
         </div>
-        <Paginator State="@pagination" />
     </div>
 }
 
 @if (showModal)
 {
-    <div style="z-index:100;display:block;position:fixed;top:50px;left:50px;background-color:lightgoldenrodyellow;padding:10px">
-        <InpOynRec PPId=@ppId OnSaved="Saved" OnCancelled="Cancelled"/>
+    <div class="modal">
+        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
     </div>
 }
 
 @code {
-    BELGEINFO bi;
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
+    BI bi;
     IQueryable<PP> pp;
     QuickGrid<PP> ppGrid;
     private string nameFilter;
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     PaginationState pagination = new PaginationState { ItemsPerPage = 20 };
-    private bool showModal { get; set; } = false;
-    private int ppId { get; set; }
+
+    private int inpPPid { get; set; }
+    private string pointerEvent = "pe-auto";
+    private bool _showModal;
+    private bool showModal
+    {
+        get => _showModal;
+        set
+        {
+            _showModal = value;
+            pointerEvent = _showModal ? "pe-none" : "pe-auto";
+        }
+    }
 
     private void ShowModal(int ppId)
     {
-        if(showModal)
+        if (showModal)
             showModal = false;
         else
         {
-            this.ppId = ppId;
+            this.inpPPid = ppId;
             showModal = true;
         }
     }
@@ -111,15 +121,16 @@
     {
         showModal = false;
     }
+
     public void Saved()
     {
         showModal = false;
 
-        var r = pp.SingleOrDefault((r) => r.PPId == ppId);
+        var r = pp.SingleOrDefault((r) => r.PPId == inpPPid);
 
         if (r != null)
         {
-            var rr = db.LoadRec<PPS, dynamic>("select PPId, AdS, Belge from PP where PPId = @PPId", new { ppId });
+            var rr = db.LoadRec<PPS, dynamic>("select PPId, AdS, Belge from PP where PPId = @PPId", new { PPid = inpPPid });
 
             r.Ad = rr.AdS;
             r.Belge = rr.Belge;
@@ -143,14 +154,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        bi = db.LoadRec<BELGEINFO, dynamic>("select * from BELGE_INFO", new { });
+        bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
         //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
         pp = (await db.LoadDataAsync<PP, dynamic>($"select * from UI_OYN", new { })).AsQueryable();
         //PPs = cc.AsQueryable();
         var aaa = ScpC;
     }
 
-    private sealed class BELGEINFO
+    private sealed class BI
     {
         public string BelgeInfo { get; set; }
     }
@@ -159,7 +170,6 @@
     {
         public int PPId { get; set; }
         public string AdS { get; set; }
-        public string Sex { get; set; }
         public string Belge { get; set; }
     }
 

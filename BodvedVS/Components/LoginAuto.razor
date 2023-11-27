@@ -1,0 +1,36 @@
+﻿@inject IScopedContainer ScpC
+@inject ProtectedLocalStorage PLS
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div>LoginAuto</div>
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            //var aaa = Task.Run(async () => await PLS.GetAsync<UsrPLS>("pwd", "bodved"));//.GetAwaiter().GetResult();
+            //var bbb = aaa.Wait(1000);
+        }
+        base.OnAfterRender(firstRender);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!ScpC.IsOk)
+            {
+                UsrPLS lm = new();
+                var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+                if (toto.Success)
+                {
+                    lm = toto.Value;
+                }
+                if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
+                    Navigation.NavigateTo("login");
+            }
+        }
+        await Task.Delay(1000);
+        base.OnAfterRenderAsync(firstRender);
+    }
+}

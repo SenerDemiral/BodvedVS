@@ -3,6 +3,7 @@
 @rendermode renderMode
 
 @page "/Oyn"
+<LoginAuto />
 
 @if (pp != null)
 {
@@ -23,7 +24,8 @@
                                 Align="Align.Center"
                                 Title="Id" />
                 <TemplateColumn Title="Detay">
-                    <span style="padding-right:4px">@((MarkupString)context.Link)</span>
+                    <a href="MacOyn/@context.PPId">🏁</a>
+                    @* <span style="padding-right:4px">@((MarkupString)context.Link)</span> *@
                 </TemplateColumn>
                 <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"
                                 Sortable="true">
@@ -157,8 +159,6 @@
         bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
         //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
         pp = (await db.LoadDataAsync<PP, dynamic>($"select * from UI_OYN", new { })).AsQueryable();
-        //PPs = cc.AsQueryable();
-        var aaa = ScpC;
     }
 
     private sealed class BI
@@ -188,8 +188,8 @@
         public int DC { get; set; } // Dnm/Szn Count
         public string DnmS { get; set; }    // Donemler 17,18,..
         public string Belge { get; set; }
-        public string Link { get; set; }
-        public string Edt { get; set; }
+        //public string Link { get; set; }
+        //public string Edt { get; set; }
     }
 
 }

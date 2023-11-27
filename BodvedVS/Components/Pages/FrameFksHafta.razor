@@ -1,0 +1,59 @@
+﻿@layout Layout.FrameLayout
+@inject IDataAccess db
+@page "/FrameFksHafta/{Typ}"
+
+@if (fh != null)
+{
+    <table class="table-min">
+        <tr style="background-color:maroon;color:white">
+            <td>Tarih</td>
+            <td>Durum</td>
+            <td>Home</td>
+            <td>Sonuç</td>
+            <td>Guest</td>
+        </tr>
+        @foreach (var r in fh)
+        {
+            <tr>
+                <td>@r.Trh.ToString("dd.MM.yy ddd")</td>
+                <td>@r.Stu</td>
+                <td>@r.HCTAd</td>
+                <td>@((MarkupString)r.Snc)</td>
+                <td>@r.GCTAd</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    IEnumerable<FH>? fh;
+    [Parameter] public string Typ { get; set; } // Bu/Gelecek Hafta
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        //fh = db.LoadData<FH, dynamic>("select * from UI_Fks_Hafta(@Typ)", new { Typ = Typ });
+        fh = db.LoadData<FH, dynamic>("select * from UI_FKS(@Typ) order by Trh", new { Typ = Typ });
+    }
+
+    private sealed class FH
+    {
+        public int CETId { get; set; }
+        public int HCTId { get; set; }
+        public int GCTId { get; set; }
+        public DateTime Trh { get; set; }
+        public string Stu { get; set; }
+        public string Snc { get; set; }
+        public string HCTAd { get; set; }
+        public string GCTAd { get; set; }
+
+        public string hClass { get; set; }
+        public string gClass { get; set; }
+    }
+
+
+}

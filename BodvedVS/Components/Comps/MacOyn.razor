@@ -27,8 +27,9 @@ else
                 <thead style="background-color:skyblue !important; color:white">
                     <tr>
                         <th rowspan="2">Szn</th>
-                        <th rowspan="2">Rnk</th>
+                        <th rowspan="2">Rnk→</th>
                         <th rowspan="2">PX</th>
+                        <th rowspan="2">→Rnk</th>
                         <th rowspan="2">Idx</th>
 
                         <th colspan="4">Maç</th>
@@ -79,8 +80,9 @@ else
                 {
                     <tr>
                         <td>@r.Dnm</td>
-                        <td>@r.R</td>
+                        <td>@r.R0</td>
                         <td>@r.PX</td>
+                        <td>@r.R</td>
                         <td>@r.Idx</td>
 
                         <td>@r.SMW</td>
@@ -173,6 +175,7 @@ else
     private sealed class SO
     {
         public int Dnm { get; set; }
+        public int R0 { get; set; }
         public int R { get; set; }
         public int PX { get; set; }
         public int Idx { get; set; }

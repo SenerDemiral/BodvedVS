@@ -39,7 +39,9 @@
                     </td>
                     <td class="text-center">@r.MF</td>
                     <td>@r.PPId</td>
-                    <td><a href="InpOynRec/@r.PPId">@r.PPAd</a></td>
+                    <td><button @onclick="() => ShowModal(r.PPId)">✏️@r.PPAd</button></td>
+
+                    @* <td><a href="InpOynRec/@r.PPId">@r.PPAd</a></td> *@
                     <td>
                         <input readonly="@RO"
                                type="text"
@@ -58,6 +60,12 @@ else
     <div>...</div>
 }
 
+@if (showModal)
+{
+    <div class="modal">
+        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
+    </div>
+}
 
 @code {
     [Parameter] public int Dnm { get; set; } = 0;
@@ -66,6 +74,41 @@ else
 
     private List<PDR>? pdr;
     private bool RO = false;
+
+    private int inpPPid { get; set; }
+    private string pointerEvent = "pe-auto";
+    private bool _showModal;
+    private bool showModal
+    {
+        get => _showModal;
+        set
+        {
+            _showModal = value;
+            pointerEvent = _showModal ? "pe-none" : "pe-auto";
+        }
+    }
+
+    private void ShowModal(int ppId)
+    {
+        if (showModal)
+            showModal = false;
+        else
+        {
+            this.inpPPid = ppId;
+            showModal = true;
+        }
+    }
+
+    public void Cancelled()
+    {
+        showModal = false;
+    }
+
+    public void Saved()
+    {
+        showModal = false;
+    }
+
 
     private void Cancel()
     {
@@ -131,10 +174,10 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsAdm || ScpC.IsTnm)
+        if (ScpC.IsAdm) // Simdilik sadece ben || ScpC.IsTnm)
             LoadData();
         else
-            Navigation.NavigateTo("login");
+            Navigation.NavigateTo("");
     }
 
     private void LoadData()

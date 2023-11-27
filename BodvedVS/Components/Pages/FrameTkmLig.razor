@@ -1,0 +1,77 @@
+﻿@layout Layout.FrameLayout
+@inject IDataAccess db
+@* @attribute [StreamRendering(true)] *@
+@page "/FrameTkmLig/{Lig}"
+
+@* @page "/FrameLig1" *@
+
+
+@* <TkmLig CCId="32" CCAd="1.Lig" /> *@
+
+@if (tl != null)
+{
+
+    <table class="table-min">
+        <tr style="background-color:maroon;color:white">
+            <td>Takım</td>
+            <td>Sıra</td>
+            <td>Puan</td>
+            <td>Game A/V</td>
+            <td>T: A/V</td>
+            <td>Ç: A/V</td>
+        </tr>
+        @foreach (var r in tl)
+        {
+            <tr>
+                <td>@r.Ad</td>
+                <td class="w-int text-center">@r.Idx</td>
+                <td class="w-int text-center">@r.P</td>
+                <td class="w-int text-center">@r.EW/@r.EL</td>
+                <td class="w-int text-center">@r.SMW/@r.SML</td>
+                <td class="w-int text-center">@r.DMW/@r.DML</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>...</div>
+}
+
+@code {
+    [Parameter] public string? Lig { get; set; }
+    IEnumerable<TL>? tl;
+    private int CCId => Lig.ToUpper() switch
+    {
+        "1" => 32,
+        "2A" => 33,
+        "2B" => 34,
+        "3A" => 35,
+        "3B" => 36,
+        _ => 0
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        tl = db.LoadData<TL, dynamic>("select * from UI_TKM_LIG(@CCId)", new { CCId = CCId });
+    }
+
+    private sealed class TL
+    {
+        public int CTId { get; set; }
+        public string Ad { get; set; }
+        public int Idx { get; set; }
+        public int P { get; set; }
+        public int EW { get; set; }
+        public int EL { get; set; }
+        public int K { get; set; }
+        public int KW { get; set; }
+        public int KL { get; set; }
+        public int SMW { get; set; }
+        public int SML { get; set; }
+        public int DMW { get; set; }
+        public int DML { get; set; }
+
+    }
+
+}

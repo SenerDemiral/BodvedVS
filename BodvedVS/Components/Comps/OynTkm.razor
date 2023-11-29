@@ -39,6 +39,9 @@
                     }
                 </tbody>
             </table>
+            <div style="display:flex;justify-content:center;margin-top:10px;">
+                <img src="@imgName" width="300" />
+            </div>
         </div>
     </div>
 }
@@ -47,20 +50,16 @@ else
     <div>...</div>
 }
 
-
 @code {
     IEnumerable<OT>? ot;
     TI ti;
     [Parameter] public int ctid { get; set; }
     [Parameter] public string Header { get; set; }
-
-    void GameClicked(OT rec)
-    {
-
-    }
+    private string imgName => $"images/T{ctid}.jpg";
 
     protected override async Task OnInitializedAsync()
     {
+
         ti = await db.LoadRecAsync<TI, dynamic>("select * from UI_TKM_INF(@CTId)", new { CTId = ctid });
 
         ot = db.LoadData<OT, dynamic>("select * from UI_Oyn_Tkm(@CTId) order by R desc", new { CTId = ctid });

@@ -1,12 +1,14 @@
 ﻿@inject IScopedContainer ScpC
 @inject ProtectedLocalStorage PLS
 @inject IDataAccess db
-@rendermode InteractiveServer
+@rendermode renderMode
 @inject NavigationManager Navigation
 @* @attribute [StreamRendering(true)] *@
 @page "/InpLig"
 
 @* Lig girisleri ben yapacagim *@
+
+<LoginAuto />
 
 <h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
 
@@ -40,61 +42,39 @@ else
 }
 
 @code {
+    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     IEnumerable<LS>? ls;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        //dnm = 0 ise son donem
-        //if (ScpC.IsOk)
-        // ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
-    }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-
-        }
-        base.OnAfterRender(firstRender);
-    }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         if (!ScpC.IsOk)
-    //             Navigation.NavigateTo("login");
-    //         else
-    //             LoadData();
-    //     }
-
-    //     base.OnAfterRenderAsync(firstRender);
-    // }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        //base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
-            if (!ScpC.IsOk)
-            {
-                UsrPLS lm = new();
-                var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
-                if (toto.Success)
-                {
-                    lm = toto.Value;
-                }
-                if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
-                    Navigation.NavigateTo("login");
-                else
-                {
-                    LoadData();
-                }
-            }
-            else
+            await Task.Delay(10);    // LoginAuto ya gider, orada bekledigi icin buraya doner
+            await Task.Delay(10);    // Burada bekledigi icin LoginAuto ya gider
+            if (ScpC.IsOk)
                 LoadData();
+
+            // if (!ScpC.IsOk)
+            // {
+            //     UsrPLS lm = new();
+            //     var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+            //     if (toto.Success)
+            //     {
+            //         lm = toto.Value;
+            //     }
+            //     if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
+            //         Navigation.NavigateTo("login");
+            //     else
+            //     {
+            //         LoadData();
+            //     }
+            // }
+            // else
+            //     LoadData();
         }
 
-         base.OnAfterRenderAsync(firstRender);
     }
 
     private void LoadData()

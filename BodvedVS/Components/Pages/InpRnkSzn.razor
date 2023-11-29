@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @inject NavigationManager Navigation
 @inject IScopedContainer ScpC
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpRnkSzn"
 @page "/InpRnkSzn/{dnm:int}/{header}"
@@ -24,6 +24,7 @@
                 <th>MF</th>
                 <th>Id</th>
                 <th>Ad</th>
+                <th>R00</th>
                 <th>R0</th>
             </tr>
         </thead>
@@ -40,6 +41,7 @@
                     <td class="text-center">@r.MF</td>
                     <td>@r.PPId</td>
                     <td><button @onclick="() => ShowModal(r.PPId)">✏️@r.PPAd</button></td>
+                    <td>@r.R00</td>
 
                     @* <td><a href="InpOynRec/@r.PPId">@r.PPAd</a></td> *@
                     <td>
@@ -70,7 +72,6 @@ else
 @code {
     [Parameter] public int Dnm { get; set; } = 0;
     [Parameter] public string Header { get; set; } = "Son Sezon Oyuncu Başlangıç Rank";
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     private List<PDR>? pdr;
     private bool RO = false;
@@ -174,7 +175,7 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsAdm) // Simdilik sadece ben || ScpC.IsTnm)
+        if (ScpC.IsAdm || ScpC.IsTnm)
             LoadData();
         else
             Navigation.NavigateTo("");
@@ -197,6 +198,7 @@ else
 
         public int PPId { get; set; }
         public string PPAd { get; set; }
+        public int R00 { get; set; }    // PP.R0
         public int R0 { get; set; }
 
         public char oMF = '=';

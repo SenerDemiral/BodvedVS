@@ -1,9 +1,9 @@
 ﻿@inject IDataAccess db
 @inject NavigationManager Navigation
 @inject IScopedContainer ScpC
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-@page "/InpTkmOyn/{ctid:int}/{header}"
+@page "/InpOynTkm/{ctid:int}/{header}"
 
 <h1>@Header Oyuncuları</h1>
 @if (to != null)
@@ -11,7 +11,7 @@
     <div style="display:flex;justify-content:space-between;">
         <button readonly="@RO" @onclick="Insert">➕Ekle</button>
         <div>
-            <button readonly="@RO" @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button>
+            @* <button readonly="@RO" @onclick="Cancel" style="margin-right: 10px;">🚫İptal</button> *@
             <button readonly="@RO" @onclick="Save">✅Kaydet</button>
         </div>
     </div>
@@ -49,7 +49,8 @@
                     {
                         <td>@r.PPAd</td>
                     }
-                    <td><a href="InpOynRec/@r.PPId"> 👤✏️</a></td>
+                    @* <td><a href="InpOynRec/@r.PPId"> 👤✏️</a></td> *@
+                    <td><button @onclick="() => ShowModal(r.PPId)">👤✏️</button></td>
                 </tr>
             }
         </tbody>
@@ -67,16 +68,58 @@ else
     <div>...</div>
 }
 
+@if (showModal)
+{
+    <div class="modal">
+        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
+    </div>
+}
+
 @code {
     [Parameter] public int CTId { get; set; }
     [Parameter] public string Header { get; set; }
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
-
+    
     private List<TO>? to;
     private List<PP>? zz;
     private HashSet<PP>? hh;
     private Dictionary<string, PP>? pp;
     private bool RO = false;
+
+    private int inpPPid { get; set; }
+    private string pointerEvent = "pe-auto";
+    private bool _showModal;
+    private bool showModal
+    {
+        get => _showModal;
+        set
+        {
+            _showModal = value;
+            pointerEvent = _showModal ? "pe-none" : "pe-auto";
+        }
+    }
+
+    private void ShowModal(int ppId)
+    {
+        if (showModal)
+            showModal = false;
+        else
+        {
+            this.inpPPid = ppId;
+            showModal = true;
+        }
+    }
+
+    public void Cancelled()
+    {
+        showModal = false;
+    }
+
+    public void Saved()
+    {
+        showModal = false;
+        LoadData();
+    }
+
 
     private void Cancel()
     {
@@ -161,7 +204,7 @@ else
         public string PPAd { get; set; }
 
         public string oMF = "=";
- }
+    }
 
     private sealed class PP
     {

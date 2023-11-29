@@ -1,4 +1,5 @@
 using Blazored.Modal;
+using BodvedVS;
 using BodvedVS.Components;
 using BodvedVS.DataLibrary;
 using MudBlazor;
@@ -7,14 +8,15 @@ using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,
                        reloadOnChange: true);
 
+builder.Services.AddHostedService<HostApplicationLifetimeEventsHostedService>();    // Start/Stop bilmek için deneme
+
 // Add services to the container.
 //builder.Services.AddRazorComponents()
-    //.AddInteractiveServerComponents();
+//.AddInteractiveServerComponents();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOptions(options =>
 {

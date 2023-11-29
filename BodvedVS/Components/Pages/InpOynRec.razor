@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager Navigation
 @inject IScopedContainer ScpC
 @inject IDataAccess db
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/InpOynRec/{ppid:int}"
 
 <h1 class="text-center">Oyuncu Edit @ScpC.UsrId</h1>
@@ -175,7 +175,6 @@
 }
 
 @code {
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     [Parameter] public int PPId { get; set; }
     private PP pp;
     private bool RO = false;
@@ -242,25 +241,27 @@
         public int B7 { get; set; } // ⚖hakem belgesi
         public int B8 { get; set; } // 🧢takım kaptan
 
-        public string B1n = "⚜️ kulüp üyeliği";  //&#x269C;&#xFE0F;
-        public string B2n = "🎗️ lisanslı oyuncu";    //&#x1F397;&#xFE0F;
-        public string B3n = "⚔️ bodved lig katılım sayısı";  //&#x2694;&#xFE0F;
-        public string B4n = "🏆 takım lig birinciliği";  // &#x1F3C6;
-        public string B5n = "👑 ferdi turnuva birinciliği";  //&#x1F451;
-        public string B6n = "🏓 antrenör belgesi";   //&#x1F3D3;
-        public string B7n = "⚖️ hakem belgesi";  //&#x2696;&#xFE0F;
-        public string B8n = "🧢 takım kaptanı";  //&#x1F9E2;
+        public string? Belge => Helper.Belge(B1, B2, B3, B4, B5, B6, B7, B8);
 
-        public string? B1s => B1 == 0 ? "" : $"⚜️{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";
-        public string? B2s => B2 == 0 ? "" : $"🎗️{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";
-        public string? B3s => B3 == 0 ? "" : $"⚔️{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";
-        public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";
-        public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";
-        public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";
-        public string? B7s => B7 == 0 ? "" : $"⚖️{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";
-        public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";
+        public string B1n => Helper.B1n;
+        public string B2n => Helper.B2n; 
+        public string B3n => Helper.B3n; 
+        public string B4n => Helper.B4n; 
+        public string B5n => Helper.B5n; 
+        public string B6n => Helper.B6n; 
+        public string B7n => Helper.B7n; 
+        public string B8n => Helper.B8n; 
 
-        public string? Belge => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
+        // public string? B1s => B1 == 0 ? "" : $"⚜️{(B1 == 1 ? "" : "<sub>" + B1 + "</sub>")}";
+        // public string? B2s => B2 == 0 ? "" : $"🎗️{(B2 == 1 ? "" : "<sub>" + B2 + "</sub>")}";
+        // public string? B3s => B3 == 0 ? "" : $"⚔️{(B3 == 1 ? "" : "<sub>" + B3 + "</sub>")}";
+        // public string? B4s => B4 == 0 ? "" : $"🏆{(B4 == 1 ? "" : "<sub>" + B4 + "</sub>")}";
+        // public string? B5s => B5 == 0 ? "" : $"👑{(B5 == 1 ? "" : "<sub>" + B5 + "</sub>")}";
+        // public string? B6s => B6 == 0 ? "" : $"🏓{(B6 == 1 ? "" : "<sub>" + B6 + "</sub>")}";
+        // public string? B7s => B7 == 0 ? "" : $"⚖️{(B7 == 1 ? "" : "<sub>" + B7 + "</sub>")}";
+        // public string? B8s => B8 == 0 ? "" : $"🧢{(B8 == 1 ? "" : "<sub>" + B8 + "</sub>")}";
+
+        // public string? Belge2 => (B1s + B2s + B3s + B4s + B5s + B6s + B7s + B8s);
 
     }
 

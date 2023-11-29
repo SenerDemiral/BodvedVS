@@ -1,14 +1,31 @@
 ﻿@inject IScopedContainer ScpC
 @inject ProtectedLocalStorage PLS
 @inject NavigationManager Navigation
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <div>LoginAuto</div>
 @code {
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
+            //var koko = PLS.GetAsync<UsrPLS>("pwd", "bodved");
+            //InvokeAsync(koko.Result);
+            //var koko = PLS.GetAsync<UsrPLS>("pwd", "bodved").ConfigureAwait(true).GetAwaiter().GetResult();
+
+            //var resultThing = Task.Run<ProtectedBrowserStorageResult<UsrPLS>>(async () => await PLS.GetAsync<UsrPLS>("pwd", "bodved"));
+            //resultThing.Wait();
+
+            //var bbb = resultThing.Result;
+            //Task<string> resultThingTask = Task.Run(() => new SomethingElse().DoThing(dogName));
+            //resultThingTask.Wait();
+            //var result = resultThingTask.Result;
+            //var task = PLS.GetAsync<UsrPLS>("pwd", "bodved");
+            //var aaa = task.Result;
+
+            //var ccc = PLS.GetAsync<UsrPLS>("pwd", "bodved").Result;
+            //var ccc = Task.Run<UsrPLS>(() => PLS.GetAsync("pwd", "bodved")).Result;
             //var aaa = Task.Run(async () => await PLS.GetAsync<UsrPLS>("pwd", "bodved"));//.GetAwaiter().GetResult();
             //var bbb = aaa.Wait(1000);
         }
@@ -30,7 +47,26 @@
                     Navigation.NavigateTo("login");
             }
         }
-        await Task.Delay(1000);
         base.OnAfterRenderAsync(firstRender);
     }
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         if (!ScpC.IsOk)
+    //         {
+    //             UsrPLS lm = new();
+    //             var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+    //             if (toto.Success)
+    //             {
+    //                 lm = toto.Value;
+    //             }
+    //             if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
+    //                 Navigation.NavigateTo("login");
+    //         }
+    //     }
+    //     await Task.Delay(1000);
+    //     base.OnAfterRenderAsync(firstRender);
+    // }
 }

@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 @inject IScopedContainer ScpC
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpTkm/{ccid:int}/{header}"
 
@@ -13,10 +13,10 @@
             ➕Ekle
         </button>
         <div>
-            <button disabled="@RO"
+            @* <button disabled="@RO"
                     @onclick="Cancel" style="margin-right: 10px;">
                 🚫İptal
-            </button>
+            </button> *@
             <button disabled="@RO"
                     @onclick="Save">
                 ✅Kaydet
@@ -67,7 +67,7 @@
                     else
                     {
                         <td>
-                            <a href="InpTkmOyn/@r.CTId/@r.Ad">👥</a>
+                            <a href="InpOynTkm/@r.CTId/@r.Ad">👥</a>
                         </td>
                     }
                     <td>
@@ -106,7 +106,6 @@ else
 @code {
     [Parameter] public int CCId { get; set; }
     [Parameter] public string Header { get; set; }
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     private List<CT>? ct;
     private bool RO = false;

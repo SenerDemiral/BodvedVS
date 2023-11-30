@@ -184,7 +184,7 @@ input, button {
     flex-wrap: nowrap;
     align-items: stretch;
     overflow: auto;
-    scrollbar-width: none;
+    scrollbar-width: thin;
 }
 
 .modal {

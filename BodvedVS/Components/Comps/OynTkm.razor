@@ -39,9 +39,13 @@
                     }
                 </tbody>
             </table>
-            <div style="display:flex;justify-content:center;margin-top:10px;">
-                <img src="@imgName" width="300" />
-            </div>
+            @* <div style="display:flex;justify-content:center;margin-top:10px;">
+        <img src="@imgName" width="300" />
+        </div> *@
+
+            <object data="@imgName" type="image/jpg" style="width:200px;margin:10px auto">
+                <img src="images/T0.png" alt="" />
+            </object>
         </div>
     </div>
 }

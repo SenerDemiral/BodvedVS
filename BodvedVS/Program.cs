@@ -1,10 +1,6 @@
-using Blazored.Modal;
 using BodvedVS;
 using BodvedVS.Components;
 using BodvedVS.DataLibrary;
-using MudBlazor;
-using MudBlazor.Services;
-using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +47,7 @@ builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 
 //builder.Services.AddMudBlazorSnackbar();
-builder.Services.AddBlazoredModal();
+//builder.Services.AddBlazoredModal();
 
 var app = builder.Build();
 

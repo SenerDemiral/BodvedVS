@@ -1,13 +1,13 @@
 ﻿@* @inject ISnackbar Snackbar *@
 @inject IDataAccess db
-@inject IScopedContainer sc
+@* @inject IScopedContainer sc *@
 @* @rendermode renderMode *@
 @page "/"
 
 <PageTitle>Home</PageTitle>
 
 @* <input type="button" @onclick="DenemeClicked" value="Click me" />
- 
+
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Duyurular</div>
     <main class="cards">
@@ -22,11 +22,15 @@
 </div>
  *@
 
+<div class="img-trns">
+    <img src="images/bodved.jpg" />
+</div>
+
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Son Sezon Fikstürü</div>
     <main class="cards">
         <article class="card">
-            <FksHafta Typ="B" Header="Bu Hafta"/>
+            <FksHafta Typ="B" Header="Bu Hafta" />
         </article>
         <article class="card">
             <FksHafta Typ="G" Header="Gelecek Hafta" />

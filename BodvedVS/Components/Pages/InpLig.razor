@@ -8,7 +8,7 @@
 
 @* Lig girisleri ben yapacagim *@
 
-<LoginAuto />
+@* <LoginAuto /> *@
 
 <h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
 
@@ -32,6 +32,9 @@
                 <td>
                     <a href="InpFks/@r.CCId/@r.Ad">⏰</a>
                 </td>
+                <td>
+                    <a href="">Deneme</a>
+                </td>
             </tr>
         }
     </table>
@@ -45,36 +48,25 @@ else
     static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     IEnumerable<LS>? ls;
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (ScpC.IsOk)
+            LoadData();
+//        return base.OnInitializedAsync();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         //base.OnAfterRenderAsync(firstRender);
 
         if (firstRender)
         {
-            await Task.Delay(10);    // LoginAuto ya gider, orada bekledigi icin buraya doner
-            await Task.Delay(10);    // Burada bekledigi icin LoginAuto ya gider
-            if (ScpC.IsOk)
-                LoadData();
-
-            // if (!ScpC.IsOk)
-            // {
-            //     UsrPLS lm = new();
-            //     var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
-            //     if (toto.Success)
-            //     {
-            //         lm = toto.Value;
-            //     }
-            //     if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
-            //         Navigation.NavigateTo("login");
-            //     else
-            //     {
-            //         LoadData();
-            //     }
-            // }
-            // else
-            //     LoadData();
+            //await Task.Delay(1);    // LoginAuto ya gider, orada bekledigi icin buraya doner
+            //await Task.Delay(10);    // Burada bekledigi icin LoginAuto ya gider
+            
+            // if (ScpC.IsOk)
+            //      LoadData();
         }
-
     }
 
     private void LoadData()

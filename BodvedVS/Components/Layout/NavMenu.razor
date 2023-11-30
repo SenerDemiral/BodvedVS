@@ -1,4 +1,8 @@
-﻿
+﻿@inject IScopedContainer ScpC
+@inject ProtectedLocalStorage PLS
+@inject NavigationManager Navigation
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
 <NavLink class="nav-link" href="About">
     ‼️
 </NavLink>
@@ -55,3 +59,24 @@
     </nav>
 </div>
  *@
+
+@code {
+    private int usrId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ScpC.IsOk)
+        {
+            UsrPLS lm = new();
+            var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+            if (toto.Success)
+            {
+                lm = toto.Value;
+            }
+            if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
+                Navigation.NavigateTo("login");
+            usrId = ScpC.UsrId;
+        }
+
+    }
+}

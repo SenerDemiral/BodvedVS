@@ -3,7 +3,7 @@
 @rendermode renderMode
 
 @page "/Oyn"
-<LoginAuto />
+@* <LoginAuto /> *@
 
 @if (pp != null)
 {
@@ -24,7 +24,7 @@
                                 Align="Align.Center"
                                 Title="Id" />
                 <TemplateColumn Title="Detay">
-                    <a href="MacOyn/@context.PPId">🏁</a>
+                    <a href="MacOyn/@context.PPId" target="_blank">🏁</a>
                     @* <span style="padding-right:4px">@((MarkupString)context.Link)</span> *@
                 </TemplateColumn>
                 <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"
@@ -72,8 +72,6 @@
                                 Format="#"
                                 Align="Align.Center"
                                 Title="#Szn" />
-                <PropertyColumn Property="@(p => p.DnmS)"
-                                Title="Sezon" />
             </QuickGrid>
             <Paginator State="@pagination" />
         </div>
@@ -157,7 +155,6 @@
     protected override async Task OnInitializedAsync()
     {
         bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
-        //DDs = db.LoadDataQ<DD, dynamic>($"select * from DD", new { }).AsQueryable();
         pp = (await db.LoadDataAsync<PP, dynamic>($"select * from UI_OYN", new { })).AsQueryable();
     }
 

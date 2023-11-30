@@ -1,4 +1,4 @@
-﻿@inject ISingletonContainer SngC
+﻿@inject ISingletonContainer SngC 
 @implements IDisposable
 @inherits LayoutComponentBase
 
@@ -12,7 +12,7 @@
             <div class="navbar">
                 <div>MasatenisiOnline</div>
                 <div class="nav-links">
-                    <div>@SngC.Name</div>
+                    @* <div>@SngC.Name</div> *@
                     <NavMenu />
                 </div>
             </div>

@@ -2,17 +2,19 @@
     height: calc(100vh - 80px);
 }*/
 
-.fs-12{
+.fs-12 {
     font-size: 12px;
 }
 
 .fs-14 {
     font-size: 14px;
 }
+
 .wdth-100 {
-    width:160px;
-    max-width:160px;
+    width: 160px;
+    max-width: 160px;
 }
+
 a {
     text-decoration: underline;
     color: inherit;
@@ -196,9 +198,11 @@ input, button {
     border: 1px solid #ccc;
     box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.3);
 }
-.pe-none{
+
+.pe-none {
     pointer-events: none;
 }
+
 .pe-auto {
     pointer-events: auto;
 }
@@ -265,11 +269,12 @@ input, button {
     cursor: default;
     table-layout: fixed;
 }
-.table-edit td, th {
-    border: 1px solid #ddd;
-    white-space: nowrap;
-    padding: 0 6px;
-}
+
+    .table-edit td, th {
+        border: 1px solid #ddd;
+        white-space: nowrap;
+        padding: 0 6px;
+    }
 
 .table-min {
     font-size: 12px;
@@ -306,18 +311,41 @@ input, button {
     top: -16px;
     left: 0px;
     background-color: yellow;
-    color:black;
+    color: black;
     /*box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
     box-shadow: 4px 4px 2px 0px #8E7B70;
     padding: 0 5px;
     z-index: 10;
-    white-space:pre;
+    white-space: pre;
 }
 
 .tooltip:hover span.tooltip-text {
     display: block;
 }
+
 .tooltip:active span.tooltip-text {
+    display: block;
+}
+
+.tooltip-text2 {
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    background-color: yellow;
+    color: black;
+    /*box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);*/
+    box-shadow: 4px 4px 2px 0px #8E7B70;
+    padding: 0 5px;
+    z-index: 10;
+    white-space: pre;
+}
+
+.tooltip:hover span.tooltip-text2 {
+    display: block;
+}
+
+.tooltip:active span.tooltip-text2 {
     display: block;
 }
 /*
@@ -425,3 +453,14 @@ usage
 <rnk-n></rnk-n>
 */
 
+.img-trns {
+    width: 100px;
+    /*height: 100px;*/
+    background: white;
+    transition: width 2s;
+    margin:auto;
+}
+
+    .img-trns:hover {
+        width: 300px;
+    }

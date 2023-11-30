@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 @inject IScopedContainer ScpC
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpFks/{ccid:int}/{header}"
 
@@ -108,7 +108,6 @@ else
 @code {
     [Parameter] public int CCId { get; set; }
     [Parameter] public string Header { get; set; }
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     private bool opsPending = false;
     private bool RO = true;
 

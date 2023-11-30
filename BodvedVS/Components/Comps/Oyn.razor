@@ -1,6 +1,6 @@
 ﻿@inject IScopedContainer ScpC
 @inject IDataAccess db
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/Oyn"
 @* <LoginAuto /> *@
@@ -86,7 +86,6 @@
 }
 
 @code {
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     BI bi;
     IQueryable<PP> pp;
     QuickGrid<PP> ppGrid;

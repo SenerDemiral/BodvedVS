@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/OynSzn/{dnm:int}"
 
 
@@ -51,7 +51,6 @@
     IQueryable<PDR> PDRs;
     QuickGrid<PDR> ppGrid;
     private string nameFilter = String.Empty;
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender:false); //InteractiveServerRenderMode(prerender: false);
 
     // https://aspnet.github.io/quickgridsamples/sample > Typical usage
     // <TemplateColumn Title="Rank" SortBy="@rankSort" Align="Align.Center" InitialSortDirection="SortDirection.Ascending" IsDefaultSortColumn="true">

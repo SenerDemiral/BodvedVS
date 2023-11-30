@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 @inject IScopedContainer sc
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/InpGame/{cetid:int}"
 
 <style>
@@ -240,9 +240,6 @@ else
     private bool RO = false;
     private string oynNA;
     private int SSC, DSC;   // Single/Double Set Count
-
-
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {

@@ -4,7 +4,7 @@
 @inject ISingletonContainer SngC
 @inject NavigationManager Navigation
 @implements IDisposable
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/login"
 
 <style>

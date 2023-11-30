@@ -16,9 +16,10 @@
 }
 
 a {
-    text-decoration: underline;
+    text-decoration: underline 0.5px;
     color: inherit;
 }
+
 
 .nav-link {
     text-decoration: none;
@@ -110,6 +111,9 @@ input, button {
 
 .sener {
     height: 100vh;
+    font-size:12px;
+    font-family: 'Roboto Flex';
+    font-weight:300;
     /*padding: 0 10px;*/
 }
 
@@ -131,11 +135,13 @@ input, button {
 
 .header {
     grid-area: header;
-    background-color: blue;
-    color: white;
+    background-color: lightsteelblue;
+    /*color: white;*/
     align-self: center;
     line-height: 2rem;
     padding: 0 10px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .content {
@@ -159,7 +165,7 @@ input, button {
 .nav-links {
     /* navbar icinde ve space-between oldugundan sagda kaliyor */
     display: flex;
-    gap: 20px;
+    gap: 10px;
 }
 
 .nav-link {
@@ -175,16 +181,6 @@ input, button {
     height: 1rem;
     margin-right: 0.5rem;
     /*background-size: cover;*/
-}
-
-
-
-.cards {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    overflow: auto;
-    scrollbar-width: thin;
 }
 
 .modal {
@@ -205,6 +201,14 @@ input, button {
 
 .pe-auto {
     pointer-events: auto;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    overflow: auto;
+    scrollbar-width: thin;
 }
 
 .card {
@@ -308,7 +312,7 @@ input, button {
 .tooltip-text {
     display: none;
     position: absolute;
-    top: -16px;
+    top: 20px;
     left: 0px;
     background-color: yellow;
     color: black;

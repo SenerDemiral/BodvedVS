@@ -1,7 +1,7 @@
 ﻿@inject IScopedContainer ScpC
 @inject ProtectedLocalStorage PLS
 @inject IDataAccess db
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager Navigation
 @* @attribute [StreamRendering(true)] *@
 @page "/InpLig"
@@ -14,7 +14,6 @@
 
 @if (ls != null)
 {
-
     <table class="table-edit">
         <tr>
             <td colspan="4">
@@ -45,7 +44,6 @@ else
 }
 
 @code {
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     IEnumerable<LS>? ls;
 
     protected override async Task OnInitializedAsync()

@@ -1,8 +1,8 @@
 ﻿@inject NavigationManager Navigation
 @inject IDataAccess db
 @inject IScopedContainer sc
-@rendermode renderMode
- 
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
 @page "/InpOyn"
 <style>
     .w-ad{
@@ -101,7 +101,6 @@ else
 @code {
     [Parameter] public int CTId { get; set; }
     [Parameter] public string Header { get; set; }
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
     private string nameFilter;
     IQueryable<PP> ppQ;
     List<PP> pp;

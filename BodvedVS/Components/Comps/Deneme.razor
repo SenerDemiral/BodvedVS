@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 @inject IScopedContainer sc
-@rendermode renderMode
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/deneme"
 
 <style>
@@ -173,8 +173,6 @@ else
     private HDR hdr;
     string count = "";
     private int mxLine = 0;
-
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(prerender: false);
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {

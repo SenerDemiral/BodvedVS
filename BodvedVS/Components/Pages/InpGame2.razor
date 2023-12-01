@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @inject IScopedContainer sc
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@page "/InpGame/{cetid:int}"
+@page "/InpGame2/{cetid:int}"
 
 <style>
     input {
@@ -59,9 +59,9 @@
                 <th></th>
                 <th>#</th>
                 <th>S/D</th>
-                <th>@hdr.HCTAd </th>
-                <th>@hdr.GCTAd </th>
-                <th>@HSMW-@GSMW / @HDMW-@GDMW</th>
+                <th>@hdr.HCTAd</th>
+                <th>@hdr.GCTAd</th>
+                <th>Sonuç</th>
                 <th>Setler</th>
                 <th>?</th>
             </tr>
@@ -99,12 +99,12 @@
                                 string vc = "";
                                 if (RO && r.HS[c] == r.GS[c])
                                     vc = "hdn";
-                                <input type="text" readonly="@RO" class="@vc"
+                                <input type="text" readonly="@r.setRO" class="@vc"
                                        style="width:22px;text-align:end"
                                        @bind="r.HS[c]"
                                        @bind:after="(() => SetUpd(r, c, isH:true))" />
                                 <span class="@vc">▪</span>
-                                <input type="text" readonly="@RO" class="@vc"
+                                <input type="text" readonly="@r.setRO" class="@vc"
                                        style="width:22px;border-right:1px solid #dddddd"
                                        @bind="r.GS[c]"
                                        @bind:after="(() => SetUpd(r, c, isH:false))" />
@@ -230,9 +230,8 @@ else
 
     string msj = "";
     private int mxLine = 0;
-    int HSMW, HDMW, GSMW, GDMW;
 
-    private bool RO = true;
+    private bool RO = false;
     private string oynNA;
     private int SSC, DSC;   // Single/Double Set Count
 
@@ -271,147 +270,8 @@ else
         }
     }
 
-    void Toplam()
-    {
-        HSMW = HDMW = GSMW = GDMW = 0;
-
-        foreach (var r in ls)
-        {
-            if (r.SoD == "S")
-            {
-                GSMW += r.GW;
-                HSMW += r.HW;
-            }
-            else
-            {
-                HDMW += r.HW;
-                GDMW += r.GW;
-            }
-        }
-    }
-
-    void Kontrol()
-    {
-        msj = "";
-
-        foreach (var r in ls)
-        {
-            KontrolRec(r);
-        }
-        Toplam();
-    }
-
-    void KontrolRec(LS r)
-    {
-        // if (!string.IsNullOrEmpty(r.Err))
-        // {
-        //     r.Stu = "!";
-        //     return;
-        // }
-
-        // Setleri ve Statu yu hesapla
-        bool hX = false;
-        bool gX = false;
-        if (r.H1PPId < 0 || (r.SoD == "D" && r.H2PPId < 0))
-        {
-            hX = true;
-        }
-        if (r.G1PPId < 0 || (r.SoD == "D" && r.G2PPId < 0))
-        {
-            gX = true;
-        }
-        if (hX && gX)
-        {
-            r.Stu = "XX";
-        }
-        else if (hX)
-        {
-            r.Stu = "hX";
-        }
-        else if (gX)
-        {
-            r.Stu = "gX";
-        }
-        else
-        {
-            r.Stu = "";
-        }
-        CheckStu(r);
-    }
-    private void CheckStu(LS r)
-    {
-        // Stu ya gore sonuclar save edilince BD de yapilacak
-        int setCnt = SSC;
-        if (r.Stu == "hX")
-        {
-            r.H1PPId = -1;
-            r.H1PPAd = oynNA;
-            if (r.SoD == "D")
-            {
-                r.H2PPId = -1;
-                r.H2PPAd = oynNA;
-                setCnt = DSC;
-            }
-            for (int i = 0; i < setCnt; i++)    // 5 setin 3 unu oynar, burda hepsi var, SetSnc duzeltir
-            {
-                r.HS[i] = 0;
-                r.GS[i] = 11;
-            }
-            r.SetSnc = SetSnc(r);
-        }
-        else if (r.Stu == "gX")
-        {
-            r.G1PPId = -1;
-            r.G1PPAd = oynNA;
-            if (r.SoD == "D")
-            {
-                r.G2PPId = -1;
-                r.G2PPAd = oynNA;
-                setCnt = DSC;
-            }
-            for (int i = 0; i < setCnt; i++)
-            {
-                r.GS[i] = 0;
-                r.HS[i] = 11;
-            }
-            r.SetSnc = SetSnc(r);
-        }
-        else if (r.Stu == "XX")
-        {
-            r.H1PPId = -1;
-            r.H1PPAd = oynNA;
-            r.G1PPId = -1;
-            r.G1PPAd = oynNA;
-            if (r.SoD == "D")
-            {
-                r.H2PPId = -1;
-                r.H2PPAd = oynNA;
-                r.G2PPId = -1;
-                r.G2PPAd = oynNA;
-                setCnt = DSC;
-            }
-            for (int i = 0; i < setCnt; i++)
-            {
-                r.GS[i] = 0;
-                r.HS[i] = 0;
-            }
-            r.SetSnc = SetSnc(r);
-        }
-        else
-        {
-            SetSnc(r);
-            if (string.IsNullOrEmpty(r.Err))
-                r.Stu = "OK";   // Sonuc olmali veya hata olmamali
-            else
-                r.Stu = "!";
-            //r.Stu = r.oStu;
-        }
-    }
-
     void Save()
     {
-        Kontrol();
-
         // ls de Hatali kayit varsa Kaydetme, yoksa null geliyor
         if (ls.FirstOrDefault(r => r.Err.Equals("err")) != null)
         {
@@ -560,6 +420,19 @@ else
     private string SetSnc(LS r)
     {
         r.Err = "";
+        // Setler arasinda bosluk olamaz
+        // 2.Setden basla, set oynanmis ise bir oncekine bak o da oynanmis olmali
+        for (int i = 1; i < 7; i++)
+        {
+            if (r.HS[i] > 0 && r.GS[i] > 0)
+            {
+                if ((r.HS[i - 1] + r.GS[i - 1]) == 0)
+                {
+                    r.Err = "err";
+                }
+            }
+        }
+
         // Ilk 3 seti biri aldiktan sonra arkasindakiler olmaz
         int setWin = SSC - 2;
         if (r.SoD == "D")
@@ -588,44 +461,22 @@ else
             }
         }
 
-        // Setler arasinda bosluk olamaz
-        // 2.Setden basla, set oynanmis ise bir oncekine bak o da oynanmis olmali
-        for (int i = 1; i < 7; i++)
-        {
-            //if (r.HS[i] > 0 && r.GS[i] > 0)
-            if ((r.HS[i] + r.GS[i]) > 0)
-            {
-                if ((r.HS[i - 1] + r.GS[i - 1]) == 0)
-                {
-                    //r.Err = "err";
-                    r.HS[i] = 0;
-                    r.GS[i] = 0;
-                }
-            }
-        }
-
-
-        // sonuc hesapla
-        r.HSW = r.GSW = 0;
+        int H = 0, G = 0;
         for (int i = 0; i < 7; i++)
         {
             if (r.HS[i] > r.GS[i])
-            {
-                r.HSW++;
-            }
+                H++;
             else if (r.HS[i] < r.GS[i])
-            {
-                r.GSW++;
-            }
+                G++;
         }
 
-        var mx = Math.Max(r.HSW, r.GSW);
-        if (mx == 0 && r.Stu == "XX")    // Hepsi 0, Oynanmamis
+        var mx = Math.Max(H, G);
+        if (mx == 0)    // Hepsi 0, Oynanmamis
             r.Err = "";
         else if (mx != setWin)
             r.Err = "err";
 
-        return $"[{r.HSW}-{r.GSW}]";
+        return $"[{H}-{G}]";
     }
 
     private void CheckPP(LS r, string changedField)
@@ -670,8 +521,98 @@ else
                 r.G2PPAd = r.oG2PPAd;
             }
         }
+        // Setleri ve Statu yu hesapla
+        bool hX = false;
+        bool gX = false;
+        if (r.H1PPId < 0 || (r.SoD == "D" && r.H2PPId < 0))
+        {
+            hX = true;
+        }
+        if (r.G1PPId < 0 || (r.SoD == "D" && r.G2PPId < 0))
+        {
+            gX = true;
+        }
+        if (hX && gX)
+        {
+            r.Stu = "XX";
+        }
+        else if (hX)
+        {
+            r.Stu = "hX";
+        }
+        else if (gX)
+        {
+            r.Stu = "gX";
+        }
+        else
+        {
+            r.Stu = "";
+        }
+        CheckStu(r);
     }
 
+    private void CheckStu(LS r)
+    {
+        // Stu ya gore sonuclar save edilince BD de yapilacak
+        int setCnt = SSC;
+        if (r.Stu == "hX")
+        {
+            r.H1PPId = -1;
+            r.H1PPAd = oynNA;
+            if (r.SoD == "D")
+            {
+                r.H2PPId = -1;
+                r.H2PPAd = oynNA;
+                setCnt = DSC;
+            }
+            for (int i = 0; i < setCnt; i++)    // 5 setin 3 unu oynar, burda hepsi var, SetSnc duzeltir
+            {
+                r.HS[i] = 0;
+                r.GS[i] = 11;
+            }
+            r.SetSnc = SetSnc(r);
+        }
+        else if (r.Stu == "gX")
+        {
+            r.G1PPId = -1;
+            r.G1PPAd = oynNA;
+            if (r.SoD == "D")
+            {
+                r.G2PPId = -1;
+                r.G2PPAd = oynNA;
+                setCnt = DSC;
+            }
+            for (int i = 0; i < setCnt; i++)
+            {
+                r.GS[i] = 0;
+                r.HS[i] = 11;
+            }
+            r.SetSnc = SetSnc(r);
+        }
+        else if (r.Stu == "XX")
+        {
+            r.H1PPId = -1;
+            r.H1PPAd = oynNA;
+            r.G1PPId = -1;
+            r.G1PPAd = oynNA;
+            if (r.SoD == "D")
+            {
+                r.H2PPId = -1;
+                r.H2PPAd = oynNA;
+                r.G2PPId = -1;
+                r.G2PPAd = oynNA;
+                setCnt = DSC;
+            }
+            for (int i = 0; i < setCnt; i++)
+            {
+                r.GS[i] = 0;
+                r.HS[i] = 0;
+            }
+            r.SetSnc = SetSnc(r);
+        }
+        else
+            r.Stu = r.oStu;
+    }
     // DENEME
     string CheckRec(LS ls)
     {
@@ -762,7 +703,6 @@ else
 
             mxLine++;
         }
-        Kontrol();
     }
 
     protected override async Task OnInitializedAsync()
@@ -837,10 +777,6 @@ else
         public string oG1PPAd { get; set; }
         public string oG2PPAd { get; set; }
 
-        public int HSW;
-        public int GSW;
-
-        public int HW => HSW > GSW ? 1 : 0;
-        public int GW => GSW > HSW ? 1 : 0;
+        public bool setRO => string.IsNullOrEmpty(Stu) ? false : true;
     }
 }

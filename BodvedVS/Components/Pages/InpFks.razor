@@ -127,7 +127,7 @@ else
     private void Cancel()
     {
         // Dikkat varsa yaptiginiz tum degisiklikler yok sayilacaktir.
-        foreach(var r in cet)
+        foreach (var r in cet)
         {
             if (r.MF != '+')
                 Original(r);
@@ -155,7 +155,7 @@ else
                     GCTId = r.GCTId,
                 };
 
-                //var rs = db.SaveRec("IF_MDF", ct);
+                var rs = db.SaveRec("IF_MDF", ct);
             }
         }
         if (mdfCount > 0)
@@ -249,6 +249,10 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
+        RO = true;
+        if (ScpC.IsAdm || ScpC.IsTnm)
+            RO = false;
+
         LoadData();
     }
 

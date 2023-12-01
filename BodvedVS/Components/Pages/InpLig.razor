@@ -1,8 +1,8 @@
-﻿@inject IScopedContainer ScpC
+﻿@inject NavigationManager Navigation
 @inject ProtectedLocalStorage PLS
+@inject IScopedContainer ScpC
 @inject IDataAccess db
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@inject NavigationManager Navigation
 @* @attribute [StreamRendering(true)] *@
 @page "/InpLig"
 
@@ -30,9 +30,6 @@
                 </td>
                 <td>
                     <a href="InpFks/@r.CCId/@r.Ad">⏰</a>
-                </td>
-                <td>
-                    <a href="">Deneme</a>
                 </td>
             </tr>
         }

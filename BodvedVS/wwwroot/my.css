@@ -288,7 +288,7 @@ input, button {
     .table-min td, th {
         border: 1px solid #ddd;
         white-space: nowrap;
-        padding: 0 2px;
+        padding: 2px 4px;
     }
 
     .table-min thead {

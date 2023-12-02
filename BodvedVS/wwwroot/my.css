@@ -312,7 +312,7 @@ input, button {
 .tooltip-text {
     display: none;
     position: absolute;
-    top: 20px;
+    top: -14px;
     left: 0px;
     background-color: yellow;
     color: black;

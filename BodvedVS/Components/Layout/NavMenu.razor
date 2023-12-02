@@ -1,7 +1,14 @@
-﻿@inject IScopedContainer ScpC
-@inject ProtectedLocalStorage PLS
+﻿@inject ProtectedLocalStorage PLS
 @inject NavigationManager Navigation
+@inject ISingletonContainer SngC
+@inject IScopedContainer ScpC
+@inject IDataAccess db
+@implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;">
+    @SngC.ConnCnt.ToString("#,#")<sub>@SngC.ActConnCnt</sub>
+</div>
 
 <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
     🏡
@@ -58,6 +65,7 @@
 
 @code {
     private int usrId { get; set; }
+    private int ConnCnt { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,7 +80,31 @@
             if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
                 Navigation.NavigateTo("");
             usrId = ScpC.UsrId;
+
+            //ConnCnt = db.CONN_INC_GET();
+            SngC.AddMe();
         }
 
     }
+
+    protected override void OnInitialized()
+    {
+        SngC.OnChange += MyStateChanged;
+
+        base.OnInitialized();
+    }
+
+    public void MyStateChanged()
+    {
+        //Msg = SngC.Name;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        SngC.OffMe();
+        SngC.OnChange -= MyStateChanged;
+    }
+
+
 }

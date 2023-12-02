@@ -159,4 +159,13 @@ public class FBDataAccess : IDataAccess
         return pk;
     }
 
+    public int CONN_INC_GET()
+    {
+        int conn = 0;
+        using (IDbConnection connection = new FbConnection(cnctStr))
+        {
+            conn = connection.ExecuteScalar<int>("select Conn from CONN_INC_GET");
+        }
+        return conn;
+    }
 }

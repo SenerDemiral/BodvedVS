@@ -78,7 +78,10 @@
                                @bind:after='(() => CheckUpd(r, "G"))'>
                     </td>
                     <td>
-                        <a hidden="@opsPending" href="InpGame/@r.CETId">Game</a>
+                        @if (r.MF == '=')
+                        {
+                            <a href="InpGame/@r.CETId">Game</a>
+                        }
                     </td>
 
                 </tr>
@@ -212,15 +215,18 @@ else
     }
     private void Original(CET r)
     {
-        r.MF = r.oMF;
-        r.Trh = r.oTrh;
-        r.Stu = r.oStu;
-        r.HCTId = r.oHCTId;
-        r.GCTId = r.oGCTId;
-        r.HCTAd = r.oHCTAd;
-        r.GCTAd = r.oGCTAd;
         if (r.MF == '+')
             cet.Remove(r);
+        else
+        {
+            r.MF = r.oMF;
+            r.Trh = r.oTrh;
+            r.Stu = r.oStu;
+            r.HCTId = r.oHCTId;
+            r.GCTId = r.oGCTId;
+            r.HCTAd = r.oHCTAd;
+            r.GCTAd = r.oGCTAd;
+        }
     }
 
     private void Delete(CET r)

@@ -837,10 +837,11 @@ else
         public string oG1PPAd { get; set; }
         public string oG2PPAd { get; set; }
 
-        public int HSW;
-        public int GSW;
+        public int HSW; //=> HS[0] + HS[1] + HS[2] + HS[3] + HS[4] + HS[5] + HS[6];
+        public int GSW; //=> GS[0] + GS[1] + GS[2] + GS[3] + GS[4] + GS[5] + GS[6];
 
         public int HW => HSW > GSW ? 1 : 0;
         public int GW => GSW > HSW ? 1 : 0;
+
     }
 }

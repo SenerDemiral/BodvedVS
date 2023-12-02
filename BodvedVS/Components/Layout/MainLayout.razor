@@ -1,6 +1,4 @@
-﻿@inject ISingletonContainer SngC 
-@implements IDisposable
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 @* <MudThemeProvider />
 <MudSnackbarProvider />
@@ -34,23 +32,5 @@
     //private IDisposable? registration;
     // [CascadingParameter] CascadingScopeState CST { get; set; }
     string Msg = "";
-
-    protected override void OnInitialized()
-    {
-        SngC.OnChange += MyStateChanged;
-
-        base.OnInitialized();
-    }
-
-    public void MyStateChanged()
-    {
-        //Msg = SngC.Name;
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        SngC.OnChange -= MyStateChanged;
-    }
 
 }

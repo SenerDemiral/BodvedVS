@@ -19,7 +19,12 @@ else
 {
     <div class="table-container">
         @* <div class="tc--header text-center">☺ @pp.Ad @((MarkupString)pp.Belge)</div> *@
-        <div class="tc--header">@((MarkupString)pp.Info)</div>
+        <div class="tc--header" >
+            <div>@((MarkupString)pp.Info)</div>
+
+            <div style="width:400px">@((MarkupString)bi.BelgeInfo)</div>
+
+        </div>
 
         <div class="tc--content" tabindex="-1">
 
@@ -146,6 +151,7 @@ else
 }
 
 @code {
+    BI bi;
     PP pp;
     IEnumerable<SO>? so;
     IEnumerable<MO>? mo;
@@ -154,6 +160,8 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
+        bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
+
         //pp = await db.LoadRecAsync<PP, dynamic>("select Ad, Belge from PP where PPId = @PPId", new { PPId = ppid });
         pp = db.LoadRec<PP, dynamic>("select Info from PP_INFO(@PPId)", new { PPId = ppid });
         so = await db.LoadDataAsync<SO, dynamic>("select * from UI_STAT_OYN(@PPId)", new { PPId = ppid });
@@ -214,4 +222,9 @@ else
 
         public bool isLF => LF == "T" ? true : false;
     }
+    private sealed class BI
+    {
+        public string BelgeInfo { get; set; }
+    }
+
 }

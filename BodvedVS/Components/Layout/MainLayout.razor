@@ -1,18 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
-@* <MudThemeProvider />
-<MudSnackbarProvider />
-*@
-
 <div class="sener">
     <div class="wrapper">
         <div class="header">
             <div class="navbar">
-                <div><a href="about">MasatenisiOnline</a></div>
-                <div class="nav-links">
-                    @* <div>@SngC.Name</div> *@
                     <NavMenu />
-                </div>
             </div>
         </div>
         <div class="content">
@@ -28,9 +20,3 @@
     <a class="dismiss">🗙</a>
 </div>
 
-@code {
-    //private IDisposable? registration;
-    // [CascadingParameter] CascadingScopeState CST { get; set; }
-    string Msg = "";
-
-}

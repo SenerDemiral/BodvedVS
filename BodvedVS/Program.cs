@@ -49,6 +49,7 @@ builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 //builder.Services.AddMudBlazorSnackbar();
 //builder.Services.AddBlazoredModal();
 
+builder.Services.AddAntiforgery(o => o.SuppressXFrameOptionsHeader = true); // iFrame ile embed edilebilir
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -90,6 +91,8 @@ app.MapGet("/apipp", async (IDataAccess db) =>
     (await db.LoadDataAsync<APIpp, dynamic>("select * from API_PP", new { })).ToList()
 );
 
+//Rendering Blazor components to a string
+//https://andrewlock.net/exploring-the-dotnet-8-preview-rendering-blazor-components-to-a-string/
 
 app.Run();
 

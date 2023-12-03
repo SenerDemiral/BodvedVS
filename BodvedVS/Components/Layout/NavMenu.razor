@@ -6,31 +6,38 @@
 @implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-<div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;">
-    @SngC.ConnCnt.ToString("#,#")<sub>@SngC.ActConnCnt</sub>
+<div style="display:flex">
+    <a href="about">MasatenisiOnline</a>
+    <div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
+        @SngC.ConnCnt.ToString("#,#")
+    </div>
+    <div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
+        <sub>@SngC.ActConnCnt</sub>
+    </div>
 </div>
 
-<NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
-    🏡
-</NavLink>
+<div class="nav-links">
+    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
+        🏡
+    </NavLink>
 
-<NavLink class="nav-link" href="Szn">
-    🌈
-</NavLink>
+    <NavLink class="nav-link" href="Szn">
+        🌈
+    </NavLink>
 
-<NavLink class="nav-link" href="Oyn">
-    👪
-</NavLink>
+    <NavLink class="nav-link" href="Oyn">
+        👪
+    </NavLink>
 
-<NavLink class="nav-link" href="login">
-    🔑
-</NavLink>
+    <NavLink class="nav-link" href="login">
+        🔑
+    </NavLink>
 
-<NavLink class="nav-link" href="InpLig">
-    ✏️
-</NavLink>
+    <NavLink class="nav-link" href="InpLig">
+        ✏️
+    </NavLink>
 
-
+</div>
 @*
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">

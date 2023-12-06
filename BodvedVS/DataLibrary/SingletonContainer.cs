@@ -1,14 +1,17 @@
-﻿namespace BodvedVS.DataLibrary;
+﻿using System;
+
+namespace BodvedVS.DataLibrary;
 
 public interface ISingletonContainer
 {
     string Name { get; set; }
     int ConnCnt { get; set; }
     int ActConnCnt { get; set; }
+    int MaxActConnCnt { get; set; }
 
     event Action? OnChange;
-    void AddMe();
-    void OffMe();
+    void AddMe(string usrGuid, int usrId);
+    void OffMe(string usrGuid);
 }
 
 public class SingletonContainer(IDataAccess db) : ISingletonContainer
@@ -16,6 +19,7 @@ public class SingletonContainer(IDataAccess db) : ISingletonContainer
     private string name;
     public int ConnCnt { get; set; }
     public int ActConnCnt { get; set; } = 0;
+    public int MaxActConnCnt { get; set; } = 0;
     private IDataAccess _db = db;
 
     public event Action? OnChange;
@@ -31,15 +35,21 @@ public class SingletonContainer(IDataAccess db) : ISingletonContainer
         }
     }
 
-    public void AddMe()
+    public void AddMe(string usrGuid, int usrId)
     {
         ActConnCnt++;
-        ConnCnt = _db.CONN_INC_GET();
+        if (ActConnCnt > MaxActConnCnt)
+        {
+            MaxActConnCnt = ActConnCnt;
+        }
+        ConnCnt = _db.CONN_GIR(usrGuid, usrId);
         NotifyStateChanged();
+
     }
-    public void OffMe()
+    public void OffMe(string usrGuid)
     {
         ActConnCnt--;
+        _db.CONN_CIK(usrGuid);
         NotifyStateChanged();
     }
 }

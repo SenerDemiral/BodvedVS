@@ -159,13 +159,32 @@ public class FBDataAccess : IDataAccess
         return pk;
     }
 
-    public int CONN_INC_GET()
+    public int CONN_INC_GET(string usrGuid, int usrId)
     {
         int conn = 0;
         using (IDbConnection connection = new FbConnection(cnctStr))
         {
-            conn = connection.ExecuteScalar<int>("select Conn from CONN_INC_GET");
+            conn = connection.ExecuteScalar<int>($"select Conn from CONN_INC_GET('{usrGuid}',{usrId})");
         }
         return conn;
+    }
+
+    public int CONN_GIR(string usrGuid, int usrId)
+    {
+        int conn = 0;
+        using (IDbConnection connection = new FbConnection(cnctStr))
+        {
+            conn = connection.ExecuteScalar<int>($"select Conn from CONN_GIR('{usrGuid}',{usrId})");
+        }
+        return conn;
+    }
+
+    public void CONN_CIK(string usrGuid)
+    {
+        int conn = 0;
+        using (IDbConnection connection = new FbConnection(cnctStr))
+        {
+            conn = connection.ExecuteScalar<int>($"select * from CONN_CIK('{usrGuid}')");
+        }
     }
 }

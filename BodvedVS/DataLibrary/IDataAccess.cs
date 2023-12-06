@@ -20,6 +20,8 @@ public interface IDataAccess
     bool SaveRec<T>(string sql, T parameters);
 
     int GetTablePK(string tblName);
-    int CONN_INC_GET();
+    int CONN_INC_GET(string usrGuid, int usrId);
+    int CONN_GIR(string usrGuid, int usrId);
+    void CONN_CIK(string usrGuid);
 
 }

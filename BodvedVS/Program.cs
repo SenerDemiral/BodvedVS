@@ -2,7 +2,7 @@ using BodvedVS;
 using BodvedVS.Components;
 using BodvedVS.DataLibrary;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);   ///////////CreateBuilder////////////////////
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,

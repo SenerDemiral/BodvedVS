@@ -6,6 +6,7 @@
 @implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
+
 <div style="display:flex">
     <a href="about">MasatenisiOnline</a>
     <div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
@@ -18,11 +19,11 @@
 
 <div class="nav-links">
     <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
-        🏡
+        @ScpC.UsrId 🏡
     </NavLink>
 
-    <NavLink class="nav-link" href="Szn">
-        🌈 @usrId
+    <NavLink class="nav-link" href=@($"Szn/{ScpC.UsrGuid}")>
+        🌈
     </NavLink>
 
     <NavLink class="nav-link" href="Oyn">
@@ -71,43 +72,45 @@
  *@
 
 @code {
-    private int usrId { get; set; }
-    private int ConnCnt { get; set; }
-    private string usrGuid;
+    //private int usrId { get; set; }
+    //private int ConnCnt { get; set; }
+    //private string usrGuid;
 
     protected override async Task OnInitializedAsync()
     {
+        SngC.OnChange += MyStateChanged;
+        ScpC.UsrGuid = Guid.NewGuid().ToString("N");
+
         if (!ScpC.IsOk)
         {
-            usrGuid = Guid.NewGuid().ToString();
+            //usrGuid = Guid.NewGuid().ToString("N");
 
             UsrPLS lm = new();
             var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
             if (toto.Success)
             {
                 lm = toto.Value;
-            }
-            if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
-            {
-                SngC.AddMe(usrGuid, 0);
-                Navigation.NavigateTo("");
+                if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
+                {
+                    SngC.AddMe(ScpC.UsrGuid, 0);
+                    Navigation.NavigateTo("");
+                }
+                else
+                    SngC.AddMe(ScpC.UsrGuid, ScpC.UsrId);
             }
             else
-                SngC.AddMe(usrGuid, ScpC.UsrId);
+                SngC.AddMe(ScpC.UsrGuid, 0);
 
-            usrId = ScpC.UsrId;
-
-            //ConnCnt = db.CONN_INC_GET();
         }
-
+        //usrId = ScpC.UsrId;
     }
 
-    protected override void OnInitialized()
-    {
-        SngC.OnChange += MyStateChanged;
+    // protected override void OnInitialized()
+    // {
+    //     SngC.OnChange += MyStateChanged;
 
-        base.OnInitialized();
-    }
+    //     //base.OnInitialized();
+    // }
 
     public void MyStateChanged()
     {
@@ -118,7 +121,7 @@
     public void Dispose()
     {
         SngC.OnChange -= MyStateChanged;
-        SngC.OffMe(usrGuid);
+        SngC.OffMe(ScpC.UsrGuid);
     }
 
 

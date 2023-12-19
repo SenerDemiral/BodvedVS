@@ -3,7 +3,7 @@
 @inject IScopedContainer ScpC
 @inject ISingletonContainer SngC
 @inject NavigationManager Navigation
-@implements IDisposable
+@* @implements IDisposable *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/login"
 
@@ -47,6 +47,7 @@
 
         if (ScpC.CheckLogin(usr.usrid, usr.usrpwd))
         {
+            SngC.Conns[ScpC.UsrGuid] = usr.usrid;
             await PLS.SetAsync("pwd", "bodved", usr);
             //CST.Msg = "Login başarılı";
             Navigation.NavigateTo("");
@@ -71,27 +72,27 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        SngC.OnChange += MyStateChanged;
+    // protected override void OnInitialized()
+    // {
+    //     SngC.OnChange += MyStateChanged;
 
-        base.OnInitialized();
-    }
+    //     base.OnInitialized();
+    // }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-    }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
+    //     base.OnAfterRender(firstRender);
+    // }
 
-    public void MyStateChanged()
-    {
-        Msg = SngC.Name;
-        InvokeAsync(StateHasChanged);   //StateHasChanged(); //Hata geliyor
-    }
+    // public void MyStateChanged()
+    // {
+    //     Msg = SngC.Name;
+    //     InvokeAsync(StateHasChanged);   //StateHasChanged(); //Hata geliyor
+    // }
 
-    public void Dispose()
-    {
-        SngC.OnChange -= MyStateChanged;
-    }
+    // public void Dispose()
+    // {
+    //     SngC.OnChange -= MyStateChanged;
+    // }
 
 }

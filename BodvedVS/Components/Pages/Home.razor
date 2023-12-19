@@ -1,10 +1,9 @@
 ﻿@* @inject ISnackbar Snackbar *@
 @inject IDataAccess db
-@* @inject IScopedContainer ScpC *@
-@* @rendermode renderMode *@
+@inject IScopedContainer ScpC
 @page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>MasaTenisiOnline</PageTitle>
 
 @* <input type="button" @onclick="DenemeClicked" value="Click me" />
 
@@ -39,6 +38,10 @@
     </main>
 </div>
 
+@if(CCs != null)
+{
+    
+
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Son Sezon Lig Puan durumu</div>
     <main class="cards">
@@ -50,7 +53,7 @@
         }
     </main>
 </div>
-
+}
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Sezon Toplamları</div>
     <main class="cards">
@@ -64,26 +67,18 @@
 @code {
     IEnumerable<CC>? CCs;
 
-    static IComponentRenderMode renderMode = new InteractiveServerRenderMode(false);
-
     protected override async Task OnInitializedAsync()
     {
         // Son Donem/DD Ligleri/CC
-       //await Task.Delay(10);
-       // usrId = ScpC.UsrId;
+        //await Task.Delay(10);
+        // usrId = ScpC.UsrId;
         CCs = db.LoadData<CC, dynamic>("select * from UI_Lig_SonSzn", new { });
     }
 
-    void DenemeClicked()
-    {
-
-        // Snackbar.Add("deneme dfafafasd", Severity.Error);
-    }
     private sealed class CC
     {
         public int CCId { get; set; }
         public string Ad { get; set; }
-
     }
 
 }

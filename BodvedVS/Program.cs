@@ -1,14 +1,16 @@
 using BodvedVS;
 using BodvedVS.Components;
+using BodvedVS.Components.Comps;
 using BodvedVS.DataLibrary;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-var builder = WebApplication.CreateSlimBuilder(args);   ///////////CreateBuilder////////////////////
+var builder = WebApplication.CreateBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,
                        reloadOnChange: true);
 
-builder.Services.AddHostedService<HostApplicationLifetimeEventsHostedService>();    // Start/Stop bilmek için deneme
+//builder.Services.AddHostedService<HostApplicationLifetimeEventsHostedService>();    // Start/Stop bilmek için deneme
 
 // Add services to the container.
 //builder.Services.AddRazorComponents()
@@ -90,6 +92,10 @@ app.MapGet("/apipp", async (IDataAccess db) =>
 
     (await db.LoadDataAsync<APIpp, dynamic>("select * from API_PP", new { })).ToList()
 );
+
+
+// ScopedContainer not working
+//app.MapGet("/can", (ISingletonContainer sc) => new RazorComponentResult<Szn>(new { ad = sc.ActConnCnt }));
 
 //Rendering Blazor components to a string
 //https://andrewlock.net/exploring-the-dotnet-8-preview-rendering-blazor-components-to-a-string/

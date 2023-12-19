@@ -1,8 +1,8 @@
 ﻿@inject IDataAccess db
-@* @attribute [StreamRendering(true)] *@
-@page "/Szn"
+@inject ISingletonContainer SngC
+@page "/Szn/{usrGUID?}"
 
-
+<PageTitle>Sezonlar</PageTitle>
 <h3 style="background-color:gold">Sezonlar</h3>
 
 @if (ls != null)
@@ -31,10 +31,13 @@ else
 
 @code {
     IEnumerable<LS>? ls;
+    [Parameter] public string UsrGUID { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
-        ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });
+        var usrId = SngC.GetConnUsrId(UsrGUID);
+        if(usrId >=0)
+            ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });
     }
 
     private sealed class LS

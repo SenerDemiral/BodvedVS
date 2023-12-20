@@ -2,6 +2,7 @@ using BodvedVS;
 using BodvedVS.Components;
 using BodvedVS.Components.Comps;
 using BodvedVS.DataLibrary;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////

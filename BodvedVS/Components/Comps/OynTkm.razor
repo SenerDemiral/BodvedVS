@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @* @attribute [StreamRendering(true)] *@
 @page "/OynTkm/{ctid:int}"
-
+<PageTitle>TakımOyuncuları</PageTitle>
 
 @if (ot != null)
 {
@@ -63,7 +63,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-
         ti = await db.LoadRecAsync<TI, dynamic>("select * from UI_TKM_INF(@CTId)", new { CTId = ctid });
 
         ot = db.LoadData<OT, dynamic>("select * from UI_Oyn_Tkm(@CTId) order by R desc", new { CTId = ctid });

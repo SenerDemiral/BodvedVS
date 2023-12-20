@@ -2,6 +2,7 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/OynSzn/{dnm:int}"
 
+<PageTitle>@Dnm SezonOyuncuları</PageTitle>
 
 <div class="table-container">
     <div class="tc--header fs-12">
@@ -38,8 +39,6 @@
             <PropertyColumn Property="@(p => p.ML)" Sortable="true" Class="w-int" Align="Microsoft.AspNetCore.Components.QuickGrid.Align.Center" />
             <PropertyColumn Property="@(p => p.CTAds)" Title="Oynadığı Takım(lar)" />
             <PropertyColumn Property="@(p => p.PPId)" Sortable="true" Class="w-int" />
-
-
         </QuickGrid>
     </div>
 </div>

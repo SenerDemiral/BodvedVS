@@ -5,23 +5,6 @@
 
 <PageTitle>MasaTenisiOnline</PageTitle>
 
-@* <input type="button" @onclick="DenemeClicked" value="Click me" />
-
-<div class="wrapper-sub">
-    <div class="wrapper-sub_header">Duyurular</div>
-    <main class="cards">
-        <article class="card">
-            <img src="/images/sener.jpg" alt=".....">
-            <div class="text">
-                <h3>Seamlessly visualize quality</h3>
-                <p>Collaboratively administrate empowered markets via plug-and-play networks.</p>
-            </div>
-        </article>
-    </main>
-</div>
- *@
-
-
 <div class="img-trns">
     <img src="images/bodved.jpg" />
 </div>
@@ -38,21 +21,19 @@
     </main>
 </div>
 
-@if(CCs != null)
+@if (CCs != null)
 {
-    
-
-<div class="wrapper-sub">
-    <div class="wrapper-sub_header">Son Sezon Lig Puan durumu</div>
-    <main class="cards">
-        @foreach (var rec in CCs)
-        {
-            <article class="card">
-                <TkmLig CCId="@rec.CCId" CCAd="@rec.Ad" />
-            </article>
-        }
-    </main>
-</div>
+    <div class="wrapper-sub">
+        <div class="wrapper-sub_header">Son Sezon Lig Puan durumu</div>
+        <main class="cards">
+            @foreach (var rec in CCs)
+            {
+                <article class="card">
+                    <TkmLig CCId="@rec.CCId" CCAd="@rec.Ad" />
+                </article>
+            }
+        </main>
+    </div>
 }
 <div class="wrapper-sub">
     <div class="wrapper-sub_header">Sezon Toplamları</div>

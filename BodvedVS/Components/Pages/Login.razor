@@ -37,20 +37,20 @@
 </div>
 
 @code {
-    [CascadingParameter] CascadingScopeState CST { get; set; }
+    //[CascadingParameter] CascadingScopeState CST { get; set; }
     UsrPLS usr = new();
     string Msg { get; set; }
 
     private async Task LoginClck()
     {
-        //SngC.Name = "Heyooooooo******";
-
         if (ScpC.CheckLogin(usr.usrid, usr.usrpwd))
         {
             SngC.Conns[ScpC.UsrGuid] = usr.usrid;
+            
             await PLS.SetAsync("pwd", "bodved", usr);
             //CST.Msg = "Login başarılı";
             Navigation.NavigateTo("");
+            
             // default force=false
             // lm.UsrUserName = null;
             // IDictionary<string, object> objDic = lm.AsDictionary();
@@ -61,38 +61,6 @@
             //     var cc = d.Value?.GetType();
             // }
             // var someObject = objDic.ToObject<LoginModel>();
-
-
-            //var vtg =  await PLS.GetAsync<LI>("pwd", "can");
-            //if (vtg.Success)
-            //{
-            //li = vtg.Value;
-            //}
-
         }
     }
-
-    // protected override void OnInitialized()
-    // {
-    //     SngC.OnChange += MyStateChanged;
-
-    //     base.OnInitialized();
-    // }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     base.OnAfterRender(firstRender);
-    // }
-
-    // public void MyStateChanged()
-    // {
-    //     Msg = SngC.Name;
-    //     InvokeAsync(StateHasChanged);   //StateHasChanged(); //Hata geliyor
-    // }
-
-    // public void Dispose()
-    // {
-    //     SngC.OnChange -= MyStateChanged;
-    // }
-
 }

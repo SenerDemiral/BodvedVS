@@ -1,231 +1,247 @@
 ﻿@inject IDataAccess db
-@attribute [StreamRendering(true)]
+@* @attribute [StreamRendering(true)]*@
+
 @page "/MacOyn/{ppid:int}"
 <PageTitle>Oyuncu Maçları</PageTitle>
 
 <style>
-    .sonuc {
-        /*font-size:16px;*/
-        font-family: monospace;
-        white-space: pre !important;
-    }
+	.sonuc {
+		/*font-size:16px;*/
+		font-family: monospace;
+		white-space: pre !important;
+	}
 </style>
 
 
 @if (mo == null)
 {
-    <div>...</div>
+	<div>...</div>
 }
 else
 {
-    <div class="table-container">
-        @* <div class="tc--header text-center">☺ @pp.Ad @((MarkupString)pp.Belge)</div> *@
-        <div class="tc--header" >
-            <div>@((MarkupString)pp.Info)</div>
+	<div class="table-container">
+		@* <div class="tc--header text-center">☺ @pp.Ad @((MarkupString)pp.Belge)</div> *@
+		<div class="tc--header">
+			<div>@((MarkupString)pp.Info)</div>
 
-            <div style="width:400px">@((MarkupString)bi.BelgeInfo)</div>
+			<div style="width:400px">@((MarkupString)bi.BelgeInfo)</div>
 
-        </div>
+		</div>
 
-        <div class="tc--content" tabindex="-1">
+		<div class="tc--content" tabindex="-1">
 
-            <table class="table-min" style="width:100%; text-align:center">
-                <thead style="background-color:skyblue !important; color:white">
-                    <tr>
-                        <th rowspan="2">Szn</th>
-                        <th rowspan="2">Rnk→</th>
-                        <th rowspan="2">PX</th>
-                        <th rowspan="2">→Rnk</th>
-                        <th rowspan="2">Idx</th>
+			<table class="table-min" style="width:100%; text-align:center">
+				<thead style="background-color:skyblue !important; color:white">
+					<tr>
+						<th rowspan="2">Szn</th>
+						<th rowspan="2">Rnk→</th>
+						<th rowspan="2">PX</th>
+						<th rowspan="2">→Rnk</th>
+						<th rowspan="2">Idx</th>
 
-                        <th colspan="4">Maç</th>
+						<th colspan="4">Maç</th>
 
-                        <th colspan="4">Set</th>
+						<th colspan="4">Set</th>
 
-                        <th rowspan="2">Oynadığı Takım(lar)</th>
-                    </tr>
-                    <tr style="background-color:skyblue !important">
-                        <th class="tooltip">
-                            SW
-                            <span class="tooltip-text">Tekler Aldığı Maç</span>
-                        </th>
-                        <th class="tooltip">
-                            SL
-                            <span class="tooltip-text">Tekler Verdiği Maç</span>
-                        </th>
-                        <th class="tooltip">
-                            DW
-                            <span class="tooltip-text">Çiftler Aldığı Maç</span>
-                        </th>
-                        <th class="tooltip">
-                            DL
-                            <span class="tooltip-text">Çiftler Verdiğ Maç</span>
-                        </th>
+						<th rowspan="2">Oynadığı Takım(lar)</th>
+					</tr>
+					<tr style="background-color:skyblue !important">
+						<th class="tooltip">
+							SW
+							<span class="tooltip-text">Tekler Aldığı Maç</span>
+						</th>
+						<th class="tooltip">
+							SL
+							<span class="tooltip-text">Tekler Verdiği Maç</span>
+						</th>
+						<th class="tooltip">
+							DW
+							<span class="tooltip-text">Çiftler Aldığı Maç</span>
+						</th>
+						<th class="tooltip">
+							DL
+							<span class="tooltip-text">Çiftler Verdiğ Maç</span>
+						</th>
 
 
-                        <th class="tooltip">
-                            SW
-                            <span class="tooltip-text">Tekler Aldığı Set</span>
-                        </th>
-                        <th class="tooltip">
-                            SL
-                            <span class="tooltip-text">Tekler Verdiği Set</span>
-                        </th>
-                        <th class="tooltip">
-                            DW
-                            <span class="tooltip-text">Çiftler Aldiğı Set</span>
-                        </th>
-                        <th class="tooltip">
-                            DL
-                            <span class="tooltip-text">Çiftler Verdiği Set</span>
-                        </th>
+						<th class="tooltip">
+							SW
+							<span class="tooltip-text">Tekler Aldığı Set</span>
+						</th>
+						<th class="tooltip">
+							SL
+							<span class="tooltip-text">Tekler Verdiği Set</span>
+						</th>
+						<th class="tooltip">
+							DW
+							<span class="tooltip-text">Çiftler Aldiğı Set</span>
+						</th>
+						<th class="tooltip">
+							DL
+							<span class="tooltip-text">Çiftler Verdiği Set</span>
+						</th>
 
-                    </tr>
-                </thead>
-                @foreach (var r in so)
-                {
-                    <tr>
-                        <td>@r.Dnm</td>
-                        <td>@r.R0</td>
-                        <td>@r.PX</td>
-                        <td>@r.R</td>
-                        <td>@r.Idx</td>
+					</tr>
+				</thead>
+				@foreach (var r in so)
+				{
+					<tr>
+						<td>@r.Dnm</td>
+						<td>@r.R0</td>
+						<td>@r.PX</td>
+						<td>@r.R</td>
+						<td>@r.Idx</td>
 
-                        <td>@r.SMW</td>
-                        <td>@r.SML</td>
-                        <td>@r.DMW</td>
-                        <td>@r.DML</td>
+						<td>@r.SMW</td>
+						<td>@r.SML</td>
+						<td>@r.DMW</td>
+						<td>@r.DML</td>
 
-                        <td>@r.SSW</td>
-                        <td>@r.SSL</td>
-                        <td>@r.DSW</td>
-                        <td>@r.DSL</td>
+						<td>@r.SSW</td>
+						<td>@r.SSL</td>
+						<td>@r.DSW</td>
+						<td>@r.DSL</td>
 
-                        <td style="text-align:left">@r.CTAds</td>
-                    </tr>
-                }
+						<td style="text-align:left">@r.CTAds</td>
+					</tr>
+				}
 
-            </table>
+			</table>
 
-            <table class="table-min">
-                <thead>
-                    <tr style="background-color:skyblue !important">
-                        <th>#</th>
-                        <th>Trh</th>
-                        <th>Szn</th>
-                        <th>☺</th>
-                        <th>Rkp</th>
-                        <th>Home</th>
-                        <th>Sonuç</th>
-                        <th>Guest</th>
-                    </tr>
-                </thead>
-                @foreach (var r in mo)
-                {
-                    @if (r.isLF)  // Seperator
-                    {
-                        <tr>
-                            <td colspan="8" style="background: linear-gradient(skyblue, whitesmoke, skyblue);">&nbsp;</td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>@r.MACId</td>
-                            <td class="tooltip">@r.Trh.ToString("dd.MM.yy")</td>
-                            <td>@r.CCAd</td>
-                            <td>@((MarkupString)r.ppRnk)</td>
-                            <td>@((MarkupString)r.xxRnk)</td>
-                            <td>@((MarkupString)r.HInfo)</td>
-                            <td class="tooltip text-center">
-                                @((MarkupString)r.SncOzt)
-                                <span class="tooltip-text">@((MarkupString)r.SncDty)</span>
-                            </td>
-                            <td>@((MarkupString)r.GInfo)</td>
-                        </tr>
-                    }
+			<table class="table-min" style="width:100%">
+				<thead>
+					<tr style="background-color:skyblue !important">
+						<th>#</th>
+						<th>Trh</th>
+						<th>Szn</th>
+						<th>@@</th>
+						<th>Rkp</th>
+						<th>Home</th>
+						<th>Sonuç</th>
+						<th>Guest</th>
+					</tr>
+				</thead>
+				@foreach (var r in mo)
+				{
+					@if (r.isLF)  // Seperator
+					{
+						<tr>
+							<td colspan="8" style="background: linear-gradient(skyblue, whitesmoke, skyblue);">&nbsp;</td>
+						</tr>
+					}
+					else
+					{
+						@if (r.SoD == "S")
+						{
+							<tr style="font-weight:bold">
+								<td>@r.MACId</td>
+								<td class="tooltip">@r.Trh.ToString("dd.MM.yy")</td>
+								<td>@r.CCAd</td>
+								<td>@((MarkupString)r.ppRnk)</td>
+								<td>@((MarkupString)r.xxRnk)</td>
+								<td>@((MarkupString)r.HInfo)</td>
+								<td class="tooltip text-center">
+									@((MarkupString)r.SncOzt)
+									<span class="tooltip-text">@((MarkupString)r.SncDty)</span>
+								</td>
+								<td>@((MarkupString)r.GInfo)</td>
+							</tr>
+						}
+						else
+						{
+							<tr>
+								<td>@r.MACId</td>
+								<td class="tooltip">@r.Trh.ToString("dd.MM.yy")</td>
+								<td>@r.CCAd</td>
+								<td>@((MarkupString)r.ppRnk)</td>
+								<td>@((MarkupString)r.xxRnk)</td>
+								<td>@((MarkupString)r.HInfo)</td>
+								<td class="tooltip text-center">
+									@((MarkupString)r.SncOzt)
+									<span class="tooltip-text">@((MarkupString)r.SncDty)</span>
+								</td>
+								<td>@((MarkupString)r.GInfo)</td>
+							</tr>
+						}
+					}
 
-                }
-            </table>
-        </div>
-    </div>
+				}
+			</table>
+		</div>
+	</div>
 }
 
 @code {
-    BI bi;
-    PP pp;
-    IEnumerable<SO>? so;
-    IEnumerable<MO>? mo;
+	BI bi;
+	PP pp;
+	IEnumerable<SO>? so;
+	IEnumerable<MO>? mo;
 
-    [Parameter] public int ppid { get; set; }
+	[Parameter] public int ppid { get; set; }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
+	protected override async Task OnParametersSetAsync()
+	{
+		bi = db.LoadRec<BI, dynamic>("select * from BELGE_INFO", new { });
 
-        //pp = await db.LoadRecAsync<PP, dynamic>("select Ad, Belge from PP where PPId = @PPId", new { PPId = ppid });
-        pp = db.LoadRec<PP, dynamic>("select Info from PP_INFO(@PPId)", new { PPId = ppid });
-        so = await db.LoadDataAsync<SO, dynamic>("select * from UI_STAT_OYN(@PPId)", new { PPId = ppid });
-        mo = await db.LoadDataAsync<MO, dynamic>("select * from UI_MAC_OYN(@PPId)", new { PPId = ppid });
-        await base.OnParametersSetAsync();
-    }
+		//pp = await db.LoadRecAsync<PP, dynamic>("select Ad, Belge from PP where PPId = @PPId", new { PPId = ppid });
+		pp = db.LoadRec<PP, dynamic>("select Info from PP_INFO(@PPId)", new { PPId = ppid });
+		so = await db.LoadDataAsync<SO, dynamic>("select * from UI_STAT_OYN(@PPId)", new { PPId = ppid });
+		mo = await db.LoadDataAsync<MO, dynamic>("select * from UI_MAC_OYN(@PPId)", new { PPId = ppid });
+		await base.OnParametersSetAsync();
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
+	private sealed class PP
+	{
+		public string? Ad { get; set; }
+		public string Belge { get; set; }
+		public string Info { get; set; }
+	}
 
-    private sealed class PP
-    {
-        public string? Ad { get; set; }
-        public string Belge { get; set; }
-        public string Info { get; set; }
-    }
+	private sealed class SO
+	{
+		public int Dnm { get; set; }
+		public int R0 { get; set; }
+		public int R { get; set; }
+		public int PX { get; set; }
+		public int Idx { get; set; }
+		public int SSW { get; set; }
+		public int SSL { get; set; }
+		public int DSW { get; set; }
+		public int DSL { get; set; }
 
-    private sealed class SO
-    {
-        public int Dnm { get; set; }
-        public int R0 { get; set; }
-        public int R { get; set; }
-        public int PX { get; set; }
-        public int Idx { get; set; }
-        public int SSW { get; set; }
-        public int SSL { get; set; }
-        public int DSW { get; set; }
-        public int DSL { get; set; }
+		public int SMW { get; set; }
+		public int SML { get; set; }
+		public int DMW { get; set; }
+		public int DML { get; set; }
 
-        public int SMW { get; set; }
-        public int SML { get; set; }
-        public int DMW { get; set; }
-        public int DML { get; set; }
+		public string? CTAds { get; set; }
+	}
 
-        public string? CTAds { get; set; }
-    }
+	private sealed class MO
+	{
+		public int? MACId { get; set; }
+		public int? Dnm { get; set; }
+		public string? CCAd { get; set; }
+		public DateTime Trh { get; set; }
+		public string? SoD { get; set; }
+		public int? Idx { get; set; }
+		public string? Stu { get; set; }
+		public string? HInfo { get; set; }
+		public string? SncOzt { get; set; }
+		public string? SncDty { get; set; }
+		public string? GInfo { get; set; }
 
-    private sealed class MO
-    {
-        public int? MACId { get; set; }
-        public int? Dnm { get; set; }
-        public string? CCAd { get; set; }
-        public DateTime Trh { get; set; }
-        public string? SoD { get; set; }
-        public int? Idx { get; set; }
-        public string? Stu { get; set; }
-        public string? HInfo { get; set; }
-        public string? SncOzt { get; set; }
-        public string? SncDty { get; set; }
-        public string? GInfo { get; set; }
+		public string ppClass { get; set; }
+		public string xxClass { get; set; }
+		public string ppRnk { get; set; }
+		public string xxRnk { get; set; }
+		public string LF { get; set; }
 
-        public string ppClass { get; set; }
-        public string xxClass { get; set; }
-        public string ppRnk { get; set; }
-        public string xxRnk { get; set; }
-        public string LF { get; set; }
-
-        public bool isLF => LF == "T" ? true : false;
-    }
-    private sealed class BI
-    {
-        public string BelgeInfo { get; set; }
-    }
+		public bool isLF => LF == "T" ? true : false;
+	}
+	private sealed class BI
+	{
+		public string BelgeInfo { get; set; }
+	}
 
 }

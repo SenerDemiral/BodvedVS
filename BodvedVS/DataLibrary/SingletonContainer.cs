@@ -66,6 +66,8 @@ public class SingletonContainer : ISingletonContainer
 
     public int GetConnUsrId(string usrGuid)
     {
+        if(string.IsNullOrEmpty(usrGuid)) 
+            return -2;
         if(Conns.TryGetValue(usrGuid, out int usrId))
         {
             return usrId;

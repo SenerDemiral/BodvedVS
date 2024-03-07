@@ -1,6 +1,5 @@
-﻿@* @inject ISnackbar Snackbar *@
-@inject IDataAccess db
-@inject IScopedContainer ScpC
+﻿@inject IDataAccess db
+
 @page "/"
 
 <PageTitle>MasaTenisiOnline</PageTitle>
@@ -50,9 +49,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Son Donem/DD Ligleri/CC
-        //await Task.Delay(10);
-        // usrId = ScpC.UsrId;
         CCs = db.LoadData<CC, dynamic>("select * from UI_Lig_SonSzn", new { });
     }
 

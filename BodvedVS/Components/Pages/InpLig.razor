@@ -1,15 +1,12 @@
 ﻿@inject NavigationManager Navigation
-@inject ProtectedLocalStorage PLS
 @inject IScopedContainer ScpC
 @inject IDataAccess db
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@* @attribute [StreamRendering(true)] *@
+
 @page "/InpLig"
 <PageTitle>SonSezonTurnuvaları</PageTitle>
 
 @* Lig girisleri ben yapacagim *@
-
-@* <LoginAuto /> *@
 
 <h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
 
@@ -40,32 +37,23 @@ else
 {
     <div>...</div>
 }
+<p> @Usr.Clicks </p>
+<button @onclick="IncrementCount">Increment</button>
+
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     IEnumerable<LS>? ls;
+
+    void IncrementCount() => Usr.Clicks++;  // Deneme
 
     protected override async Task OnInitializedAsync()
     {
         if (ScpC.IsOk)
             LoadData();
-//        return base.OnInitializedAsync();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        //base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            //await Task.Delay(1);    // LoginAuto ya gider, orada bekledigi icin buraya doner
-            //await Task.Delay(10);    // Burada bekledigi icin LoginAuto ya gider
-            
-            // if (ScpC.IsOk)
-            //      LoadData();
-        }
-    }
-
-    private void LoadData()
+     private void LoadData()
     {
         ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
         StateHasChanged();

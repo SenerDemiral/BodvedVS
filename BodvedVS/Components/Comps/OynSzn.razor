@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@page "/OynSzn/{dnm:int}"
 
+@page "/OynSzn/{dnm:int}"
 <PageTitle>@Dnm SezonOyuncuları</PageTitle>
 
 <div class="table-container">
@@ -12,8 +12,8 @@
 
     <div class="tc--content" tabindex="-1">
         <QuickGrid Items=@FilteredPlayers Virtualize="false" @ref=ppGrid >
-            <TemplateColumn Title="→">
-                <a href="MacOyn/@context.PPId">→</a>
+            <TemplateColumn Title="Detay">
+                <a href="MacOyn/@context.PPId">Maç⚔️</a>
             </TemplateColumn>
 
             <PropertyColumn Property="@(p => p.PPAd)" Title="Oyuncu" Sortable="true">

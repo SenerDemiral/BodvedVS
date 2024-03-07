@@ -13,3 +13,6 @@
 @using BodvedVS.Components.Comps
 @using BodvedVS.Components.Pages
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
+
+public static IComponentRenderMode InteractiveServerWithoutPrerendering { get; } =
+    new InteractiveServerRenderMode(prerender: false);

@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@* @attribute [StreamRendering(true)] *@
+
 @page "/OynTkm/{ctid:int}"
 <PageTitle>TakımOyuncuları</PageTitle>
 
@@ -53,6 +53,7 @@ else
 {
     <div>...</div>
 }
+
 
 @code {
     IEnumerable<OT>? ot;

@@ -1,8 +1,8 @@
 ﻿@inject IScopedContainer ScpC
 @inject IDataAccess db
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@page "/Oyn"
 
+@page "/Oyn"
 <PageTitle>Oyuncular</PageTitle>
 
 @if (pp != null)
@@ -23,8 +23,8 @@
                                 Sortable="true"
                                 Align="Align.Center"
                                 Title="Id" />
-                <TemplateColumn Title="Detay">
-                    <a href="MacOyn/@context.PPId" >🏁</a>
+                <TemplateColumn Title="Detay" Sortable="true">
+                    <a href="MacOyn/@context.PPId">Maç⚔️</a>
                     @* <span style="padding-right:4px">@((MarkupString)context.Link)</span> *@
                 </TemplateColumn>
                 <PropertyColumn Property="@(p => p.Ad)" Class="wdth-100"

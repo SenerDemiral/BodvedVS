@@ -1,5 +1,4 @@
 ﻿@inject IDataAccess db
-@* @attribute [StreamRendering(true)] *@
 
 <h3 style="background-color: teal;color:white">@Header</h3>
 
@@ -10,7 +9,6 @@
         @foreach (var r in fh)
         {
             <tr>
-                @* <td><button @onclick="() => GameClicked(rec)">@rec.Trh.ToString("dd-ddd")</button></td> *@
                 <td>@r.Trh.ToString("dd.MM.yy ddd")</td>
                 <td>@r.Stu</td>
                 <td class="@r.hClass">
@@ -35,11 +33,6 @@ else
     IEnumerable<FH>? fh;
     [Parameter] public string Typ { get; set; } // Bu/Gelecek Hafta
     [Parameter] public string Header { get; set; }
-
-    void GameClicked(FH rec)
-    {
-
-    }
 
     protected override async Task OnInitializedAsync()
     {

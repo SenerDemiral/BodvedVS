@@ -5,6 +5,7 @@
 @inject NavigationManager Navigation
 @* @implements IDisposable *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
+
 @page "/login"
 
 <style>
@@ -37,7 +38,6 @@
 </div>
 
 @code {
-    //[CascadingParameter] CascadingScopeState CST { get; set; }
     UsrPLS usr = new();
     string Msg { get; set; }
 

@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@* @attribute [StreamRendering(true)] *@
+
 @page "/FksLig/{CCId:int}/{Header}"
 
 <h3 style="background-color: teal;color:white">@Header Fikstürü</h3>
@@ -40,7 +40,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //ft = db.LoadData<FT, dynamic>("select * from UI_Fks_Tkm(@CTId)", new { CTId = CTId });
         ft = db.LoadData<FT, dynamic>("select * from UI_FKS('L',@CCId) order by Trh", new { CCId = CCId });
     }
 

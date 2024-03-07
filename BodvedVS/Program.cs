@@ -33,24 +33,25 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
     }
 });
 
-//builder.Services.AddMudServices(config =>
-//{
-//    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
-//    config.SnackbarConfiguration.PreventDuplicates = false;
-//    config.SnackbarConfiguration.NewestOnTop = true;
-//    config.SnackbarConfiguration.ShowCloseIcon = true;
-//    config.SnackbarConfiguration.VisibleStateDuration = 10000;
-//    config.SnackbarConfiguration.HideTransitionDuration = 500;
-//    config.SnackbarConfiguration.ShowTransitionDuration = 500;
-//    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-//});
-
 builder.Services.AddSingleton<ISingletonContainer, SingletonContainer>();
 builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 
-//builder.Services.AddMudBlazorSnackbar();
-//builder.Services.AddBlazoredModal();
+builder.Services.AddSingleton<IAllUsrs, AllUsrs>();
+builder.Services.AddHostedService<TimedHostedService>();
+
+#region RootLevel CascadingValue Deneme
+// Deneme
+builder.Services.AddCascadingValue(s => CascadingValueSource.CreateNotifying(new Usr()));
+// required files: Usr.cs DTO, CascadingValueSource.cs
+// usage in interactive Page/Comp
+// [CascadingParameter] public required Usr Usr {get; set;}
+// <p> @Usr.Clicks </p>
+// binding value directly
+// <button @onclick="IncrementCount">Increment</button>
+// <input type="number" title="Clicks" @bind-value:event="oninput" @bind-value="Usr.Clicks">
+// void IncrementCount() => Usr.Clicks++;
+#endregion
 
 builder.Services.AddAntiforgery(o => o.SuppressXFrameOptionsHeader = true); // iFrame ile embed edilebilir
 var app = builder.Build();
@@ -73,11 +74,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-//app.Use((context, next) =>
-//{
-//    return next(context);
-//});
 
 app.MapGet("/apict", async (IDataAccess db) => {
 

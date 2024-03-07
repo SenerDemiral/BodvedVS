@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@inject ISingletonContainer SngC
+
 @page "/Szn/{usrGUID?}"
 
 <PageTitle>Sezonlar</PageTitle>
@@ -7,41 +7,39 @@
 
 @if (ls != null)
 {
-    <table class="table-min">
-        @foreach (var r in ls)
-        {
-            <tr>
-                <td class="text-center">@r.Dnm</td>
-                <td>@r.Ad</td>
-                <td>
-                    <a href="LigSzn/@r.Dnm/@r.Ad"> 🏁 </a>
-                </td>
-                <td>
-                    <a href="OynSzn/@r.Dnm"> 👪 </a>
-                </td>
-            </tr>
-        }
-    </table>
+	<table class="table-min">
+		@foreach (var r in ls)
+		{
+			<tr>
+				<td class="text-center">@r.Dnm</td>
+				<td>@r.Ad</td>
+				<td>
+					<a href="LigSzn/@r.Dnm/@r.Ad"> 🏁 </a>
+				</td>
+				<td>
+					<a href="OynSzn/@r.Dnm"> 👪 </a>
+				</td>
+			</tr>
+		}
+	</table>
 }
 else
 {
-    <div>...</div>
+	<div>...</div>
 }
 
 @code {
-    IEnumerable<LS>? ls;
-    [Parameter] public string UsrGUID { get; set; } = "";
+	IEnumerable<LS>? ls;
+	[Parameter] public string UsrGUID { get; set; } = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        var usrId = SngC.GetConnUsrId(UsrGUID);
-        if(usrId >=0)
-            ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });
+	}
 
-    private sealed class LS
-    {
-        public int Dnm { get; set; }
-        public string Ad { get; set; }
-    }
+	private sealed class LS
+	{
+		public int Dnm { get; set; }
+		public string Ad { get; set; }
+	}
 }

@@ -1,11 +1,12 @@
 ﻿@inject NavigationManager Navigation
-@inject IScopedContainer ScpC
 @inject IDataAccess db
+@inject IAllUsrs AllUsrs
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpOynRec/{ppid:int}"
 
-<h1 class="text-center">Oyuncu Edit @ScpC.UsrId</h1>
+<h1 class="text-center">Oyuncu Edit</h1>
 
 <div style="display:flex;justify-content:space-between;">
     <button disabled="@RO"
@@ -176,7 +177,9 @@
 }
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int PPId { get; set; }
+
     private PP pp;
     private bool RO = false;
     [Parameter] public EventCallback OnSaved { get; set; }
@@ -214,7 +217,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsAdm || ScpC.IsTnm)
+        if (Usr.IsAdm || Usr.IsTnm)
             pp = db.LoadRec<PP, dynamic>("select * from IOR_SEL(@iPPId)", new { iPPId = PPId });
         else
             Navigation.NavigateTo("login");

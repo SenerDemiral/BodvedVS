@@ -1,5 +1,5 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer ScpC
+@inject IAllUsrs AllUsrs
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpTkm/{ccid:int}/{header}"
@@ -104,6 +104,7 @@ else
 
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int CCId { get; set; }
     [Parameter] public string Header { get; set; }
 
@@ -188,7 +189,7 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        RO = ScpC.IsAdm || ScpC.IsTnm ? false : true;
+        RO = Usr.IsAdm || Usr.IsTnm ? false : true;
         LoadData();
     }
 

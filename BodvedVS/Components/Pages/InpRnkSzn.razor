@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 @inject NavigationManager Navigation
-@inject IScopedContainer ScpC
+@inject IAllUsrs AllUsrs
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpRnkSzn"
@@ -70,6 +70,7 @@ else
 }
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int Dnm { get; set; } = 0;
     [Parameter] public string Header { get; set; } = "Son Sezon Oyuncu Başlangıç Rank";
 
@@ -175,7 +176,7 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsAdm || ScpC.IsTnm)
+        if (Usr.IsAdm || Usr.IsTnm)
             LoadData();
         else
             Navigation.NavigateTo("");

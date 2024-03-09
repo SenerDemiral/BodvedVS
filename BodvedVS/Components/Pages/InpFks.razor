@@ -1,5 +1,7 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer ScpC
+@inject IAllUsrs AllUsrs
+@inject NavigationManager Navigation
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpFks/{ccid:int}/{header}"
@@ -88,27 +90,26 @@
             }
         </tbody>
     </table>
+    <datalist id="CTL">
+        @foreach (var r in ct)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
+    <datalist id="STU">
+        @foreach (var r in stu)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
 }
 else
 {
     <div>...</div>
 }
 
-<datalist id="CTL">
-    @foreach (var r in ct)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-<datalist id="STU">
-    @foreach (var r in stu)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-
-
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int CCId { get; set; }
     [Parameter] public string Header { get; set; }
     private bool opsPending = false;
@@ -213,6 +214,7 @@ else
         }
         opsPending = true;
     }
+
     private void Original(CET r)
     {
         if (r.MF == '+')
@@ -253,44 +255,51 @@ else
 
         cet.Add(ctn);
     }
+
     protected override async Task OnInitializedAsync()
     {
         RO = true;
-        if (ScpC.IsAdm || ScpC.IsTnm)
+        if (Usr.IsAdm || Usr.IsTnm)
+        {
             RO = false;
-
-        LoadData();
+            LoadData();
+        }
+        else
+            Navigation.NavigateTo("login");
     }
 
     private void LoadData()
     {
-        cet = db.LoadData<CET, dynamic>("select * from IF_SEL(@CCId)", new { CCId = CCId }).ToList();
-        ct = db.LoadData<CT, dynamic>("select * from LU_TKM_LIG(@CCID) order by Ad", new { CCId = CCId }).ToDictionary((k) => k.Ad);
-
-        foreach (var r in cet)
+        if (Usr.IsAdm || Usr.IsTnm)
         {
-            r.oTrh = r.Trh;
-            r.oStu = r.Stu;
-            r.oHCTId = r.HCTId;
-            r.oHCTId = r.GCTId;
-            r.oHCTAd = r.HCTAd;
-            r.oGCTAd = r.GCTAd;
+            cet = db.LoadData<CET, dynamic>("select * from IF_SEL(@CCId)", new { CCId = CCId }).ToList();
+            ct = db.LoadData<CT, dynamic>("select * from LU_TKM_LIG(@CCID) order by Ad", new { CCId = CCId }).ToDictionary((k) => k.Ad);
 
-            r.RO = true;
-            r.ROS = true;
-            if (ScpC.IsAdm || ScpC.IsTnm)
+            foreach (var r in cet)
             {
-                r.RO = false;
-                r.ROS = false;
+                r.oTrh = r.Trh;
+                r.oStu = r.Stu;
+                r.oHCTId = r.HCTId;
+                r.oHCTId = r.GCTId;
+                r.oHCTAd = r.HCTAd;
+                r.oGCTAd = r.GCTAd;
 
-            }
-            else if (String.IsNullOrWhiteSpace(r.Stu))
-            {
-                r.ROS = false;
+                r.RO = true;
+                r.ROS = true;
+                if (Usr.IsAdm || Usr.IsTnm)
+                {
+                    r.RO = false;
+                    r.ROS = false;
+
+                }
+                else if (String.IsNullOrWhiteSpace(r.Stu))
+                {
+                    r.ROS = false;
+                }
             }
         }
+        
     }
-
     private sealed class CET
     {
         public bool RO = true;

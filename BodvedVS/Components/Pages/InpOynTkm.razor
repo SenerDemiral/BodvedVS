@@ -1,6 +1,7 @@
 ﻿@inject IDataAccess db
+@inject IAllUsrs AllUsrs
 @inject NavigationManager Navigation
-@inject IScopedContainer ScpC
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpOynTkm/{ctid:int}/{header}"
@@ -76,6 +77,7 @@ else
 }
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int CTId { get; set; }
     [Parameter] public string Header { get; set; }
     
@@ -184,7 +186,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsAdm || ScpC.IsTnm)
+        if (Usr.IsAdm || Usr.IsTnm)
             LoadData();
         else
             Navigation.NavigateTo("login");

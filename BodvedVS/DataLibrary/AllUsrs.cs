@@ -36,9 +36,9 @@ public class AllUsrs : IAllUsrs
 		else
 		{
 			// get Usr, TotalCnt from DB
-			var usrInfDB = db.LoadRec<UsrInfDB, dynamic>("select * from CONN_GET(@Tkn)", new { Tkn = tkn });
+			var usrInfDB = db.LoadRec<UsrInfDB, dynamic>("select * from CONN_GIR(@Tkn)", new { Tkn = tkn });
 
-			usrInf.Id = usrInfDB.Id;
+			usrInf.Id = usrInfDB.PPId;
 			usrInf.Ad = usrInfDB.Ad;
 			usrInf.IsAdm = usrInfDB.RoleAdm == 0 ? false : true;
 			usrInf.IsTnm = usrInfDB.RoleTnm == 0 ? false : true;
@@ -50,6 +50,7 @@ public class AllUsrs : IAllUsrs
 
 		return usrInf;
 	}
+
 	public void ClearExpiredUsrs()
 	{
 		var Now = DateTime.Now;
@@ -74,7 +75,7 @@ public class UsrInf
 
 public class UsrInfDB
 {
-	public int Id { get; set; } = 0;
+	public int PPId { get; set; } = 0;
 	public string Ad { get; set; } = "Guest";
 	public int RoleAdm { get; set; }
 	public int RoleTnm { get; set; }

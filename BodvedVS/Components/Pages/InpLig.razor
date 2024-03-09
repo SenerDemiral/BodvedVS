@@ -1,12 +1,11 @@
-﻿@inject NavigationManager Navigation
-@inject IScopedContainer ScpC
-@inject IDataAccess db
+﻿@inject IDataAccess db
+@inject IAllUsrs AllUsrs
+@inject NavigationManager Navigation
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpLig"
 <PageTitle>SonSezonTurnuvaları</PageTitle>
-
-@* Lig girisleri ben yapacagim *@
 
 <h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
 
@@ -37,20 +36,23 @@ else
 {
     <div>...</div>
 }
-<p> @Usr.Clicks </p>
-<button @onclick="IncrementCount">Increment</button>
+@* <p> @Usr.Clicks </p> *@
+@* <button @onclick="IncrementCount">Increment</button> *@
 
 
 @code {
     [CascadingParameter] public required Usr Usr { get; set; }
+
     IEnumerable<LS>? ls;
 
     void IncrementCount() => Usr.Clicks++;  // Deneme
 
     protected override async Task OnInitializedAsync()
     {
-        if (ScpC.IsOk)
+        if (Usr.IsAdm || Usr.IsTnm)
             LoadData();
+        else
+            Navigation.NavigateTo("login");
     }
 
      private void LoadData()

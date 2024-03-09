@@ -1,127 +1,62 @@
-﻿@inject ProtectedLocalStorage PLS
-@inject NavigationManager Navigation
-@inject ISingletonContainer SngC
-@inject IScopedContainer ScpC
-@inject IDataAccess db
-@implements IDisposable
-@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+﻿@inject IDataAccess db
+@inject IAllUsrs AllUsrs
 
 <div style="display:flex">
-    <a href="about">MasatenisiOnline</a>
-    <div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
-        @SngC.ConnCnt.ToString("#,#")
-    </div>
-    <div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
-        @SngC.ActConnCnt
-    </div>
+	<a href="about">MasaTenisiOnline</a>
+	<div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: chartreuse;padding-left: 4px;">
+		@ConnCnt
+	</div>
+	<div style="font-size:10px">@usrInf.Ad</div>
 </div>
 
 <div class="nav-links">
-    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
-        @ScpC.UsrId 🏡
-    </NavLink>
+	<NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="text-decoration: none">
+		🏡
+	</NavLink>
 
-    <NavLink class="nav-link" href=@($"Szn/{ScpC.UsrGuid}")>
-        🌈
-    </NavLink>
+	<NavLink class="nav-link" href=@($"Szn/{@usrTkn}")>
+		🌈
+	</NavLink>
 
-    <NavLink class="nav-link" href="Oyn">
-        👪
-    </NavLink>
+	<NavLink class="nav-link" href="oyn">
+		👪
+	</NavLink>
 
-    <NavLink class="nav-link" href="login">
-        🔑
-    </NavLink>
-
-    <NavLink class="nav-link" href="InpLig">
-        ✏️
-    </NavLink>
-
+	@if (usrInf.Id > 0)
+	{
+		<NavLink class="nav-link" href="logout">
+			🔒
+		</NavLink>
+		<NavLink class="nav-link" href="InpLig">
+			✏️
+		</NavLink>
+	}
+	else
+	{
+		<NavLink class="nav-link" href="login">
+			🔑
+		</NavLink>
+	}
 </div>
-@*
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Bodved</a>
-    </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
- *@
 
 @code {
-    //private int usrId { get; set; }
-    //private int ConnCnt { get; set; }
-    //private string usrGuid;
+	[CascadingParameter] public required Usr Usr { get; set; }
+	[Parameter] public string usrTkn { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        SngC.OnChange += MyStateChanged;
-        ScpC.UsrGuid = Guid.NewGuid().ToString("N");
-
-        if (!ScpC.IsOk)
-        {
-            //usrGuid = Guid.NewGuid().ToString("N");
-
-            UsrPLS lm = new();
-            var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
-            if (toto.Success)
-            {
-                lm = toto.Value;
-                if (!ScpC.CheckLogin(lm.usrid, lm.usrpwd))
-                {
-                    SngC.AddMe(ScpC.UsrGuid, 0);
-                    Navigation.NavigateTo("");
-                }
-                else
-                    SngC.AddMe(ScpC.UsrGuid, ScpC.UsrId);
-            }
-            else
-                SngC.AddMe(ScpC.UsrGuid, 0);
-
-        }
-        //usrId = ScpC.UsrId;
-    }
-
-    // protected override void OnInitialized()
-    // {
-    //     SngC.OnChange += MyStateChanged;
-
-    //     //base.OnInitialized();
-    // }
-
-    public void MyStateChanged()
-    {
-        //Msg = SngC.Name;
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        SngC.OnChange -= MyStateChanged;
-        SngC.OffMe(ScpC.UsrGuid);
-    }
+	public UsrInf usrInf { get; set; }
+	public int ConnCnt { get; set; }
 
 
+	protected override async Task OnInitializedAsync()
+	{
+		ConnCnt = AllUsrs.GetConnCnt();
+		usrInf = AllUsrs.TryGetUsr(usrTkn);
+
+		Usr.Ad = usrInf.Ad;
+		Usr.IsAdm = usrInf.IsAdm;
+		Usr.IsTnm = usrInf.IsTnm;
+		Usr.IsSnc = usrInf.IsSnc;
+		Usr.Id = usrInf.Id;
+	}
 }

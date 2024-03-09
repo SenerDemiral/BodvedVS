@@ -1,5 +1,6 @@
-﻿@inject IScopedContainer ScpC
-@inject IDataAccess db
+﻿@inject IDataAccess db
+@inject IAllUsrs AllUsrs
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/Oyn"
@@ -13,7 +14,7 @@
         </div>
         <div class="tc--content">
             <QuickGrid Items=@FilteredPlayers Pagination="@pagination" @ref=ppGrid Class="fs-12">
-                @if (ScpC.IsAdm || ScpC.IsTnm)
+                @if (Usr.IsAdm || Usr.IsTnm)
                 {
                     <TemplateColumn Title="Edt">
                         <button @onclick="() => ShowModal(context.PPId)">✏️</button>
@@ -86,6 +87,8 @@
 }
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
+
     BI bi;
     IQueryable<PP> pp;
     QuickGrid<PP> ppGrid;

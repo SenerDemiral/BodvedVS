@@ -1,66 +1,74 @@
-﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedLocalStorage PLS
-@inject IScopedContainer ScpC
-@inject ISingletonContainer SngC
-@inject NavigationManager Navigation
-@* @implements IDisposable *@
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@inject NavigationManager Nav
+@inject IDataAccess db
 
+@* @page "/login/{uexid:int}" *@
 @page "/login"
 
-<style>
-    .lgn {
-        display: grid;
-        grid-template-columns: auto 100px;
-        gap: 5px;
-        margin: 1px;
-    }
-
-        .lgn .itm {
-            padding: 0 6px;
-            outline: 1px solid black;
-        }
-
-        .lgn .btn {
-            grid-column: 1 / span 2;
-            outline: 1px solid;
-            background-color: cornflowerblue;
-            color: aliceblue;
-        }
-</style>
-
-<div class="lgn">
-    <div class="itm">User#</div>
-    <input type="text" @bind=usr.usrid class="itm" />
-    <div class="itm">Pwd</div>
-    <input type="password" @bind=usr.usrpwd class="itm" />
-    <button class="btn" @onclick=LoginClck>LogIn</button>
-</div>
+<EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
+	<table width="200px" class="m-auto">
+		<tbody>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">ID</td>
+				<td class="border border-slate-300 text-right px-2"><InputNumber @bind-Value="Model.Id" /></td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">PWD</td>
+				<td class="border border-slate-300 text-right px-2"><InputText @bind-Value="Model.Pwd" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="border border-slate-300 text-center"><button type="submit" class="bg-indigo-500 text-white rounded px-2 py-1">Submit</button></td>
+			</tr>
+		</tbody>
+	</table>
+</EditForm>
 
 @code {
-    UsrPLS usr = new();
-    string Msg { get; set; }
 
-    private async Task LoginClck()
-    {
-        if (ScpC.CheckLogin(usr.usrid, usr.usrpwd))
-        {
-            SngC.Conns[ScpC.UsrGuid] = usr.usrid;
-            
-            await PLS.SetAsync("pwd", "bodved", usr);
-            //CST.Msg = "Login başarılı";
-            Navigation.NavigateTo("");
-            
-            // default force=false
-            // lm.UsrUserName = null;
-            // IDictionary<string, object> objDic = lm.AsDictionary();
-            // foreach(var d in objDic)
-            // {
-            //     var aa = d.Key;
-            //     var bb = d.Value;
-            //     var cc = d.Value?.GetType();
-            // }
-            // var someObject = objDic.ToObject<LoginModel>();
-        }
-    }
+	[CascadingParameter]
+	public HttpContext? context { get; set; }
+
+	// [Parameter]
+	// public int UEXId { get; set; } = default;
+
+	[SupplyParameterFromForm]
+	public LgnMdl? Model { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Model ??= new();
+	}
+
+	private void Submit()
+	{
+		// Logine geldiyse Guest dir
+		Model.Tkn = context.Request.Cookies["bodved"];	
+
+		//Model.Tkn = Guid.NewGuid().ToString("N");
+
+		var usr = db.LoadRec<UsrInfDB, dynamic>("select * from LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn});
+
+		if (usr?.PPId > 0)   // Logine Guest gelir. Tkn g ile başlar
+		{
+			Model.Tkn = Model.Tkn.Substring(1); // Tkn basından g harfini cıkart
+
+			CookieOptions cookieOptions = new CookieOptions();
+			cookieOptions.Secure = false;
+			cookieOptions.MaxAge = TimeSpan.FromDays(10);   // Sure bitince browser silmiyor, ama null gonderiyor
+
+			cookieOptions.HttpOnly = true;
+			cookieOptions.SameSite = SameSiteMode.Strict;
+			context.Response.Cookies.Append("bodved", Model.Tkn, cookieOptions);
+
+			// Debug da hata gekiyeor RunTime da geçiyor
+			Nav.NavigateTo("https://masatenisi.online");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+																//Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/49143
+		}
+	}
+
+	public class LgnMdl
+	{
+		public int Id { get; set; }
+		public string? Pwd { get; set; }
+		public string? Tkn { get; set; }
+	}
 }

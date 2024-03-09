@@ -1,5 +1,7 @@
 ﻿@inject IDataAccess db
-@inject IScopedContainer sc
+@inject IAllUsrs AllUsrs
+@inject NavigationManager Navigation
+
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpGame/{cetid:int}"
@@ -40,13 +42,13 @@
 
 </style>
 
-<div style="background-color:gold;display:flex;justify-content:space-between;">
-    <div>@hdr.CCAd &emsp; @hdr.Trh.ToString("dd.MM.yy") &emsp; @hdr.SklAd</div>
-    <div> Durum <b>@hdr.Stu</b> &emsp;</div>
-</div>
-
 @if (ls != null)
 {
+    <div style="background-color:gold;display:flex;justify-content:space-between;">
+        <div>@hdr.CCAd &emsp; @hdr.Trh.ToString("dd.MM.yy") &emsp; @hdr.SklAd</div>
+        <div> Durum <b>@hdr.Stu</b> &emsp;</div>
+    </div>
+
     <div style="display:flex;justify-content:space-between;">
         <button disabled="@RO" @onclick="Save">✅Kaydet</button>
         <div style="color:red">@msj</div>
@@ -194,34 +196,35 @@
             }
         }
     </table>
+    <datalist id="HPP">
+        @foreach (var r in hot)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
+
+    <datalist id="GPP">
+        @foreach (var r in got)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
+
+    <datalist id="STU">
+        <option value="" />
+        <option value="hX" />
+        <option value="gX" />
+        <option value="XX" />
+    </datalist>
 }
 else
 {
     <div>...</div>
 }
 
-<datalist id="HPP">
-    @foreach (var r in hot)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-
-<datalist id="GPP">
-    @foreach (var r in got)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-
-<datalist id="STU">
-    <option value="" />
-    <option value="hX" />
-    <option value="gX" />
-    <option value="XX" />
-</datalist>
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
     [Parameter] public int CETId { get; set; }
 
     private IEnumerable<LS>? ls;
@@ -339,6 +342,7 @@ else
         }
         CheckStu(r);
     }
+
     private void CheckStu(LS r)
     {
         // Stu ya gore sonuclar save edilince BD de yapilacak
@@ -768,15 +772,22 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        hdr = db.LoadRec<HDR, dynamic>("select * from IG_HDR(@CETId)", new { CETId = CETId });
-        hot = db.LoadData<OT, dynamic>("select * from LU_OYN_TKM(@CTId) order by Ad", new { CTId = hdr.HCTId }).ToDictionary(k => k.Ad);
-        got = db.LoadData<OT, dynamic>("select * from LU_OYN_TKM(@CTId) order by Ad", new { CTId = hdr.GCTId }).ToDictionary(k => k.Ad);
+        if (Usr.IsAdm || Usr.IsTnm)
+        {
 
-        oynNA = (hot.First(x => x.Value.PPId == -1)).Key;
-        SSC = hdr.TSS;  // Single SetCount
-        DSC = hdr.TDS;  // Double SetCount
+            hdr = db.LoadRec<HDR, dynamic>("select * from IG_HDR(@CETId)", new { CETId = CETId });
+            hot = db.LoadData<OT, dynamic>("select * from LU_OYN_TKM(@CTId) order by Ad", new { CTId = hdr.HCTId }).ToDictionary(k => k.Ad);
+            got = db.LoadData<OT, dynamic>("select * from LU_OYN_TKM(@CTId) order by Ad", new { CTId = hdr.GCTId }).ToDictionary(k => k.Ad);
 
-        LoadData();
+            oynNA = (hot.First(x => x.Value.PPId == -1)).Key;
+            SSC = hdr.TSS;  // Single SetCount
+            DSC = hdr.TDS;  // Double SetCount
+
+            LoadData();
+        }
+        else
+            Navigation.NavigateTo("login");
+
     }
 
     private sealed class HDR

@@ -45,6 +45,8 @@
 
 
 @code {
+    [CascadingParameter] public required Usr Usr { get; set; }
+
     IEnumerable<CC>? CCs;
 
     protected override async Task OnInitializedAsync()

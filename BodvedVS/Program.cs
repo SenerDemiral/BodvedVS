@@ -5,7 +5,7 @@ using BodvedVS.DataLibrary;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-var builder = WebApplication.CreateBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
+var builder = WebApplication.CreateSlimBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,
@@ -33,8 +33,6 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
     }
 });
 
-builder.Services.AddSingleton<ISingletonContainer, SingletonContainer>();
-builder.Services.AddScoped<IScopedContainer, ScopedContainer>();
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 
 builder.Services.AddSingleton<IAllUsrs, AllUsrs>();

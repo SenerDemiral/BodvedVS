@@ -5,7 +5,14 @@
 	<div class="wrapper">
 		<div class="header">
 			<div class="navbar">
-				<NavMenu @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+				@if (usrTkn.StartsWith('g'))
+				{
+					<NavMenu usrTkn="@usrTkn" />
+				}
+				else
+				{
+					<NavMenu usrTkn="@usrTkn" @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+				}
 			</div>
 		</div>
 		<div class="content">
@@ -24,8 +31,8 @@
 
 @code
 {
-	[CascadingParameter]
-	public HttpContext? context { get; set; }
+	[CascadingParameter] public HttpContext? context { get; set; }
+	[CascadingParameter] public required Usr Usr { get; set; }
 	private string? usrTkn { get; set; }
 	private UsrInf usrInf;
 
@@ -45,5 +52,11 @@
 
 		}
 		usrInf = AllUsrs.TryGetUsr(usrTkn);
+
+		Usr.Ad = usrInf.Ad;
+		Usr.IsAdm = usrInf.IsAdm;
+		Usr.IsTnm = usrInf.IsTnm;
+		Usr.IsSnc = usrInf.IsSnc;
+		Usr.Id = usrInf.Id;
 	}
 }

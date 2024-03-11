@@ -6,7 +6,8 @@ public interface IAllUsrs
 {
 	int GetConnCnt();
 	UsrInf TryGetUsr(string tkn);
-	void ClearExpiredUsrs();
+	int ClearExpiredUsrs();
+	int GetActUsrs();
 }
 
 public class AllUsrs : IAllUsrs
@@ -23,6 +24,7 @@ public class AllUsrs : IAllUsrs
 	}
 
 	public int GetConnCnt() => ConnCnt;
+	public int GetActUsrs() => Usrs.Count;
 
 	public UsrInf TryGetUsr(string tkn)
 	{
@@ -51,13 +53,15 @@ public class AllUsrs : IAllUsrs
 		return usrInf;
 	}
 
-	public void ClearExpiredUsrs()
+	public int ClearExpiredUsrs()
 	{
 		var Now = DateTime.Now;
-		foreach (var item in Usrs.Where(kvp => (Now - kvp.Value.LastUpdTS).TotalMinutes > 59).ToList())
+		foreach (var item in Usrs.Where(kvp => (Now - kvp.Value.LastUpdTS).TotalMinutes > 1).ToList())
 		{
 			Usrs.TryRemove(item.Key, out var _);
 		}
+
+		return Usrs.Count;
 	}
 
 }

@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @inject NavigationManager Nav
 
-@page "/logout"
+@page "/ProgramMapGetLogoutKullan"
 
 @code {
 	[CascadingParameter]
@@ -23,8 +23,9 @@
 			//co.MaxAge = TimeSpan.FromHours(1);	// Bitis suresi belirtilmediginde sessionCookie oluyor
 			context.Response.Cookies.Append("bodved", usrTkn, co);
 		}
-
+		var aaa = context.Request.Host.ToString();
 		// Debug da hata gekiyeor RunTime da geçiyor
-		Nav.NavigateTo("https://masatenisi.online");  // HATA https://github.com/dotnet/aspnetcore/issues/53040 https://github.com/dotnet/aspnetcore/issues/49143
+		Nav.NavigateTo(aaa);  // HATA https://github.com/dotnet/aspnetcore/issues/53040 https://github.com/dotnet/aspnetcore/issues/49143
+		//Nav.NavigateTo("https://masatenisi.online");  // HATA https://github.com/dotnet/aspnetcore/issues/53040 https://github.com/dotnet/aspnetcore/issues/49143
 	}
 }

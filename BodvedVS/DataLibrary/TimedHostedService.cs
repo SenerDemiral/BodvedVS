@@ -5,6 +5,7 @@ public class TimedHostedService : BackgroundService
 	private readonly ILogger<TimedHostedService> _logger;
 	private readonly IAllUsrs allUsrs;
 	private int _executionCount;
+	private int oldActUsr;
 
 	public TimedHostedService(ILogger<TimedHostedService> logger, IAllUsrs allUsrs)
 	{
@@ -19,7 +20,7 @@ public class TimedHostedService : BackgroundService
 		// When the timer should have no due-time, then do the work once now.
 		// DoWork(); Hemen yapmasına gerek yok
 
-		using PeriodicTimer timer = new(TimeSpan.FromMinutes(30));
+		using PeriodicTimer timer = new(TimeSpan.FromMinutes(0.1));
 
 		try
 		{
@@ -37,10 +38,14 @@ public class TimedHostedService : BackgroundService
 	// Could also be a async method, that can be awaited in ExecuteAsync above
 	private void DoWork()
 	{
-		int count = Interlocked.Increment(ref _executionCount);
+		//int count = Interlocked.Increment(ref _executionCount);
 
-		allUsrs.ClearExpiredUsrs();
+		var actUsr = allUsrs.ClearExpiredUsrs();
 
-		_logger.LogInformation("Timed Hosted Service is working. Count: {Count}", count);
+		if (oldActUsr != actUsr) {
+			_logger.LogInformation("Timed Hosted Service {RunTime} #Usr: {actUsr}", DateTime.Now, actUsr);
+			oldActUsr = actUsr;
+		}
+		// Console.WriteLine($"Timed Hosted Service. ActiveUserCnt: {actUsr}");
 	}
 }

@@ -1,6 +1,6 @@
 ﻿@inject IDataAccess db
 
-@page "/Szn/{usrGUID?}"
+@page "/Szn"
 
 <PageTitle>Sezonlar</PageTitle>
 <h3 style="background-color:gold">Sezonlar</h3>
@@ -30,7 +30,6 @@ else
 
 @code {
 	IEnumerable<LS>? ls;
-	[Parameter] public string UsrGUID { get; set; } = "";
 
 	protected override async Task OnInitializedAsync()
 	{

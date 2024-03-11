@@ -14,8 +14,7 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
 //builder.Services.AddHostedService<HostApplicationLifetimeEventsHostedService>();    // Start/Stop bilmek için deneme
 
 // Add services to the container.
-//builder.Services.AddRazorComponents()
-//.AddInteractiveServerComponents();
+//builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOptions(options =>
 {
@@ -34,7 +33,6 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
 });
 
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
-
 builder.Services.AddSingleton<IAllUsrs, AllUsrs>();
 builder.Services.AddHostedService<TimedHostedService>();
 
@@ -67,11 +65,31 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
 //app.MapGet("/{*rest}", (string rest) => Results.Redirect("/counter"));
 //app.MapGet("/{*rest}", (string rest) => $"Routing to {rest}");
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapGet("/usrstat", (IAllUsrs usrs) =>
+{
+    var au = $"ActiveUserCount: {usrs.GetActUsrs()}";
+
+	return au;
+});
+
+app.MapGet("/logout", (HttpContext context) =>
+{
+	var usrTkn = "g" + Guid.NewGuid().ToString("N"); // Guest
+	CookieOptions co = new CookieOptions();
+	co.Secure = false;
+	co.HttpOnly = true;
+	co.SameSite = SameSiteMode.Strict;
+	//co.MaxAge = TimeSpan.FromHours(1);	// Bitis suresi belirtilmediginde sessionCookie oluyor
+	context.Response.Cookies.Append("bodved", usrTkn, co);
+
+	return Results.Redirect("/");
+});
 
 app.MapGet("/apict", async (IDataAccess db) => {
 

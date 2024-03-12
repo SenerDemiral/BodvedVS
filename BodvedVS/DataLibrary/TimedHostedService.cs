@@ -15,12 +15,12 @@ public class TimedHostedService : BackgroundService
 
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		_logger.LogInformation("Timed Hosted Service running.");
+		_logger.LogInformation("Timed Hosted Service running. {RunTime}", DateTime.Now);
 
 		// When the timer should have no due-time, then do the work once now.
-		// DoWork(); Hemen yapmasına gerek yok
+		// DoWork(); //Hemen yapmasına gerek yok
 
-		using PeriodicTimer timer = new(TimeSpan.FromMinutes(0.1));
+		using PeriodicTimer timer = new(TimeSpan.FromMinutes(10));
 
 		try
 		{
@@ -31,7 +31,7 @@ public class TimedHostedService : BackgroundService
 		}
 		catch (OperationCanceledException)
 		{
-			_logger.LogInformation("Timed Hosted Service is stopping.");
+			_logger.LogInformation("Timed Hosted Service is stopping. {RunTime}", DateTime.Now);
 		}
 	}
 
@@ -42,8 +42,10 @@ public class TimedHostedService : BackgroundService
 
 		var actUsr = allUsrs.ClearExpiredUsrs();
 
-		if (oldActUsr != actUsr) {
-			_logger.LogInformation("Timed Hosted Service {RunTime} #Usr: {actUsr}", DateTime.Now, actUsr);
+		if (oldActUsr != actUsr) 
+		{
+			var (ilk, son) = allUsrs.IlkSonUsrGir();
+			_logger.LogInformation("Timed Hosted Service {RunTime} #Usr: {actUsr} {ilk} - {son}", DateTime.Now, actUsr, ilk.ToLongTimeString(), son.ToLongTimeString());
 			oldActUsr = actUsr;
 		}
 		// Console.WriteLine($"Timed Hosted Service. ActiveUserCnt: {actUsr}");

@@ -8,6 +8,7 @@ public interface IAllUsrs
 	UsrInf TryGetUsr(string tkn);
 	int ClearExpiredUsrs();
 	int GetActUsrs();
+	(DateTime ilk, DateTime son) IlkSonUsrGir();
 }
 
 public class AllUsrs : IAllUsrs
@@ -56,12 +57,17 @@ public class AllUsrs : IAllUsrs
 	public int ClearExpiredUsrs()
 	{
 		var Now = DateTime.Now;
-		foreach (var item in Usrs.Where(kvp => (Now - kvp.Value.LastUpdTS).TotalMinutes > 1).ToList())
+		foreach (var item in Usrs.Where(kvp => (Now - kvp.Value.LastUpdTS).TotalMinutes > 29).ToList())
 		{
 			Usrs.TryRemove(item.Key, out var _);
 		}
 
 		return Usrs.Count;
+	}
+
+	public (DateTime ilk, DateTime son) IlkSonUsrGir()
+	{
+		return (ilk: Usrs.Values.Min(x => x.LastUpdTS), son: Usrs.Values.Max(x => x.LastUpdTS));
 	}
 
 }

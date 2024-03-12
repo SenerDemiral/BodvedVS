@@ -43,15 +43,15 @@
 		if (usrTkn == null)
 		{
 			usrTkn = "g" + Guid.NewGuid().ToString("N"); // Guest
-			CookieOptions co = new CookieOptions();
-			co.Secure = false;
-			co.HttpOnly = true;
-			co.SameSite = SameSiteMode.Strict;
-			//co.MaxAge = TimeSpan.FromHours(1);	// Bitis suresi belirtilmediginde sessionCookie oluyor
-			context.Response.Cookies.Append("bodved", usrTkn, co);
-
 		}
-		usrInf = AllUsrs.TryGetUsr(usrTkn);
+		CookieOptions co = new CookieOptions();
+		co.Secure = false;
+		co.HttpOnly = true;
+		co.SameSite = SameSiteMode.Strict;
+		co.MaxAge = TimeSpan.FromDays(365); // Bitis suresi belirtilmediginde sessionCookie oluyor
+		context.Response.Cookies.Append("bodved", usrTkn, co);
+
+		usrInf = AllUsrs.TryGetUsr(usrTkn);     // Burada 30dak kalır sonra silinir, sonraki girişlerde tekrar sayılır
 
 		Usr.Ad = usrInf.Ad;
 		Usr.IsAdm = usrInf.IsAdm;

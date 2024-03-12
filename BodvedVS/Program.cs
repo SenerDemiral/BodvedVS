@@ -80,12 +80,12 @@ app.MapGet("/usrstat", (IAllUsrs usrs) =>
 
 app.MapGet("/logout", (HttpContext context) =>
 {
-	var usrTkn = "g" + Guid.NewGuid().ToString("N"); // Guest
+	var usrTkn = "g" + context.Request.Cookies["bodved"]; //Guid.NewGuid().ToString("N"); // Guest
 	CookieOptions co = new CookieOptions();
 	co.Secure = false;
 	co.HttpOnly = true;
 	co.SameSite = SameSiteMode.Strict;
-	//co.MaxAge = TimeSpan.FromHours(1);	// Bitis suresi belirtilmediginde sessionCookie oluyor
+	co.MaxAge = TimeSpan.FromDays(365);	// Bitis suresi belirtilmediginde sessionCookie oluyor
 	context.Response.Cookies.Append("bodved", usrTkn, co);
 
 	return Results.Redirect("/");

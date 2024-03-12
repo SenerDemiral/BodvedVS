@@ -15,7 +15,7 @@
 
 		if (usrTkn != null)
 		{
-			usrTkn = "g" + Guid.NewGuid().ToString("N"); // Guest
+			usrTkn = "g" + usrTkn;	//Guid.NewGuid().ToString("N"); // Guest
 			CookieOptions co = new CookieOptions();
 			co.Secure = false;
 			co.HttpOnly = true;

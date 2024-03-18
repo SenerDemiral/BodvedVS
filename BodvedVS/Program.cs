@@ -4,8 +4,9 @@ using BodvedVS.Components.Comps;
 using BodvedVS.DataLibrary;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
+using SixLabors.ImageSharp.Web.DependencyInjection;
 
-var builder = WebApplication.CreateSlimBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
+var builder = WebApplication.CreateBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
                        optional: true,
@@ -15,6 +16,8 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
 
 // Add services to the container.
 //builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddImageSharp();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOptions(options =>
 {
@@ -35,6 +38,11 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOpt
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 builder.Services.AddSingleton<IAllUsrs, AllUsrs>();
 builder.Services.AddHostedService<TimedHostedService>();
+
+//foreach (var c in builder.Configuration.AsEnumerable())
+//{
+//    Console.WriteLine(c.Key + " = " + c.Value);
+//}
 
 #region RootLevel CascadingValue Deneme
 // Deneme
@@ -61,6 +69,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+
+app.UseImageSharp();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

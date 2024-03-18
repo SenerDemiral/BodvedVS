@@ -548,10 +548,6 @@ video {
   position: static;
 }
 
-.relative {
-  position: relative;
-}
-
 .m-auto {
   margin: auto;
 }
@@ -603,18 +599,9 @@ video {
   padding-right: 0.5rem;
 }
 
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-}
-
-.ps-3 {
-  padding-inline-start: 0.75rem;
 }
 
 .text-center {
@@ -623,6 +610,11 @@ video {
 
 .text-right {
   text-align: right;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .text-white {

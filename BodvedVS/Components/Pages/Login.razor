@@ -41,9 +41,10 @@
 	private void Submit()
 	{
 		// Logine geldiyse Guest dir
-		Model.Tkn = context.Request.Cookies["bodved"];
+		// Model.Tkn = context.Request.Cookies["bodved"];
 
-		//Model.Tkn = Guid.NewGuid().ToString("N");
+		// Farklı bir Usr olarak girebilir. Doğruysa bu Tkn kullan
+		Model!.Tkn = "g" + Guid.NewGuid().ToString("N");
 
 		var usr = db.LoadRec<UsrInfDB, dynamic>("select * from LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
 
@@ -60,9 +61,9 @@
 			context.Response.Cookies.Append("bodved", Model.Tkn, cookieOptions);
 
 			// Debug da hata gekiyeor RunTime da geçiyor
-			// Nav.NavigateTo(Nav.BaseUri);
-			Nav.NavigateTo("https://masatenisi.online");
-			
+			Nav.NavigateTo(Nav.BaseUri);
+			//Nav.NavigateTo("https://masatenisi.online");
+
 			// HATA https://github.com/dotnet/aspnetcore/issues/53040
 			// HATA https://github.com/dotnet/aspnetcore/issues/49143
 		}

@@ -1,70 +1,104 @@
-﻿@inject IDataAccess db
+﻿@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.Formats
+@using SixLabors.ImageSharp.PixelFormats
+@using SixLabors.ImageSharp.Processing
+
+@inject IDataAccess db
 @inject IAllUsrs AllUsrs
 @inject NavigationManager Navigation
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/InpLig"
+@using System.IO
+@inject IWebHostEnvironment env
+
 <PageTitle>SonSezonTurnuvaları</PageTitle>
 
 <h3 style="background-color:gold">Son Sezon Turnuvaları</h3>
 
 @if (ls != null)
 {
-    <table class="table-edit">
-        <tr>
-            <td colspan="4">
-                <a href="InpRnkSzn">Oyuncu Başlangıç Rank</a>
-            </td>
-        </tr>
-        @foreach (var r in ls)
-        {
-            <tr>
-                <td class="text-center">@r.CCId</td>
-                <td>@r.Ad</td>
-                <td>
-                    <a href="InpTkm/@r.CCId/@r.Ad">🏁</a>
-                </td>
-                <td>
-                    <a href="InpFks/@r.CCId/@r.Ad">⏰</a>
-                </td>
-            </tr>
-        }
-    </table>
+	<table class="table-edit">
+		<tr>
+			<td colspan="4">
+				<a href="InpRnkSzn">Oyuncu Başlangıç Rank</a>
+			</td>
+		</tr>
+		@foreach (var r in ls)
+		{
+			<tr>
+				<td class="text-center">@r.CCId</td>
+				<td>@r.Ad</td>
+				<td>
+					<a href="InpTkm/@r.CCId/@r.Ad">🏁</a>
+				</td>
+				<td>
+					<a href="InpFks/@r.CCId/@r.Ad">⏰</a>
+				</td>
+			</tr>
+		}
+	</table>
 }
 else
 {
-    <div>...</div>
+	<div>...</div>
 }
 @* <p> @Usr.Clicks </p> *@
 @* <button @onclick="IncrementCount">Increment</button> *@
 
+<label for="user" style="cursor:pointer">
+	<span class="material-symbols-outlined">
+		add_a_photo
+	</span>
+</label>
+<InputFile type="file" id="user" capture="user" accept="image/*" OnChange="Changed" hidden>
+</InputFile>
+
+@* <img src="@($"{env.WebRootPath}/uploads/sample.jpeg?width=200")" /> *@
+@* <img src="/uploads/sample.jpeg?width=200" /> *@
+@* C:\VS2022\BodvedVS\BodvedVS\wwwroot/uploads/sample.jpeg?width=200 *@
+
 
 @code {
-    [CascadingParameter] public required Usr Usr { get; set; }
+	[CascadingParameter] public required Usr Usr { get; set; }
 
-    IEnumerable<LS>? ls;
+	IEnumerable<LS>? ls;
 
-    void IncrementCount() => Usr.Clicks++;  // Deneme
+	public async Task Changed(InputFileChangeEventArgs e)
+	{
+		var fileName = $"{env.WebRootPath}\\uploads\\{e.File.Name}";
+		//await using FileStream fs = new(fileName, FileMode.Create);
+		//await e.File.OpenReadStream().CopyToAsync(fs);
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (Usr.IsAdm || Usr.IsTnm)
-            LoadData();
-        else
-            Navigation.NavigateTo("login");
-    }
+		// OpenReadStream maxFileSize limitini geçerse yapmıyor
+		using (var image = await Image.LoadAsync(e.File.OpenReadStream(6_000_000)))
+		{
+			image.Mutate(x => { if (x.GetCurrentSize().Width > 1024) x.Resize(1024, 0); }); //Resize(1024, 0));  //(256, 256));
+			image.Save(fileName);
+		}
+	}
 
-     private void LoadData()
-    {
-        ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
-        StateHasChanged();
-    }
+	void IncrementCount() => Usr.Clicks++;  // Deneme
 
-    private sealed class LS
-    {
-        public int CCId { get; set; }
-        public string Ad { get; set; }
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		if (Usr.IsAdm || Usr.IsTnm)
+			LoadData();
+		else
+			Navigation.NavigateTo("login");
+	}
+
+	private void LoadData()
+	{
+		ls = db.LoadData<LS, dynamic>("select CCId,Ad from UI_LIG_SZN(0)", new { });
+		StateHasChanged();
+	}
+
+	private sealed class LS
+	{
+		public int CCId { get; set; }
+		public string Ad { get; set; }
+	}
 
 }

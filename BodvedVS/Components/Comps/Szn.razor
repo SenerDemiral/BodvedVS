@@ -31,6 +31,8 @@ else
 @code {
 	IEnumerable<LS>? ls;
 
+	
+
 	protected override async Task OnInitializedAsync()
 	{
 		ls = db.LoadData<LS, dynamic>("select Dnm,Ad from UI_SZN", new { });

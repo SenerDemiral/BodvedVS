@@ -54,15 +54,15 @@
 
 			CookieOptions cookieOptions = new CookieOptions();
 			cookieOptions.Secure = false;
-			cookieOptions.MaxAge = TimeSpan.FromDays(365);   // Sure bitince browser silmiyor, ama null gonderiyor
+			cookieOptions.MaxAge = TimeSpan.FromDays(300);   // Sure bitince browser silmiyor, ama null gonderiyor
 
 			cookieOptions.HttpOnly = true;
 			cookieOptions.SameSite = SameSiteMode.Strict;
 			context.Response.Cookies.Append("bodved", Model.Tkn, cookieOptions);
 
 			// Debug da hata gekiyeor RunTime da geçiyor
-			Nav.NavigateTo(Nav.BaseUri);
-			//Nav.NavigateTo("https://masatenisi.online");
+			//Nav.NavigateTo(Nav.BaseUri);
+			Nav.NavigateTo("https://masatenisi.online");
 
 			// HATA https://github.com/dotnet/aspnetcore/issues/53040
 			// HATA https://github.com/dotnet/aspnetcore/issues/49143

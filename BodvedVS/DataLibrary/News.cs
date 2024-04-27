@@ -3,7 +3,7 @@
 public class News
 {
     public event Action<NewsModel>? OnChange;
-    private void NotifyNewsChanged(NewsModel nm) => OnChange?.Invoke(nm);
+    public void NotifyNewsChanged(NewsModel nm) => OnChange?.Invoke(nm);
 }
 
 public class NewsModel
@@ -18,52 +18,49 @@ program.cs:
 -----------
 builder.Services.AddSingleton<News>();  // Global
 
-SomeListener.razor:
+NewsListener.razor:
 --------------------
-@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject News News
+@implements IDisposable
+
+<h3>NewsListener DENEME</h3>
 
 @code {
-    protected override void OnInitialized()
-    {
-        News.OnChange += NewsChanged;   // Listen
-    }
-
-    public void NewsChanged(News news)  // Handler
+	protected override void OnInitialized()
 	{
-		if (news.FrmId == appState.FrmId) 
+		News.OnChange += NewsChanged;   // Listen
+	}
+
+	public void NewsChanged(NewsModel news)  // Handler
+	{
+		if (news.FrmId == 1234)
 		{
 			InvokeAsync(StateHasChanged);
 		}
 	}
 
-    public void Dispose()
-    {
-        News.OnChange -= NewsChanged;
-    }
+	public void Dispose()
+	{
+		News.OnChange -= NewsChanged;
+	}
 }
 
-
-SomeProducer.razor:
+NewsChanger.razor:
 --------------------
-@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject News News
 
-<p>
-    <button @onclick="PublishNews">
-        Send news to listeners
-    </button>
-</p>
+<h3>NewsChanger DENEME</h3>
 
 @code {
-
-    private void PublishNews()
+	private void PublishNews()
 	{
-		News news = new()
-		{
-			FrmId = 101,
-			YpnId = 5,
-		};
+		NewsModel news = new()
+			{
+				FrmId = 101,
+				YpnId = 5,
+			};
 		News.NotifyNewsChanged(news);   // Something changed, emit news
 	}
 }

@@ -19,7 +19,6 @@
 			@Body
 		</div>
 	</div>
-
 </div>
 
 @* <div id="blazor-error-ui">
@@ -28,6 +27,7 @@
 	<a class="dismiss">🗙</a>
 </div>
  *@
+
 
 @code
 {
@@ -48,7 +48,7 @@
 		co.Secure = false;
 		co.HttpOnly = true;
 		co.SameSite = SameSiteMode.Strict;
-		co.MaxAge = TimeSpan.FromDays(365); // Bitis suresi belirtilmediginde sessionCookie oluyor
+		co.MaxAge = TimeSpan.FromDays(300); // Bitis suresi belirtilmediginde sessionCookie oluyor
 		context.Response.Cookies.Append("bodved", usrTkn, co);
 
 		usrInf = AllUsrs.TryGetUsr(usrTkn);     // Burada 30dak kalır sonra silinir, sonraki girişlerde tekrar sayılır

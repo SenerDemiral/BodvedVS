@@ -47,14 +47,14 @@ else
 @* <p> @Usr.Clicks </p> *@
 @* <button @onclick="IncrementCount">Increment</button> *@
 
-<label for="user" style="cursor:pointer">
+@* <label for="user" style="cursor:pointer">
 	<span class="material-symbols-outlined">
 		add_a_photo
 	</span>
 </label>
 <InputFile type="file" id="user" capture="user" accept="image/*" OnChange="Changed" hidden>
 </InputFile>
-
+ *@
 @* <img src="@($"{env.WebRootPath}/uploads/sample.jpeg?width=200")" /> *@
 @* <img src="/uploads/sample.jpeg?width=200" /> *@
 @* C:\VS2022\BodvedVS\BodvedVS\wwwroot/uploads/sample.jpeg?width=200 *@

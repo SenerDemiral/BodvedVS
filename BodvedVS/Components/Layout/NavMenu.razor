@@ -2,11 +2,11 @@
 @inject IAllUsrs AllUsrs
 
 <div style="display:flex">
-	<a href="about">MasaTenisiOnline</a>
+	<a href="about">MTO</a>
 	<div style="font-weight:500;font-size:10px;transform:skewY(340deg);color: darkred;padding-left: 4px;">
 		@ConnCnt.ToString("###,###")
 	</div>
-	<div style="font-size:10px">@usrInf.Ad</div>
+	<div style="font-size:10px">@usrInf.Ad @usrTkn.Substring(usrTkn.Length - 4)</div>
 </div>
 
 <div class="nav-links">

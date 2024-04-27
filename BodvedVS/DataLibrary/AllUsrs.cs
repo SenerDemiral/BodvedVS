@@ -67,6 +67,9 @@ public class AllUsrs : IAllUsrs
 
 	public (DateTime ilk, DateTime son) IlkSonUsrGir()
 	{
+		if (Usrs.Count == 0)
+			return (DateTime.Now, DateTime.Now);
+
 		return (ilk: Usrs.Values.Min(x => x.LastUpdTS), son: Usrs.Values.Max(x => x.LastUpdTS));
 	}
 

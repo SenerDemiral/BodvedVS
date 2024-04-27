@@ -4,39 +4,40 @@ using BodvedVS.Components.Comps;
 using BodvedVS.DataLibrary;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
-using SixLabors.ImageSharp.Web.DependencyInjection;
+//using SixLabors.ImageSharp.Web.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);   ///////////CreateSlimBuilder scoped css development da gormuyor publish de sorun yok////////////////////
 
 builder.Configuration.AddJsonFile("C:\\AspNetConfig\\BodvedVS.json",
-                       optional: true,
-                       reloadOnChange: true);
+					   optional: true,
+					   reloadOnChange: true);
 
 //builder.Services.AddHostedService<HostApplicationLifetimeEventsHostedService>();    // Start/Stop bilmek için deneme
 
 // Add services to the container.
 //builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-builder.Services.AddImageSharp();
+//builder.Services.AddImageSharp();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents().AddHubOptions(options =>
 {
-    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
-    options.EnableDetailedErrors = false;
-    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
-    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-    options.MaximumParallelInvocationsPerClient = 1;
-    options.MaximumReceiveMessageSize = 32 * 1024;
-    options.StreamBufferCapacity = 10;
-    if (options?.SupportedProtocols is not null)
-    {
-        foreach (var protocol in options.SupportedProtocols)
-            Console.WriteLine($"SignalR supports {protocol} protocol.");
-    }
+	options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+	options.EnableDetailedErrors = false;
+	options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+	options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+	options.MaximumParallelInvocationsPerClient = 1;
+	options.MaximumReceiveMessageSize = 32 * 1024;
+	options.StreamBufferCapacity = 10;
+	if (options?.SupportedProtocols is not null)
+	{
+		foreach (var protocol in options.SupportedProtocols)
+			Console.WriteLine($"SignalR supports {protocol} protocol.");
+	}
 });
 
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 builder.Services.AddSingleton<IAllUsrs, AllUsrs>();
+builder.Services.AddSingleton<News>();
 builder.Services.AddHostedService<TimedHostedService>();
 
 //foreach (var c in builder.Configuration.AsEnumerable())
@@ -63,27 +64,27 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Error", createScopeForErrors: true);
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 //app.UseHttpsRedirection();
 
-app.UseImageSharp();
+//app.UseImageSharp();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+	.AddInteractiveServerRenderMode();
 
 //app.MapGet("/{*rest}", (string rest) => Results.Redirect("/counter"));
 //app.MapGet("/{*rest}", (string rest) => $"Routing to {rest}");
 
 app.MapGet("/usrstat", (IAllUsrs usrs) =>
 {
-    var au = $"ActiveUserCount: {usrs.GetActUsrs()}";
+	var au = $"ActiveUserCount: {usrs.GetActUsrs()}";
 
 	return au;
 });
@@ -95,25 +96,26 @@ app.MapGet("/logout", (HttpContext context) =>
 	co.Secure = false;
 	co.HttpOnly = true;
 	co.SameSite = SameSiteMode.Strict;
-	co.MaxAge = TimeSpan.FromDays(365);	// Bitis suresi belirtilmediginde sessionCookie oluyor
+	co.MaxAge = TimeSpan.FromDays(365); // Bitis suresi belirtilmediginde sessionCookie oluyor
 	context.Response.Cookies.Append("bodved", usrTkn, co);
 
 	return Results.Redirect("/");
 });
 
-app.MapGet("/apict", async (IDataAccess db) => {
+app.MapGet("/apict", async (IDataAccess db) =>
+{
 
-    var ct = (await db.LoadDataAsync<APIct, dynamic>("select * from API_CT", new { })).ToList();
-    foreach (var r in ct)
-    {
-        r.Oyuncular = (await db.LoadDataAsync<APIctp, dynamic>("select * from API_CTP(@CTId)", new { CTId = r.Id })).ToList();
-    }
-    return ct;
+	var ct = (await db.LoadDataAsync<APIct, dynamic>("select * from API_CT", new { })).ToList();
+	foreach (var r in ct)
+	{
+		r.Oyuncular = (await db.LoadDataAsync<APIctp, dynamic>("select * from API_CTP(@CTId)", new { CTId = r.Id })).ToList();
+	}
+	return ct;
 });
 
 app.MapGet("/apipp", async (IDataAccess db) =>
 
-    (await db.LoadDataAsync<APIpp, dynamic>("select * from API_PP", new { })).ToList()
+	(await db.LoadDataAsync<APIpp, dynamic>("select * from API_PP", new { })).ToList()
 );
 
 

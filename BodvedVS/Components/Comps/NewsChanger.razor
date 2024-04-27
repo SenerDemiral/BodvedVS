@@ -1,0 +1,16 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject News News
+
+<h3>NewsChanger DENEME</h3>
+
+@code {
+	private void PublishNews()
+	{
+		NewsModel news = new()
+			{
+				FrmId = 101,
+				YpnId = 5,
+			};
+		News.NotifyNewsChanged(news);   // Something changed, emit news
+	}
+}
